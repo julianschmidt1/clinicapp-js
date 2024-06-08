@@ -1,0 +1,35 @@
+.welcome {
+    padding: 50px;
+    display: flex;
+    justify-content: space-between;
+    color: rgb(88, 155, 236);
+
+    h1 {
+        font-size: 40px;
+    }
+
+    .row-layout {
+        display: flex;
+        flex-wrap: wrap;
+        // align-self: center;
+        align-items: center;
+        justify-content: center;
+
+
+        .title-container {
+            
+
+            h1 {
+                font-weight: 900;
+                font-size: 35px;
+                margin: 0px;
+            }
+
+            h2 {
+                font-weight: 600;
+                font-size: 30px;
+                margin: 0px;
+            }
+        }
+    }
+}

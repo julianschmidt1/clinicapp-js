@@ -1,0 +1,16 @@
+body {
+    padding: 0px;
+    margin: 0px;
+    // height: 100vh;
+    // width: 100vw;
+}
+
+.screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    // justify-content: center;
+    height: 100%;
+    width: 100%;
+}
