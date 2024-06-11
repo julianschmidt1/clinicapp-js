@@ -1,0 +1,45 @@
+@import '../../../styles.scss';
+
+.welcome {
+    padding: 50px;
+    padding-right: 0px;
+    display: flex;
+    justify-content: space-between;
+    color: $primary-color-1;
+
+    h1 {
+        font-size: 40px;
+    }
+
+    .row-layout {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+
+
+        .welcome-image {
+            // min-width: 670px;
+        }
+
+        .title-container {
+            .actions {
+                display: flex;
+                justify-content: space-evenly;
+                margin-top: 15px;
+            }
+
+            h1 {
+                font-weight: 900;
+                font-size: 35px;
+                margin: 0px;
+            }
+
+            h2 {
+                font-weight: 600;
+                font-size: 30px;
+                margin: 0px;
+            }
+        }
+    }
+}

@@ -1,1 +1,40 @@
-<p>register works!</p>
+<div class="screen welcome">
+    <div class="row-layout">
+        <div class="title-container">
+            <h1 class="title-health">Registremos tu cuenta</h1>
+            <div class="grid">
+                <div class="col-12 md:col-6">
+                    <div class="input-container">
+                        <label for="">Nombre</label>
+                        <input type="text" pInputText>
+                    </div>
+                </div>
+                <div class="col-12 md:col-6">
+                    <div class="input-container">
+                        <label for="">Apellido</label>
+                        <input type="text" pInputText>
+                    </div>
+                </div>
+
+                <div class="col-12 md:col-6">
+                    <div class="input-container">
+                        <label for="">Tipo de usuario</label>
+                        <p-dropdown [options]="roleOptions" optionLabel="label"
+                            placeholder="Tipo de usuario" />
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="actions">
+                <button class="btn outlined" pButton>←</button>
+                <button class="btn filled" pButton>Crear cuenta</button>
+            </div>
+        </div>
+
+        <img class="welcome-image"
+            src="https://st4.depositphotos.com/26044198/29025/v/450/depositphotos_290256352-stock-illustration-vector-modern-flat-online-medicine.jpg"
+            alt="">
+    </div>
+
+</div>

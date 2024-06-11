@@ -1,8 +1,11 @@
+@import '../../../styles.scss';
+
 .welcome {
     padding: 50px;
+    padding-right: 0px;
     display: flex;
     justify-content: space-between;
-    color: rgb(88, 155, 236);
+    color: $primary-color-1;
 
     h1 {
         font-size: 40px;
@@ -11,13 +14,20 @@
     .row-layout {
         display: flex;
         flex-wrap: wrap;
-        // align-self: center;
         align-items: center;
         justify-content: center;
 
 
+        .welcome-image {
+            width: 670px;
+        }
+
         .title-container {
-            
+            .actions {
+                display: flex;
+                justify-content: space-evenly;
+                margin-top: 15px;
+            }
 
             h1 {
                 font-weight: 900;

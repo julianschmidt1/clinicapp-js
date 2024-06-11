@@ -1,8 +1,9 @@
+$primary-color-1: rgb(88, 155, 236);
+$base-white: white;
+
 body {
     padding: 0px;
     margin: 0px;
-    // height: 100vh;
-    // width: 100vw;
 }
 
 .screen {
@@ -10,7 +11,31 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    // justify-content: center;
     height: 100%;
     width: 100%;
+}
+
+.btn {
+    border-radius: 25px;
+    font-weight: 600;
+}
+
+.filled {
+    background-color: $primary-color-1;
+    color: $base-white;
+}
+
+.outlined {
+    background-color: $base-white;
+    border: 2px solid $primary-color-1;
+    color: $primary-color-1;
+}
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+
+    label {
+        margin-bottom: 8px;
+    }
 }

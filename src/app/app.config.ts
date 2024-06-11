@@ -6,6 +6,7 @@ import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getDatabase, provideDatabase } from '@angular/fire/database';
+import { provideAnimations } from '@angular/platform-browser/animations';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +14,7 @@ export const appConfig: ApplicationConfig = {
     provideFirebaseApp(() => initializeApp({ "projectId": "clinicappjs", "appId": "1:606303822612:web:5b9f95e0232e57375b1801", "storageBucket": "clinicappjs.appspot.com", "apiKey": "AIzaSyBHLd2rRgPBAho_gItxpndsMIpqGBRbDL4", "authDomain": "clinicappjs.firebaseapp.com", "messagingSenderId": "606303822612" })),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
-    provideDatabase(() => getDatabase())
+    provideDatabase(() => getDatabase()),
+    provideAnimations(),
   ]
 };
