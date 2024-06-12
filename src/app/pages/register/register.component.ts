@@ -1,12 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { Firestore, addDoc, collection, collectionData } from '@angular/fire/firestore';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
+import { DialogModule } from 'primeng/dialog';
+import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { AuthService } from '../../services/auth.service';
-import { AbstractControl } from '@angular/forms';
 import { TooltipModule } from 'primeng/tooltip';
+import { AuthService } from '../../services/auth.service';
+import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 
 @Component({
   selector: 'app-register',
@@ -17,7 +19,10 @@ import { TooltipModule } from 'primeng/tooltip';
     DropdownModule,
     CommonModule,
     ReactiveFormsModule,
-    TooltipModule
+    TooltipModule,
+    DialogModule,
+    FormsModule,
+    ArrowBackComponent
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
@@ -31,6 +36,14 @@ export class RegisterComponent {
 
   // states
   private _authSerivce = inject(AuthService);
+
+  // specialties
+  public allSpecialties = [];
+  public visible = false;
+  public newSpecialtyName = '';
+  public loadingSpecialty = false;
+
+  private _firestore = inject(Firestore);
 
   public roleOptions: roleOptionModel[] = [
     { value: 1, label: 'Especialista' },
@@ -52,6 +65,57 @@ export class RegisterComponent {
       attachedImage: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(1)]],
     },
       { validators: passwordMatchValidator });
+
+    const specialtiesCollection = collection(this._firestore, 'specialties');
+
+    collectionData(specialtiesCollection).subscribe({
+      next: (data) => {
+        this.allSpecialties = [{ displayName: 'Agregar +' }, ...data];
+      },
+      error: (error) => {
+
+        this.allSpecialties = [];
+      }
+    });
+
+
+  }
+
+  handleCancelCreation(): void {
+    this.visible = false;
+    this.newSpecialtyName = '';
+    this.formControls['specialty'].patchValue('');
+  }
+
+  handleChangeSpecialty(event: DropdownChangeEvent): void {
+    const { value } = event;
+    if (value === 'Agregar +') {
+      this.visible = true;
+      return;
+    }
+
+    this.formControls['specialty'].setValue(value);
+  }
+
+  handleConfirmCreation(): void {
+    const displayName = this.newSpecialtyName.trim();
+    if (displayName.length && displayName.length < 20 && !this.allSpecialties.some(s => s.displayName === displayName)) {
+      const specialtiesCollection = collection(this._firestore, 'specialties');
+
+      this.loadingSpecialty = true;
+      addDoc(specialtiesCollection, { displayName })
+        .then((data) => {
+
+          this.formControls['specialty'].patchValue(displayName);
+          this.visible = false;
+          this.loadingSpecialty = false;
+        })
+        .catch(() => {
+          console.log('Ocurrio un error al crear');
+          this.loadingSpecialty = false;
+        });
+    }
+
   }
 
   handleSelectUserType(event: any): void {
@@ -102,8 +166,6 @@ export class RegisterComponent {
       this._authSerivce.register(this.registerForm.value);
     } else {
       this.registerForm.markAllAsTouched();
-      console.log('NO');
-
     }
 
   }

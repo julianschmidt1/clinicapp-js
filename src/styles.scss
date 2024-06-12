@@ -1,6 +1,7 @@
 @import "primeicons/primeicons.css";
 
 $primary-color-1: rgb(88, 155, 236);
+$primary-color-2: rgb(220, 226, 233);
 $base-white: white;
 
 body {
@@ -80,5 +81,24 @@ body {
         color: red;
         margin-top: 5px;
         font-size: 14px;
+    }
+}
+
+
+.modal {
+    
+    .actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 12px;
+        
+        button {
+            height: 40px;
+
+            i {
+                margin-left: 8px;
+            }
+        }
     }
 }

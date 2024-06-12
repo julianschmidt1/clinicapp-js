@@ -1,5 +1,8 @@
 <div class="screen welcome">
-    <h1 class="title-health">Registremos tu cuenta</h1>
+    <div style="display: flex; align-items: center; width: 100%; gap: 8px;">
+        <arrow-back />
+        <h1 class="title-health">Registremos tu cuenta</h1>
+    </div>
     <div class="grid">
 
         <form [formGroup]="registerForm" (submit)="submit()" class="col-12 md:col-6 grid">
@@ -67,12 +70,22 @@
             <div *ngIf="!isPatient" class="col-12 md:col-6">
                 <div class="input-container">
                     <label for="specialty">Especialidad</label>
-                    <input type="text" formControlName="specialty" pInputText>
+                    <p-dropdown class="p-fluid" [options]="allSpecialties" (onChange)="handleChangeSpecialty($event)"
+                        formControlName="specialty" optionLabel="displayName" optionValue="displayName" />
                     <div *ngIf="formControls['specialty'].touched && formControls['specialty'].invalid" class="error">
                         La especialidad es requerida
                     </div>
                 </div>
             </div>
+            <!-- <div *ngIf="!isPatient" class="col-12 md:col-6">
+                <div class="input-container">
+                    <label for="specialty">Especialidad</label>
+                    <input type="text" formControlName="specialty" pInputText>
+                    <div *ngIf="formControls['specialty'].touched && formControls['specialty'].invalid" class="error">
+                        La especialidad es requerida
+                    </div>
+                </div>
+            </div> -->
 
             <div class="col-12 md:col-6">
                 <div class="input-container">
@@ -137,3 +150,14 @@
 
     </div>
 </div>
+
+<p-dialog class="modal" header="Crear especialidad" [visible]="visible" [modal]="true">
+
+    <input class="p-fluid" type="text" pInputText [(ngModel)]="newSpecialtyName">
+
+    <div class="actions">
+        <button (click)="handleCancelCreation()" class="outlined" pButton>Cancelar</button>
+        <button (click)="handleConfirmCreation()" [disabled]="loadingSpecialty" pButton>Confirmar
+            <i *ngIf="loadingSpecialty" class="pi pi-spin pi-spinner"></i></button>
+    </div>
+</p-dialog>

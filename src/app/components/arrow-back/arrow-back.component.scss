@@ -1,0 +1,18 @@
+@import '../../../styles.scss';
+
+.arrow-back {
+    padding: 4px 6px;
+    cursor: pointer;
+    transition: 0.4s all;
+    width: fit-content;
+    border-radius: 50%;
+
+    &:hover {
+        background-color: $primary-color-2;
+        
+    }
+
+    span {
+        font-size: 27px;
+    }
+}
