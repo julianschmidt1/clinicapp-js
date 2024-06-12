@@ -1,40 +1,139 @@
 <div class="screen welcome">
-    <div class="row-layout">
-        <div class="title-container">
-            <h1 class="title-health">Registremos tu cuenta</h1>
-            <div class="grid">
-                <div class="col-12 md:col-6">
-                    <div class="input-container">
-                        <label for="">Nombre</label>
-                        <input type="text" pInputText>
-                    </div>
-                </div>
-                <div class="col-12 md:col-6">
-                    <div class="input-container">
-                        <label for="">Apellido</label>
-                        <input type="text" pInputText>
-                    </div>
-                </div>
+    <h1 class="title-health">Registremos tu cuenta</h1>
+    <div class="grid">
 
-                <div class="col-12 md:col-6">
-                    <div class="input-container">
-                        <label for="">Tipo de usuario</label>
-                        <p-dropdown [options]="roleOptions" optionLabel="label"
-                            placeholder="Tipo de usuario" />
+        <form [formGroup]="registerForm" (submit)="submit()" class="col-12 md:col-6 grid">
+
+            <div class="col-12 md:col-6">
+                <div class="input-container">
+                    <label for="firstName">Nombre</label>
+                    <input type="text" formControlName="firstName" pInputText>
+                    <div *ngIf="formControls['firstName'].touched && formControls['firstName'].invalid" class="error">
+                        El nombre es requerido y solo debe contener letras
                     </div>
                 </div>
-
+            </div>
+            <div class="col-12 md:col-6">
+                <div class="input-container">
+                    <label for="lastName">Apellido</label>
+                    <input type="text" formControlName="lastName" pInputText>
+                    <div *ngIf="formControls['lastName'].touched && formControls['lastName'].invalid" class="error">
+                        El apellido es requerido y solo debe contener letras
+                    </div>
+                </div>
             </div>
 
-            <div class="actions">
-                <button class="btn outlined" pButton>←</button>
-                <button class="btn filled" pButton>Crear cuenta</button>
+            <div class="col-12 md:col-6">
+                <div class="input-container">
+                    <label for="age">Edad</label>
+                    <input type="number" formControlName="age" pInputText>
+                    <div *ngIf="formControls['age'].touched && formControls['age'].invalid" class="error">
+                        La edad es requerida y debe estar entre 18 y 100 años
+                    </div>
+                </div>
             </div>
+
+            <div class="col-12 md:col-6">
+                <div class="input-container">
+                    <label for="dni">DNI</label>
+                    <input type="number" formControlName="dni" pInputText>
+                    <div *ngIf="formControls['dni'].touched && formControls['dni'].invalid" class="error">
+                        El DNI es requerido y debe tener entre 7 y 8 caracteres
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <div class="input-container">
+                    <label for="type">Tipo de usuario</label>
+                    <p-dropdown class="p-fluid" formControlName="type" [options]="roleOptions" optionLabel="label"
+                        placeholder="Tipo de usuario" (onChange)="handleSelectUserType($event)" />
+                    <div *ngIf="formControls['type'].touched && formControls['type'].invalid" class="error">
+                        El tipo de usuario es requerido
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="isPatient" class="col-12 md:col-6">
+                <div class="input-container">
+                    <label for="healthcare">Obra social</label>
+                    <input type="text" formControlName="healthcare" pInputText>
+                    <div *ngIf="formControls['healthcare'].touched && formControls['healthcare'].invalid" class="error">
+                        La obra social es requerida
+                    </div>
+                </div>
+            </div>
+
+            <div *ngIf="!isPatient" class="col-12 md:col-6">
+                <div class="input-container">
+                    <label for="specialty">Especialidad</label>
+                    <input type="text" formControlName="specialty" pInputText>
+                    <div *ngIf="formControls['specialty'].touched && formControls['specialty'].invalid" class="error">
+                        La especialidad es requerida
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <div class="input-container">
+                    <label for="email">Email</label>
+                    <input type="text" formControlName="email" pInputText>
+                    <div *ngIf="formControls['email'].touched && formControls['email'].invalid" class="error">
+                        El email es requerido y debe tener el formato correcto
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6" style="display: flex; align-items: flex-end;">
+                <div class="input-container" style="width: 100%;">
+                    <div class="chip-row">
+                        <div class="file-chip" [pTooltip]="item.name"
+                            *ngFor="let item of formControls['attachedImage'].value">
+                            <span>{{item.name}}</span> <i (click)="handleRemoveImage(item)" class="pi pi-times"></i>
+                        </div>
+                    </div>
+                    <label for="fileInput" class="file-label" pButton>Agregar imagen</label>
+                    <input id="fileInput" (change)="handleAddFile($event)" type="file" hidden pInputText>
+                    <div *ngIf="formControls['attachedImage'].touched && formControls['attachedImage'].invalid"
+                        class="error">
+                        Debe cargar por lo menos {{isPatient ? '2 imagenes' : '1 imagen'}}
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <div class="input-container">
+                    <label for="password">Contraseña</label>
+                    <input type="password" formControlName="password" pInputText>
+                    <div *ngIf="formControls['password'].touched && formControls['password'].invalid" class="error">
+                        La contraseña es requerida y debe tener por lo menos 8 caracteres
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 md:col-6">
+                <div class="input-container">
+                    <label for="confirmPassword">Confirmar contraseña</label>
+                    <input type="password" formControlName="confirmPassword" pInputText>
+                    <div class="error"
+                        *ngIf="registerForm.hasError('passwordMatch') && (registerForm.get('confirmPassword').dirty || registerForm.get('confirmPassword').touched)">
+                        Las contraseñas no coinciden.
+                    </div>
+                </div>
+            </div>
+
+            <div class="col" style="display: flex; align-items: center;">
+                <button type="submit" pButton>Enviar</button>
+            </div>
+
+        </form>
+
+        <div class="col-12 md:col-6 grid">
+            <img class="welcome-image"
+                src="https://st4.depositphotos.com/26044198/29025/v/450/depositphotos_290256352-stock-illustration-vector-modern-flat-online-medicine.jpg"
+                alt="">
         </div>
 
-        <img class="welcome-image"
-            src="https://st4.depositphotos.com/26044198/29025/v/450/depositphotos_290256352-stock-illustration-vector-modern-flat-online-medicine.jpg"
-            alt="">
-    </div>
 
+    </div>
 </div>

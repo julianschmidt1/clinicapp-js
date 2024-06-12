@@ -1,3 +1,5 @@
+@import "primeicons/primeicons.css";
+
 $primary-color-1: rgb(88, 155, 236);
 $base-white: white;
 
@@ -37,5 +39,46 @@ body {
 
     label {
         margin-bottom: 8px;
+    }
+
+    .file-label {
+        margin: 0px;
+        background-color: $base-white;
+        border: 1px solid $primary-color-1;
+        color: rgb(88, 155, 236);
+    }
+
+
+    .chip-row {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 5px;
+        padding: 5px;
+
+        .file-chip {
+            display: flex;
+            align-items: center;
+            border: 1px solid $primary-color-1;
+            border-radius: 25px;
+            padding: 5px;
+
+            span {
+                width: 70px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            i {
+                margin: 0 5px;
+                cursor: pointer;
+            }
+        }
+    }
+
+    .error {
+        color: red;
+        margin-top: 5px;
+        font-size: 14px;
     }
 }

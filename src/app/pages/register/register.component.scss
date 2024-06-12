@@ -6,6 +6,7 @@
     display: flex;
     justify-content: space-between;
     color: $primary-color-1;
+    overflow-x: hidden;
 
     h1 {
         font-size: 40px;
@@ -17,9 +18,8 @@
         align-items: center;
         justify-content: center;
 
-
         .welcome-image {
-            // min-width: 670px;
+            min-width: 670px;
         }
 
         .title-container {
