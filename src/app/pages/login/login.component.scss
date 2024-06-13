@@ -1,0 +1,25 @@
+@import '../../../styles.scss';
+
+.welcome {
+    padding: 50px;
+    padding-right: 0px;
+    display: flex;
+    justify-content: space-between;
+    color: $primary-color-1;
+    overflow-x: hidden;
+
+    .login-form {
+        display: flex;
+        justify-content: center;
+        align-items: center;        
+        flex-wrap: wrap;
+        
+        .form-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 380px;
+        }
+
+    }
+}

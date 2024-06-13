@@ -1,3 +1,4 @@
+<p-toast></p-toast>
 <div class="screen welcome">
     <div style="display: flex; align-items: center; width: 100%; gap: 8px;">
         <arrow-back />
@@ -10,7 +11,7 @@
             <div class="col-12 md:col-6">
                 <div class="input-container">
                     <label for="firstName">Nombre</label>
-                    <input type="text" formControlName="firstName" pInputText>
+                    <input type="text" placeholder="Ingrese su nombre" formControlName="firstName" pInputText>
                     <div *ngIf="formControls['firstName'].touched && formControls['firstName'].invalid" class="error">
                         El nombre es requerido y solo debe contener letras
                     </div>
@@ -19,7 +20,7 @@
             <div class="col-12 md:col-6">
                 <div class="input-container">
                     <label for="lastName">Apellido</label>
-                    <input type="text" formControlName="lastName" pInputText>
+                    <input type="text" placeholder="Ingrese su apellido" formControlName="lastName" pInputText>
                     <div *ngIf="formControls['lastName'].touched && formControls['lastName'].invalid" class="error">
                         El apellido es requerido y solo debe contener letras
                     </div>
@@ -29,7 +30,7 @@
             <div class="col-12 md:col-6">
                 <div class="input-container">
                     <label for="age">Edad</label>
-                    <input type="number" formControlName="age" pInputText>
+                    <input type="number" placeholder="Ingrese su edad" formControlName="age" pInputText>
                     <div *ngIf="formControls['age'].touched && formControls['age'].invalid" class="error">
                         La edad es requerida y debe estar entre 18 y 100 años
                     </div>
@@ -39,7 +40,7 @@
             <div class="col-12 md:col-6">
                 <div class="input-container">
                     <label for="dni">DNI</label>
-                    <input type="number" formControlName="dni" pInputText>
+                    <input type="number" placeholder="Ingrese su DNI" formControlName="dni" pInputText>
                     <div *ngIf="formControls['dni'].touched && formControls['dni'].invalid" class="error">
                         El DNI es requerido y debe tener entre 7 y 8 caracteres
                     </div>
@@ -60,7 +61,7 @@
             <div *ngIf="isPatient" class="col-12 md:col-6">
                 <div class="input-container">
                     <label for="healthcare">Obra social</label>
-                    <input type="text" formControlName="healthcare" pInputText>
+                    <input type="text" placeholder="Ingrese su obra social" formControlName="healthcare" pInputText>
                     <div *ngIf="formControls['healthcare'].touched && formControls['healthcare'].invalid" class="error">
                         La obra social es requerida
                     </div>
@@ -71,26 +72,18 @@
                 <div class="input-container">
                     <label for="specialty">Especialidad</label>
                     <p-dropdown class="p-fluid" [options]="allSpecialties" (onChange)="handleChangeSpecialty($event)"
-                        formControlName="specialty" optionLabel="displayName" optionValue="displayName" />
+                        formControlName="specialty" placeholder="Ingrese la especialidad" optionLabel="displayName"
+                        optionValue="displayName" />
                     <div *ngIf="formControls['specialty'].touched && formControls['specialty'].invalid" class="error">
                         La especialidad es requerida
                     </div>
                 </div>
             </div>
-            <!-- <div *ngIf="!isPatient" class="col-12 md:col-6">
-                <div class="input-container">
-                    <label for="specialty">Especialidad</label>
-                    <input type="text" formControlName="specialty" pInputText>
-                    <div *ngIf="formControls['specialty'].touched && formControls['specialty'].invalid" class="error">
-                        La especialidad es requerida
-                    </div>
-                </div>
-            </div> -->
 
             <div class="col-12 md:col-6">
                 <div class="input-container">
                     <label for="email">Email</label>
-                    <input type="text" formControlName="email" pInputText>
+                    <input type="text" placeholder="Ingrese su correo electrónico" formControlName="email" pInputText>
                     <div *ngIf="formControls['email'].touched && formControls['email'].invalid" class="error">
                         El email es requerido y debe tener el formato correcto
                     </div>
@@ -106,10 +99,11 @@
                         </div>
                     </div>
                     <label for="fileInput" class="file-label" pButton>Agregar imagen</label>
-                    <input id="fileInput" (change)="handleAddFile($event)" type="file" hidden pInputText>
+                    <input id="fileInput" [disabled]="!formControls['type'].value" (change)="handleAddFile($event)"
+                        type="file" hidden pInputText>
                     <div *ngIf="formControls['attachedImage'].touched && formControls['attachedImage'].invalid"
                         class="error">
-                        Debe cargar por lo menos {{isPatient ? '2 imagenes' : '1 imagen'}}
+                        Debe cargar {{isPatient ? '2 imagenes' : '1 imagen'}}
                     </div>
                 </div>
             </div>
@@ -117,7 +111,7 @@
             <div class="col-12 md:col-6">
                 <div class="input-container">
                     <label for="password">Contraseña</label>
-                    <input type="password" formControlName="password" pInputText>
+                    <input type="password" placeholder="Ingrese su contraseña" formControlName="password" pInputText>
                     <div *ngIf="formControls['password'].touched && formControls['password'].invalid" class="error">
                         La contraseña es requerida y debe tener por lo menos 8 caracteres
                     </div>
@@ -127,7 +121,8 @@
             <div class="col-12 md:col-6">
                 <div class="input-container">
                     <label for="confirmPassword">Confirmar contraseña</label>
-                    <input type="password" formControlName="confirmPassword" pInputText>
+                    <input type="password" placeholder="Confirme su contraseña" formControlName="confirmPassword"
+                        pInputText>
                     <div class="error"
                         *ngIf="registerForm.hasError('passwordMatch') && (registerForm.get('confirmPassword').dirty || registerForm.get('confirmPassword').touched)">
                         Las contraseñas no coinciden.
@@ -136,7 +131,10 @@
             </div>
 
             <div class="col" style="display: flex; align-items: center;">
-                <button type="submit" pButton>Enviar</button>
+                <button type="submit" [disabled]="registerLoading" pButton>
+                    Enviar
+                    <i *ngIf="registerLoading" class="pi pi-spin pi-spinner"></i>
+                </button>
             </div>
 
         </form>

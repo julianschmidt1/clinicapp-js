@@ -1,1 +1,31 @@
-<p>login works!</p>
+<p-toast></p-toast>
+<div class="screen welcome">
+    <div style="display: flex; align-items: center; width: 100%; gap: 8px;">
+        <arrow-back />
+        <h1 class="title-health">Inicia sesión</h1>
+    </div>
+
+    <div class="login-form">
+
+        <div class="form-content">
+            <label for="email">Email</label>
+            <input id="email" [(ngModel)]="user.email" type="text" pInputText>
+
+            <label for="password">Contraseña</label>
+            <input id="password" [(ngModel)]="user.password" type="password" pInputText>
+            <button (click)="handleSubmit()" [disabled]="loginLoading" pButton style="width: min-content;">
+                Ingresar
+                <i *ngIf="loginLoading" class="pi pi-spin pi-spinner"></i>
+
+            </button>
+        </div>
+
+        <div>
+            <img style="min-width: 670px;"
+                src="https://st4.depositphotos.com/26044198/29025/v/450/depositphotos_290256352-stock-illustration-vector-modern-flat-online-medicine.jpg"
+                alt="">
+        </div>
+
+    </div>
+
+</div>

@@ -86,19 +86,24 @@ body {
 
 
 .modal {
-    
+
     .actions {
         display: flex;
         justify-content: flex-end;
         gap: 8px;
         margin-top: 12px;
-        
+
+
         button {
             height: 40px;
-
-            i {
-                margin-left: 8px;
-            }
         }
+    }
+
+}
+
+button {
+
+    i {
+        margin-left: 8px;
     }
 }

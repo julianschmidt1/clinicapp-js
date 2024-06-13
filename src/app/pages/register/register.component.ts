@@ -9,6 +9,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
 import { AuthService } from '../../services/auth.service';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
+import { ToastService } from '../../services/toast.service';
+import { Router } from '@angular/router';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-register',
@@ -22,7 +25,8 @@ import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.compo
     TooltipModule,
     DialogModule,
     FormsModule,
-    ArrowBackComponent
+    ArrowBackComponent,
+    ToastModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
@@ -35,7 +39,10 @@ export class RegisterComponent {
   public isPatient = true;
 
   // states
-  private _authSerivce = inject(AuthService);
+  private authSerivce = inject(AuthService);
+  private toastService = inject(ToastService);
+  private router = inject(Router);
+  public registerLoading = false;
 
   // specialties
   public allSpecialties = [];
@@ -58,8 +65,8 @@ export class RegisterComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(16)]],
       confirmPassword: ['', Validators.required],
-      age: [0, [Validators.required, Validators.min(18), Validators.max(100)]],
-      dni: [0, [Validators.required, validateIdentification()]],
+      age: ['', [Validators.required, Validators.min(18), Validators.max(100)]],
+      dni: ['', [Validators.required, validateIdentification()]],
       healthcare: ['', Validators.required],
       specialty: ['', Validators.required],
       attachedImage: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(1)]],
@@ -161,11 +168,22 @@ export class RegisterComponent {
   }
 
   submit(): void {
+    this.registerLoading = true;
 
-    if (this.registerForm.valid) {
-      this._authSerivce.register(this.registerForm.value);
-    } else {
-      this.registerForm.markAllAsTouched();
+    try {
+
+      if (this.registerForm.valid) {
+        this.authSerivce.register(this.registerForm.value);
+
+        this.toastService.successMessage('Usuario creado con exito');
+        setTimeout(() => {
+          this.router.navigateByUrl('login');
+        }, 3000);
+      } else {
+        this.registerForm.markAllAsTouched();
+      }
+    } catch (e) {
+      this.toastService.errorMessage('Ocurrio un error al crear el usuario');
     }
 
   }

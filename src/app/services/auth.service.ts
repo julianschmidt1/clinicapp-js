@@ -45,16 +45,12 @@ export class AuthService {
       }
     }
 
-    console.log('USER: ', userData);
-
     createUserWithEmailAndPassword(this._auth, email, password)
       .then((newUser) => {
         const usersCollection = collection(this._firestore, 'users');
+        const userId = newUser.user.uid;
 
-        console.log('NEW USER: ', newUser.user.uid);
-        console.log('COLLECTION : ', usersCollection);
-
-        setDoc(doc(this._firestore, 'users', newUser.user.uid), userData);
+        setDoc(doc(this._firestore, 'users', userId), { ...userData, id: userId, admin: false });
       });
 
   }
