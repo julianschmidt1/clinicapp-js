@@ -1,0 +1,32 @@
+<div class="top-bar">
+
+    <i (click)="sidebarVisible = true;" class="icon pi pi-bars"></i>
+    <span>Clinicapp</span>
+</div>
+
+<p-sidebar [(visible)]="sidebarVisible">
+
+    <ng-template pTemplate="header">
+        <div>Nombre de usuario</div>
+    </ng-template>
+
+    <ng-template pTemplate="content">
+        <div class="routes">
+
+            <div class="route-option" *ngFor="let item of routes"
+                [routerLink]="item.to" routerLinkActive="active">
+                <span>
+                    {{item.displayName}}
+                </span>
+            </div>
+
+        </div>
+    </ng-template>
+
+    <ng-template pTemplate="footer">
+        <div class="topbar-logout" (click)="handleLogout()">
+            Cerrar sesion
+        </div>
+    </ng-template>
+
+</p-sidebar>

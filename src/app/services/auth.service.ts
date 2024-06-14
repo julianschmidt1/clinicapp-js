@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, sendEmailVerification } from '@angular/fire/auth';
 import { Firestore, addDoc, collection, collectionData, doc, setDoc } from '@angular/fire/firestore';
 
 @Injectable({
@@ -12,7 +12,7 @@ export class AuthService {
   private _auth = inject(Auth);
   private _firestore = inject(Firestore);
 
-  async register(form: any) {
+  async register(form: any): Promise<boolean> {
 
     console.log(form);
     const { firstName, lastName, dni, email, type, password, healthcare, specialty, attachedImage } = form;
@@ -47,12 +47,16 @@ export class AuthService {
 
     createUserWithEmailAndPassword(this._auth, email, password)
       .then((newUser) => {
-        const usersCollection = collection(this._firestore, 'users');
+        // const usersCollection = collection(this._firestore, 'users');
         const userId = newUser.user.uid;
+        // newUser.user.
 
+        sendEmailVerification(newUser.user);
         setDoc(doc(this._firestore, 'users', userId), { ...userData, id: userId, admin: false });
-      });
+        return true;
+      })
 
+    return false;
   }
 }
 

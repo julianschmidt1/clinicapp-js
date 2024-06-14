@@ -58,11 +58,21 @@ export class LoginComponent {
     this.loginLoading = true;
     signInWithEmailAndPassword(this.auth, email, password)
       .then(loggedUser => {
-        const { user } = loggedUser;
-        const { displayName, email, photoURL } = user;
+        const { email, uid, emailVerified } = loggedUser.user;
 
-        localStorage.setItem('user', JSON.stringify({ username: displayName, email, photoURL }));
-        this.router.navigateByUrl('home');
+        if (!emailVerified) {
+          this.toastService.errorMessage('Debe verificar su email antes de iniciar sesión.');
+          this.loginLoading = false;
+          return;
+        }
+
+        // if(!adminVerified) {
+        //   this.toastService.errorMessage('Un administrador debe verificar su cuenta.');
+        //   return;
+        // }
+
+        localStorage.setItem('user', JSON.stringify({ uid, email }));
+        this.router.navigateByUrl('auth/home');
       })
       .catch(e => {
         const error = authErrorMessage(e.code);

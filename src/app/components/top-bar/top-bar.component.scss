@@ -1,0 +1,57 @@
+@import '../../../styles.scss';
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    background-color: $primary-color-1;
+    padding: 20px;
+    color: $base-white;
+    gap: 15px;
+
+    span {
+        font-size: 26px;
+        font-weight: bold;
+        font-style: italic;
+    }
+
+    i {
+        cursor: pointer;
+        font-size: 20px;
+    }
+
+
+}
+
+.routes {
+    margin-top: 40px;
+
+    .route-option {
+        padding: 15px;
+        margin: 8px 0;
+        cursor: pointer;
+        border-radius: 8px;
+        color: $primary-color-1;
+        transition: 0.3s ease;
+
+        &:hover {
+            background-color: rgb(232, 239, 249);
+        }
+    }
+
+    .active {
+        border: 1px solid $primary-color-1;
+    }
+}
+
+.topbar-logout {
+    cursor: pointer;
+    transition: 0.3s ease;
+
+    &:hover {
+        color: red;
+    }
+}
