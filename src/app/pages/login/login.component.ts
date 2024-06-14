@@ -44,6 +44,16 @@ export class LoginComponent {
     password: ''
   };
 
+  public setCredentials(isAdmin: boolean): void {
+    if(isAdmin) {
+      this.user.email = 'juli99nic@gmail.com';
+      this.user.password = 'Admin123';
+    } else {
+      this.user.email = 'pacienteuno@mail.com';
+      this.user.password = 'Paciente123';
+    }
+  }
+
 
   public handleSubmit(): void {
     const { email, password } = this.user;

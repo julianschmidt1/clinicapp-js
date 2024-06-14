@@ -13,11 +13,18 @@
 
             <label for="password">Contraseña</label>
             <input id="password" [(ngModel)]="user.password" type="password" pInputText>
+
             <button (click)="handleSubmit()" [disabled]="loginLoading" pButton style="width: min-content;">
                 Ingresar
                 <i *ngIf="loginLoading" class="pi pi-spin pi-spinner"></i>
 
             </button>
+
+            <div style="display: flex; gap: 8px;">
+                <button (click)="setCredentials(true)" pButton>Como admin</button>
+                <button (click)="setCredentials(false)" pButton>Como paciente</button>
+            </div>
+
         </div>
 
         <div>
