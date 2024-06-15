@@ -1,0 +1,20 @@
+.screen {
+
+    .action-header {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        align-items: center;
+    }
+
+    .loading-table-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        i {
+            font-size: 24px;
+            margin-left: 15px;
+        }
+    }
+}

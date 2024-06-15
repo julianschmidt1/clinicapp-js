@@ -23,15 +23,28 @@ export class UsersComponent implements OnInit {
 
   private firestore = inject(Firestore);
   private toastService = inject(ToastService);
+  public updateUserLoading = false;
   public usersData$: Observable<any>;
 
-  public updateUserLoading = false;
+  public allUsers = [];
+  public getUsersLoading = false;
+
 
   ngOnInit(): void {
     const usersCollection = collection(this.firestore, 'users');
+    this.getUsersLoading = true;
 
     console.log(collectionData(usersCollection));
-    this.usersData$ = collectionData(usersCollection);
+    collectionData(usersCollection).subscribe({
+      next: (data) => {
+        this.allUsers = data;
+        this.getUsersLoading = false;
+      },
+      error: (error) => {
+        this.toastService.errorMessage('Ocurrio un error al obtener los usuarios');
+        this.getUsersLoading = false;
+      }
+    })
 
   }
 
