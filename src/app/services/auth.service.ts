@@ -13,8 +13,6 @@ export class AuthService {
   private _auth = inject(Auth);
   private firestore = inject(Firestore);
 
-  public isAdmin
-
   async register(form: any, userType): Promise<boolean> {
 
     console.log(form);

@@ -26,6 +26,47 @@
 
 }
 
+
+.user-card {
+    display: flex;
+    flex-direction: column;
+    background-color: $color-1;
+    width: 100%;
+    border-radius: 12px;
+    padding: 12px;
+    color: $primary-color-darker;
+
+    .svg-container{
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 8px;
+
+        svg {
+            height: 80px;
+            width: 80px;
+            color: $primary-color-1;
+            path {
+                fill: $primary-color-darker;
+            }
+        }
+    }
+
+
+    span {
+        font-weight: bold;
+    }
+}
+
+
+::ng-deep {
+
+    .p-sidebar-close {
+        align-self: flex-start;
+        margin-left: 10px;
+    }
+}
+
 .routes {
     margin-top: 40px;
 

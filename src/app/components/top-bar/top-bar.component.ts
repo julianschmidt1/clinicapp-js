@@ -35,7 +35,7 @@ export class TopBarComponent implements OnInit {
         const foundUser = data.find((user) => user['id'] === currentUser.uid);
         this.currentUser = foundUser;
 
-        if (foundUser.admin) {
+        if (foundUser.admin && !this.routes.some(r => r.to === 'users')) {
           this.routes.push({ to: 'users', displayName: 'Gestión de Usuarios' })
         }
       }
