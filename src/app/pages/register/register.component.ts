@@ -73,7 +73,7 @@ export class RegisterComponent {
       age: ['', [Validators.required, Validators.min(0), Validators.max(120)]],
       dni: ['', [Validators.required, validateIdentification()]],
       healthcare: ['', Validators.required],
-      specialty: ['', Validators.required],
+      specialty: [''],
       attachedImage: ['', [Validators.required, validateFilesAmount(2, 2)]],
     },
       { validators: passwordMatchValidator });
@@ -99,6 +99,7 @@ export class RegisterComponent {
     if (type === 'specialist') {
       this.formControls['healthcare'].clearValidators();
       this.formControls['attachedImage'].setValidators([Validators.required, validateFilesAmount(1, 1)]);
+      this.formControls['specialty'].setValidators([Validators.required]);
       // this.formControls['attachedImage'].updateValueAndValidity();
       this.formControls['age'].setValidators([Validators.required, Validators.min(18), Validators.max(100)]);
     }

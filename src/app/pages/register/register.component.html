@@ -147,7 +147,7 @@
                     </div>
                     <label for="fileInput" class="file-label" pButton>Agregar imagen</label>
                     <input id="fileInput" (change)="handleAddFile($event)" type="file" hidden pInputText>
-                    <div *ngIf="formControls['attachedImage'].touched && !formControls['attachedImage'].value.length"
+                    <div *ngIf="formControls['attachedImage'].touched && formControls['attachedImage'].invalid"
                         class="error">
                         Debe cargar {{userType === 'patient' ? '2 imagenes' : '1 imagen'}}
                     </div>
