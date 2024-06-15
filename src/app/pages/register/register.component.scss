@@ -42,4 +42,43 @@
             }
         }
     }
+
+
+    .select-specialty-container {
+        display: flex;
+        width: 70%;
+        justify-content: space-evenly;
+        flex-wrap: wrap;
+        margin-top: 30px;
+        gap: 10px;
+
+        .specialty-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: 0.3s all;
+            border-radius: 25px;
+            cursor: pointer;
+
+            &:hover {
+                transform: scale(1.1);
+                border: 3px solid $primary-color-1;
+            }
+
+            svg {
+                height: 250px;
+                width: 250px;
+                fill: $primary-color-1;
+                
+                path {
+                    fill: #589bec;
+                }
+            }
+
+        }
+
+
+    }
+
 }

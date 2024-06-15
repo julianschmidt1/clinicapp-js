@@ -12,10 +12,10 @@ export class AuthService {
   private _auth = inject(Auth);
   private _firestore = inject(Firestore);
 
-  async register(form: any): Promise<boolean> {
+  async register(form: any, userType): Promise<boolean> {
 
     console.log(form);
-    const { firstName, lastName, dni, email, type, password, healthcare, specialty, attachedImage } = form;
+    const { firstName, lastName, dni, email, password, healthcare, specialty, attachedImage } = form;
 
     const filePromises = attachedImage.map((file: File) => {
       return convertImageToBase64(file);
@@ -33,7 +33,7 @@ export class AuthService {
 
     let userData;
 
-    if (type.value === 2) {
+    if (userType === 'patient') {
       userData = {
         ...baseUserData,
         healthcare

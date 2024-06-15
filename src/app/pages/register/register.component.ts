@@ -33,15 +33,21 @@ import { ToastModule } from 'primeng/toast';
 })
 export class RegisterComponent {
 
-  // form props
-  public registerForm!: FormGroup;
-  public formBuilder = inject(FormBuilder);
-  public isPatient = true;
-
-  // states
+  private _firestore = inject(Firestore);
   private authSerivce = inject(AuthService);
   private toastService = inject(ToastService);
   private router = inject(Router);
+  public formBuilder = inject(FormBuilder);
+
+  // form props
+  public registerForm!: FormGroup;
+
+  public userType: 'patient' | 'specialist';
+
+  public isPatient: boolean | null = null;
+  public showSelectPatientModal = true;
+
+  // states
   public registerLoading = false;
 
   // specialties
@@ -50,7 +56,6 @@ export class RegisterComponent {
   public newSpecialtyName = '';
   public loadingSpecialty = false;
 
-  private _firestore = inject(Firestore);
 
   public roleOptions: roleOptionModel[] = [
     { value: 1, label: 'Especialista' },
@@ -61,15 +66,15 @@ export class RegisterComponent {
     this.registerForm = this.formBuilder.group({
       firstName: ['', [Validators.required, Validators.minLength(3)]],
       lastName: ['', [Validators.required, Validators.minLength(3)]],
-      type: ['', Validators.required],
+      // type: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(16)]],
       confirmPassword: ['', Validators.required],
-      age: ['', [Validators.required, Validators.min(18), Validators.max(100)]],
+      age: ['', [Validators.required, Validators.min(0), Validators.max(120)]],
       dni: ['', [Validators.required, validateIdentification()]],
       healthcare: ['', Validators.required],
       specialty: ['', Validators.required],
-      attachedImage: ['', [Validators.required, Validators.minLength(1), Validators.maxLength(1)]],
+      attachedImage: ['', [Validators.required, validateFilesAmount(2, 2)]],
     },
       { validators: passwordMatchValidator });
 
@@ -85,6 +90,18 @@ export class RegisterComponent {
       }
     });
 
+
+  }
+
+  handleSelectRegisterType(type: 'patient' | 'specialist'): void {
+    console.log(type);
+    this.userType = type;
+    if (type === 'specialist') {
+      this.formControls['healthcare'].clearValidators();
+      this.formControls['attachedImage'].setValidators([Validators.required, validateFilesAmount(1, 1)]);
+      // this.formControls['attachedImage'].updateValueAndValidity();
+      this.formControls['age'].setValidators([Validators.required, Validators.min(18), Validators.max(100)]);
+    }
 
   }
 
@@ -159,6 +176,7 @@ export class RegisterComponent {
       const imageControl = this.formControls['attachedImage'];
 
       imageControl.setValue([...imageControl.value, file]);
+      imageControl.updateValueAndValidity();
     }
   }
 
@@ -173,17 +191,23 @@ export class RegisterComponent {
     try {
 
       if (this.registerForm.valid) {
-        this.authSerivce.register(this.registerForm.value);
+        this.authSerivce.register(this.registerForm.value, this.userType).then(() => {
 
-        this.toastService.successMessage('Usuario creado con exito');
-        setTimeout(() => {
-          this.router.navigateByUrl('login');
-        }, 3000);
+          this.toastService.successMessage('Usuario creado con exito');
+          setTimeout(() => {
+            this.router.navigateByUrl('login');
+          }, 3000);
+
+        })
       } else {
+        console.log('asd', this.registerForm);
+        
         this.registerForm.markAllAsTouched();
+        this.registerLoading = false;
       }
     } catch (e) {
       this.toastService.errorMessage('Ocurrio un error al crear el usuario');
+      this.registerLoading = false;
     }
 
   }
