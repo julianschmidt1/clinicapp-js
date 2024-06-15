@@ -12,6 +12,7 @@ import { ToastService } from '../../services/toast.service';
 import { authErrorMessage } from '../../helpers/authError.helper';
 import { Auth, signInWithEmailAndPassword } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -36,6 +37,7 @@ export class LoginComponent {
   private toastService = inject(ToastService);
 
   private auth = inject(Auth);
+  private authService = inject(AuthService);
   private router = inject(Router);
   public loginLoading = false;
 
@@ -45,7 +47,7 @@ export class LoginComponent {
   };
 
   public setCredentials(isAdmin: boolean): void {
-    if(isAdmin) {
+    if (isAdmin) {
       this.user.email = 'juli99nic@gmail.com';
       this.user.password = 'Admin123';
     } else {
@@ -70,19 +72,27 @@ export class LoginComponent {
       .then(loggedUser => {
         const { email, uid, emailVerified } = loggedUser.user;
 
-        if (!emailVerified) {
-          this.toastService.errorMessage('Debe verificar su email antes de iniciar sesión.');
-          this.loginLoading = false;
-          return;
-        }
+        this.authService.usersCollection().subscribe({
+          next: (allUsers) => {
 
-        // if(!adminVerified) {
-        //   this.toastService.errorMessage('Un administrador debe verificar su cuenta.');
-        //   return;
-        // }
+            const foundUser = allUsers.find(user => user['id'] === uid);
 
-        localStorage.setItem('user', JSON.stringify({ uid, email }));
-        this.router.navigateByUrl('auth/home');
+            if (!emailVerified) {
+              this.toastService.errorMessage('Debe verificar su email antes de iniciar sesión.');
+              this.loginLoading = false;
+              return;
+            }
+
+            if(foundUser?.disabled) {
+              this.toastService.errorMessage('Un administrador debe verificar su cuenta.');
+              return;
+            }
+
+            localStorage.setItem('user', JSON.stringify({ uid, email }));
+            this.router.navigateByUrl('auth/home');
+
+          }
+        })
       })
       .catch(e => {
         const error = authErrorMessage(e.code);

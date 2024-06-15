@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, sendEmailVerification } from '@angular/fire/auth';
-import { Firestore, addDoc, collection, collectionData, doc, setDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, setDoc } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,9 @@ export class AuthService {
   constructor() { }
 
   private _auth = inject(Auth);
-  private _firestore = inject(Firestore);
+  private firestore = inject(Firestore);
+
+  public isAdmin
 
   async register(form: any, userType): Promise<boolean> {
 
@@ -41,7 +44,8 @@ export class AuthService {
     } else {
       userData = {
         ...baseUserData,
-        specialty
+        specialty,
+        disabled: true,
       }
     }
 
@@ -52,11 +56,29 @@ export class AuthService {
         // newUser.user.
 
         sendEmailVerification(newUser.user);
-        setDoc(doc(this._firestore, 'users', userId), { ...userData, id: userId, admin: false });
+        setDoc(doc(this.firestore, 'users', userId), { ...userData, id: userId, admin: false });
         return true;
       })
 
     return false;
+  }
+
+
+  public getCurrentUserData(): any {
+
+    const rawUser = localStorage.getItem('user');
+
+    if (rawUser) {
+      const userData = JSON.parse(rawUser);
+      return userData;
+    }
+
+    return null;
+  }
+
+  public usersCollection(): Observable<any> {
+    const userDocRef = collection(this.firestore, `users`);
+    return collectionData(userDocRef)
   }
 }
 

@@ -6,6 +6,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { authGuard } from './guards/auth.guard';
 import { LayoutComponent } from './pages/layout/layout.component';
 import { UsersComponent } from './pages/users/users.component';
+import { adminGuard } from './guards/admin.guard';
 
 const authRoutes = [
     {
@@ -14,7 +15,7 @@ const authRoutes = [
         canActivate: [authGuard],
         children: [
             { path: 'home', component: HomeComponent },
-            { path: 'users', component: UsersComponent },
+            { path: 'users', component: UsersComponent, canActivate: [adminGuard] },
 
         ]
     },

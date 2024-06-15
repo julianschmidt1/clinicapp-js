@@ -4,17 +4,20 @@
     <span>Clinicapp</span>
 </div>
 
-<p-sidebar [(visible)]="sidebarVisible">
+<p-sidebar [(visible)]="sidebarVisible" *ngIf="currentUser">
 
     <ng-template pTemplate="header">
-        <div>Nombre de usuario</div>
+        <div>
+            <h3>
+                {{currentUser.firstName}} {{currentUser.lastName}}
+            </h3>
+        </div>
     </ng-template>
 
     <ng-template pTemplate="content">
         <div class="routes">
 
-            <div class="route-option" *ngFor="let item of routes"
-                [routerLink]="item.to" routerLinkActive="active">
+            <div class="route-option" *ngFor="let item of routes" [routerLink]="item.to" routerLinkActive="active">
                 <span>
                     {{item.displayName}}
                 </span>
