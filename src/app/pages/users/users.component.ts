@@ -6,6 +6,7 @@ import { TableModule } from 'primeng/table';
 import { Observable } from 'rxjs';
 import { ToastService } from '../../services/toast.service';
 import { ToastModule } from 'primeng/toast';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-users',
@@ -14,7 +15,8 @@ import { ToastModule } from 'primeng/toast';
     TableModule,
     ButtonModule,
     CommonModule,
-    ToastModule
+    ToastModule,
+    DialogModule
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss'
@@ -25,10 +27,10 @@ export class UsersComponent implements OnInit {
   private toastService = inject(ToastService);
   public updateUserLoading = false;
   public usersData$: Observable<any>;
-
   public allUsers = [];
   public getUsersLoading = false;
 
+  public registerModal = true;
 
   ngOnInit(): void {
     const usersCollection = collection(this.firestore, 'users');

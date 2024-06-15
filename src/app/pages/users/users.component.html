@@ -1,10 +1,21 @@
 <p-toast></p-toast>
+
+<p-dialog [(visible)]="registerModal">
+    <div>
+        <h2>Crear usuario</h2>
+
+        
+        
+    </div>
+</p-dialog>
+
+
 <div class="screen">
     <div style="width: 100%; padding: 0 50px;">
 
         <div class="action-header">
             <h1>Gestión de Usuarios</h1>
-            <button pButton>Nuevo</button>
+            <button pButton (click)="registerModal = true" [draggable]="false">Nuevo +</button>
         </div>
         <div>
 
@@ -30,7 +41,8 @@
                         <td>{{ user.healthcare ?? '-' }}</td>
                         <td>{{ user.specialty ?? '-' }}</td>
                         <td *ngIf="user.specialty">
-                            <button style="width: 100%; justify-content: center;" (click)="handleSetUserStatus(user)" [disabled]="updateUserLoading" pButton>
+                            <button style="width: 100%; justify-content: center;" (click)="handleSetUserStatus(user)"
+                                [disabled]="updateUserLoading" pButton>
                                 {{user.disabled ? 'Habilitar' : 'Deshabilitar'}}
                                 <i *ngIf="updateUserLoading" class="pi pi-spin pi-spinner"></i>
                             </button>

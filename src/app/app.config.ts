@@ -12,7 +12,14 @@ import { MessageService } from 'primeng/api';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
-    provideFirebaseApp(() => initializeApp({ "projectId": "clinicappjs", "appId": "1:606303822612:web:5b9f95e0232e57375b1801", "storageBucket": "clinicappjs.appspot.com", "apiKey": "AIzaSyBHLd2rRgPBAho_gItxpndsMIpqGBRbDL4", "authDomain": "clinicappjs.firebaseapp.com", "messagingSenderId": "606303822612" })),
+    provideFirebaseApp(() => initializeApp({
+      "projectId": "clinicappjs",
+      "appId": "1:606303822612:web:5b9f95e0232e57375b1801",
+      "storageBucket": "clinicappjs.appspot.com",
+      "apiKey": "AIzaSyBHLd2rRgPBAho_gItxpndsMIpqGBRbDL4",
+      "authDomain": "clinicappjs.firebaseapp.com",
+      "messagingSenderId": "606303822612"
+    })),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore()),
     provideDatabase(() => getDatabase()),
