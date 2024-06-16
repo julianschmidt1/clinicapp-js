@@ -19,22 +19,16 @@ export class AuthService {
 
     console.log(form);
 
-    this.storageService.uploadFile(form.attachedImage);
-
     const { firstName, lastName, dni, email, password, healthcare, specialty, attachedImage } = form;
-
-    const filePromises = attachedImage.map((file: File) => {
-      return convertImageToBase64(file);
-    })
-
-    const convertedFiles = await Promise.all(filePromises)
+    
+    const attachedFilesPath = this.storageService.uploadFile(attachedImage, email);
 
     const baseUserData = {
       firstName,
       lastName,
       dni,
       email,
-      attachedImage: convertedFiles
+      attachedImage: attachedFilesPath
     };
 
     let userData;

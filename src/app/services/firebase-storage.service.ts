@@ -16,52 +16,34 @@ export class StorageService {
 
     constructor(private storage: Storage) { }
 
-    uploadFile(file: File[]): any {
+    uploadFile(fileGroup: File[], email: string): any {
 
-        // const storage = getStorage();
-        // this.storage.ref
-
-        file.forEach(file => {
-            const storageRef = ref(this.storage, `images/${file.name}`);
-
-            console.log(storageRef);
+        return fileGroup.map((file: File) => {
+            const filePath = `images/${file.name}-${email}`;
+            const storageRef = ref(this.storage, filePath);
 
             uploadBytes(storageRef, file)
-            .then(res => {
-                console.log(res);
-                
-            })
-            .catch(e => {
-                console.log(e);
-                
-            })
+                .then(res => {
+                    console.log(res);
+                })
+                .catch(e => {
+                    console.log(e);
+
+                })
+            return filePath;
         })
 
 
-
-
-
-
-
-        // const filePath = `uploads/${file.name}`;
-        // const fileRef = this.storage.ref(filePath);
-        // const task = this.storage.upload(filePath, file);
-
-        // return task.snapshotChanges().pipe(
-        //   finalize(() => {
-        //     return fileRef.getDownloadURL();
-        //   })
-        // );
     }
 
     getFiles() {
         const storageRef = ref(this.storage, 'images');
 
         listAll(storageRef).then(async images => {
-            for(let image of images.items){
+            for (let image of images.items) {
                 const url = await getDownloadURL(image);
-                console.log('img: ',url);
-                
+                console.log('img: ', url);
+
             }
         })
     }
