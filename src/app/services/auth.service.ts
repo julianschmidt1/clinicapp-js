@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, sendEmailVerification } from '@angular/fire/auth';
 import { Firestore, collection, collectionData, doc, setDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { StorageService } from './firebase-storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,10 +13,14 @@ export class AuthService {
 
   private _auth = inject(Auth);
   private firestore = inject(Firestore);
+  private storageService = inject(StorageService);
 
   async register(form: any, userType): Promise<boolean> {
 
     console.log(form);
+
+    this.storageService.uploadFile(form.attachedImage);
+
     const { firstName, lastName, dni, email, password, healthcare, specialty, attachedImage } = form;
 
     const filePromises = attachedImage.map((file: File) => {
