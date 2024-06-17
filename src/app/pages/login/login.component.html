@@ -26,7 +26,7 @@
 
             <ng-container *ngIf="!defaultUsersLoading">
                 <div class="chip" *ngFor="let user of defaultUsers">
-                    <p-chip (click)="handleSelectUser(user)" [label]="user.firstName + user.lastName" [image]="user.imagePath[0]" alt="Avatar image" />
+                    <p-chip (click)="handleSelectUser(user)" [label]="user.firstName + ' ' + user.lastName" [image]="user.imagePath[0]" alt="Avatar image" />
                 </div>
             </ng-container>
 

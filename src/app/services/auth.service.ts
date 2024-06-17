@@ -15,12 +15,13 @@ export class AuthService {
   private firestore = inject(Firestore);
   private storageService = inject(StorageService);
 
-  async register(form: any, userType): Promise<boolean> {
+  async register(form: any, userType, initiallyDisabled = true): Promise<boolean> {
 
     console.log(form);
+    let userData;
 
     const { firstName, lastName, dni, email, password, healthcare, specialty, attachedImage } = form;
-    
+
     const attachedFilesPath = this.storageService.uploadFile(attachedImage, email);
 
     const baseUserData = {
@@ -31,20 +32,30 @@ export class AuthService {
       attachedImage: attachedFilesPath
     };
 
-    let userData;
-
-    if (userType === 'patient') {
-      userData = {
-        ...baseUserData,
-        healthcare
-      }
-    } else {
-      userData = {
-        ...baseUserData,
-        specialty,
-        disabled: true,
-      }
+    switch (userType) {
+      case 'patient':
+        userData = {
+          ...baseUserData,
+          healthcare,
+          disabled: initiallyDisabled,
+        }
+        break;
+      case 'specialist':
+        userData = {
+          ...baseUserData,
+          specialty,
+          disabled: initiallyDisabled,
+        }
+        break;
+      case 'admin':
+        userData = {
+          ...baseUserData,
+          admin: true,
+          disabled: initiallyDisabled,
+        }
+        break;
     }
+
 
     createUserWithEmailAndPassword(this._auth, email, password)
       .then((newUser) => {
@@ -52,7 +63,7 @@ export class AuthService {
         const userId = newUser.user.uid;
 
         sendEmailVerification(newUser.user);
-        setDoc(doc(this.firestore, 'users', userId), { ...userData, id: userId, admin: false });
+        setDoc(doc(this.firestore, 'users', userId), { ...userData, id: userId });
         return true;
       })
 

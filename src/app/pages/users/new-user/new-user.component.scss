@@ -1,0 +1,29 @@
+@import '../../../../styles.scss';
+
+.admin-select-specialty-container {
+    display: flex;
+    justify-content: space-evenly;
+
+
+    .specialty-col {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        h3 {
+            color: $primary-color-1;
+        }
+
+        svg {
+            height: 80px;
+            width: 80px;
+    
+            path {
+                fill: $primary-color-1;
+            }
+        }
+    }
+
+}

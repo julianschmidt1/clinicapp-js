@@ -12,6 +12,7 @@ import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.compo
 import { ToastService } from '../../services/toast.service';
 import { Router } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
+import { passwordMatchValidator, validateFilesAmount, validateIdentification } from '../../helpers/newUserValidations.helper';
 
 @Component({
   selector: 'app-register',
@@ -34,20 +35,14 @@ import { ToastModule } from 'primeng/toast';
 export class RegisterComponent {
 
   private _firestore = inject(Firestore);
-  private authSerivce = inject(AuthService);
+  private authService = inject(AuthService);
   private toastService = inject(ToastService);
   private router = inject(Router);
   public formBuilder = inject(FormBuilder);
 
   // form props
   public registerForm!: FormGroup;
-
   public userType: 'patient' | 'specialist';
-
-  public isPatient: boolean | null = null;
-  public showSelectPatientModal = true;
-
-  // states
   public registerLoading = false;
 
   // specialties
@@ -56,11 +51,6 @@ export class RegisterComponent {
   public newSpecialtyName = '';
   public loadingSpecialty = false;
 
-
-  public roleOptions: roleOptionModel[] = [
-    { value: 1, label: 'Especialista' },
-    { value: 2, label: 'Paciente' },
-  ]
 
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
@@ -76,7 +66,8 @@ export class RegisterComponent {
       specialty: [''],
       attachedImage: ['', [Validators.required, validateFilesAmount(2, 2)]],
     },
-      { validators: passwordMatchValidator });
+      { validators: passwordMatchValidator }
+    );
 
     const specialtiesCollection = collection(this._firestore, 'specialties');
 
@@ -89,8 +80,6 @@ export class RegisterComponent {
         this.allSpecialties = [];
       }
     });
-
-
   }
 
   handleSelectRegisterType(type: 'patient' | 'specialist'): void {
@@ -143,33 +132,6 @@ export class RegisterComponent {
 
   }
 
-  handleSelectUserType(event: any): void {
-    const { value } = event.value;
-    const isPatient = value === 2;
-    this.isPatient = isPatient;
-
-    const healthcareControl = this.formControls['healthcare'];
-    const specialtyControl = this.formControls['specialty'];
-    const attachedImageControl = this.formControls['attachedImage'];
-
-    if (isPatient) {
-      healthcareControl.setValidators([Validators.required]);
-      specialtyControl.clearValidators();
-      attachedImageControl.setValidators([Validators.required, validateFilesAmount(2, 2)]);
-
-    } else {
-      specialtyControl.setValidators([Validators.required]);
-      healthcareControl.clearValidators();
-      attachedImageControl.setValidators([Validators.required, validateFilesAmount(1, 1)]);
-
-    }
-
-    healthcareControl.updateValueAndValidity();
-    specialtyControl.updateValueAndValidity();
-    attachedImageControl.markAsTouched();
-
-  }
-
   handleAddFile(event: any): void {
     const file = (event.target as HTMLInputElement).files[0];
 
@@ -192,7 +154,7 @@ export class RegisterComponent {
     try {
 
       if (this.registerForm.valid) {
-        this.authSerivce.register(this.registerForm.value, this.userType).then(() => {
+        this.authService.register(this.registerForm.value, this.userType).then(() => {
 
           this.toastService.successMessage('Usuario creado con exito');
           setTimeout(() => {
@@ -202,7 +164,7 @@ export class RegisterComponent {
         })
       } else {
         console.log('asd', this.registerForm);
-        
+
         this.registerForm.markAllAsTouched();
         this.registerLoading = false;
       }
@@ -219,36 +181,3 @@ export class RegisterComponent {
 
 }
 
-interface roleOptionModel {
-  value: number,
-  label: string,
-}
-
-export function passwordMatchValidator(control: AbstractControl): { [key: string]: any } | null {
-  const password = control.get('password').value;
-  const confirmPassword = control.get('confirmPassword').value;
-
-  return password === confirmPassword ? null : { passwordMatch: true };
-}
-
-export function validateIdentification(): ValidatorFn {
-  return (control: FormControl): { [key: string]: any } | null => {
-    const value = control.value;
-    if (isNaN(value) || value < 1000000 || value > 99000000 || value % 1 !== 0) {
-      return { dniFormat: true };
-    }
-    return null;
-  };
-}
-
-export function validateFilesAmount(min: number, max: number) {
-  return (control: AbstractControl): { [key: string]: any } | null => {
-    const files: File[] = control.value;
-
-    if (files && (files.length < min || files.length > max)) {
-      return { filesLength: true };
-    }
-
-    return null;
-  };
-}
