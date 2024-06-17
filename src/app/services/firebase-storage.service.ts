@@ -1,13 +1,5 @@
-// storage.service.ts
-
 import { Injectable } from '@angular/core';
-// import { Storage } from '@angular/fire/storage';
-import { Observable } from 'rxjs';
-import { finalize } from 'rxjs/operators';
-import { Storage, getDownloadURL, listAll, ref, uploadBytes } from '@angular/fire/storage';
-
-import { getStorage } from '@angular/fire/storage';
-// import { ref } from '@angular/fire/database';
+import { Storage, getDownloadURL, getStorage, ref, uploadBytes } from '@angular/fire/storage';
 
 @Injectable({
     providedIn: 'root'
@@ -36,20 +28,35 @@ export class StorageService {
 
     }
 
-    getFiles() {
-        const storageRef = ref(this.storage, 'images');
+    // getFiles() {
+    //     const storageRef = ref(this.storage, 'images');
 
-        listAll(storageRef).then(async images => {
-            for (let image of images.items) {
-                const url = await getDownloadURL(image);
-                console.log('img: ', url);
+    //     listAll(storageRef).then(async images => {
+    //         for (let image of images.items) {
+    //             const url = await getDownloadURL(image);
+    //         }
+    //     })
+    // }
 
-            }
-        })
-    }
+    // getFileByPath(filePath: string) {
+    //     const storage = getStorage();
+    //     const pathRef = ref(storage, filePath);
 
-    getFileDownloadUrl(filePath: string) {
-        // const fileRef = this.storage.ref(filePath);
-        // return fileRef.getDownloadURL();
+    //     return getStream(pathRef);
+
+    // }
+
+    getUserFiles(filePath: string[]){
+        const storage = getStorage();
+
+        const imagePromises = filePath.map((file: string) => {
+            const pathRef = ref(storage, file);
+
+            const imagePath = getDownloadURL(pathRef)
+
+            return imagePath;
+        });        
+
+        return imagePromises;
     }
 }

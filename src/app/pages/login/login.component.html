@@ -17,20 +17,27 @@
             <button (click)="handleSubmit()" [disabled]="loginLoading" pButton style="width: min-content;">
                 Ingresar
                 <i *ngIf="loginLoading" class="pi pi-spin pi-spinner"></i>
-
             </button>
-
-            <div style="display: flex; gap: 8px;">
-                <button (click)="setCredentials(true)" pButton>Como admin</button>
-                <button (click)="setCredentials(false)" pButton>Como paciente</button>
-            </div>
 
         </div>
 
-        <div>
-            <img style="min-width: 670px;"
+        <div class="quick-setup-users">
+            <h3>Usuarios de inicio rápido</h3>
+
+            <ng-container *ngIf="!defaultUsersLoading">
+                <div class="chip" *ngFor="let user of defaultUsers">
+                    <p-chip (click)="handleSelectUser(user)" [label]="user.firstName + user.lastName" [image]="user.imagePath[0]" alt="Avatar image" />
+                </div>
+            </ng-container>
+
+            <ng-container *ngIf="defaultUsersLoading">
+                <div>
+                    <i class="pi pi-spin pi-spinner"></i>
+                </div>
+            </ng-container>
+            <!-- <img style="min-width: 670px;"
                 src="https://st4.depositphotos.com/26044198/29025/v/450/depositphotos_290256352-stock-illustration-vector-modern-flat-online-medicine.jpg"
-                alt="">
+                alt=""> -->
         </div>
 
     </div>

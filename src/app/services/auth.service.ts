@@ -50,7 +50,6 @@ export class AuthService {
       .then((newUser) => {
         // const usersCollection = collection(this._firestore, 'users');
         const userId = newUser.user.uid;
-        // newUser.user.
 
         sendEmailVerification(newUser.user);
         setDoc(doc(this.firestore, 'users', userId), { ...userData, id: userId, admin: false });
