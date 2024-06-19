@@ -149,9 +149,15 @@
             <div *ngIf="userType === 'specialist'" class="col-12">
                 <div class="input-container">
                     <label for="specialty">Especialidad</label>
-                    <p-dropdown class="p-fluid" [options]="allSpecialties" (onChange)="handleChangeSpecialty($event)"
+                    <!-- <p-dropdown class="p-fluid" [options]="allSpecialties" (onChange)="handleChangeSpecialty($event)"
                         formControlName="specialty" placeholder="Ingrese la especialidad" optionLabel="displayName"
                         optionValue="displayName" />
+                    <div *ngIf="formControls['specialty'].touched && formControls['specialty'].invalid" class="error">
+                        La especialidad es requerida
+                    </div> -->
+                    <p-multiSelect class="p-fluid" (onChange)="handleChangeSpecialty($event)" [showToggleAll]="false"
+                        [options]="allSpecialties" formControlName="specialty" optionLabel="displayName"
+                        optionValue="displayName" placeholder="Selecciona una especialidad" />
                     <div *ngIf="formControls['specialty'].touched && formControls['specialty'].invalid" class="error">
                         La especialidad es requerida
                     </div>
@@ -215,4 +221,16 @@
     <!-- <div style="display: flex; justify-content: flex-end; gap: 10px; height: 40px;">
         <button class="filled" pButton>Crear</button>
     </div> -->
+</p-dialog>
+
+<p-dialog class="modal" header="Crear especialidad" [closable]="false" [draggable]="false" [visible]="addSpecialtyVisible"
+    [modal]="true">
+
+    <input class="p-fluid" type="text" pInputText [(ngModel)]="newSpecialtyName">
+
+    <div class="actions">
+        <button (click)="handleCancelCreation()" class="outlined" pButton>Cancelar</button>
+        <button (click)="handleConfirmCreation()" [disabled]="loadingSpecialty" pButton>Confirmar
+            <i *ngIf="loadingSpecialty" class="pi pi-spin pi-spinner"></i></button>
+    </div>
 </p-dialog>

@@ -13,6 +13,7 @@ import { ToastService } from '../../services/toast.service';
 import { Router } from '@angular/router';
 import { ToastModule } from 'primeng/toast';
 import { passwordMatchValidator, validateFilesAmount, validateIdentification } from '../../helpers/newUserValidations.helper';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @Component({
   selector: 'app-register',
@@ -27,7 +28,8 @@ import { passwordMatchValidator, validateFilesAmount, validateIdentification } f
     DialogModule,
     FormsModule,
     ArrowBackComponent,
-    ToastModule
+    ToastModule,
+    MultiSelectModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
@@ -63,7 +65,7 @@ export class RegisterComponent {
       age: ['', [Validators.required, Validators.min(0), Validators.max(120)]],
       dni: ['', [Validators.required, validateIdentification()]],
       healthcare: ['', Validators.required],
-      specialty: [''],
+      specialty: [null],
       attachedImage: ['', [Validators.required, validateFilesAmount(2, 2)]],
     },
       { validators: passwordMatchValidator }
@@ -103,33 +105,49 @@ export class RegisterComponent {
 
   handleChangeSpecialty(event: DropdownChangeEvent): void {
     const { value } = event;
-    if (value === 'Agregar +') {
+    if (value.some((v: string) => v === 'Agregar +')) {
       this.visible = true;
       return;
     }
 
-    this.formControls['specialty'].setValue(value);
+    // this.formControls['specialty'].setValue(value);
   }
+
+  // handleChangeSpecialty(event: DropdownChangeEvent): void {
+  //   console.log(event);
+
+  //   const { value } = event;
+  //   if (value === 'Agregar +') {
+  //     this.visible = true;
+  //     return;
+  //   }
+
+  //   this.formControls['specialty'].setValue(value);
+  // }
 
   handleConfirmCreation(): void {
     const displayName = this.newSpecialtyName.trim();
     if (displayName.length && displayName.length < 20 && !this.allSpecialties.some(s => s.displayName === displayName)) {
       const specialtiesCollection = collection(this._firestore, 'specialties');
 
+      const specialtyFormControlValue = this.formControls['specialty'].value;
+      const cleanNewValue = specialtyFormControlValue.filter((s: string) => s !== 'Agregar +');
+
+
       this.loadingSpecialty = true;
       addDoc(specialtiesCollection, { displayName })
         .then((data) => {
 
-          this.formControls['specialty'].patchValue(displayName);
+          this.formControls['specialty'].patchValue([...cleanNewValue, displayName]);
           this.visible = false;
           this.loadingSpecialty = false;
         })
         .catch(() => {
+          this.formControls['specialty'].patchValue(cleanNewValue);
           console.log('Ocurrio un error al crear');
           this.loadingSpecialty = false;
         });
     }
-
   }
 
   handleAddFile(event: any): void {

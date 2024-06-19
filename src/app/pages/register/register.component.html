@@ -117,12 +117,16 @@
             <div *ngIf="userType === 'specialist'" class="col-12 md:col-6">
                 <div class="input-container">
                     <label for="specialty">Especialidad</label>
-                    <p-dropdown class="p-fluid" [options]="allSpecialties" (onChange)="handleChangeSpecialty($event)"
+                    <!-- <p-dropdown class="p-fluid" [options]="allSpecialties" (onChange)="handleChangeSpecialty($event)"
                         formControlName="specialty" placeholder="Ingrese la especialidad" optionLabel="displayName"
-                        optionValue="displayName" />
-                    <div *ngIf="formControls['specialty'].touched && formControls['specialty'].invalid" class="error">
-                        La especialidad es requerida
-                    </div>
+                        optionValue="displayName" /> -->
+                        <p-multiSelect class="p-fluid" (onChange)="handleChangeSpecialty($event)" [showToggleAll]="false" [options]="allSpecialties" formControlName="specialty" optionLabel="displayName"
+                        optionValue="displayName" placeholder="Selecciona una especialidad" />
+                        <div *ngIf="formControls['specialty'].touched && formControls['specialty'].invalid" class="error">
+                            La especialidad es requerida
+                        </div>
+
+
                 </div>
             </div>
 

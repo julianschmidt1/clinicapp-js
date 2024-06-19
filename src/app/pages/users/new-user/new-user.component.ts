@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { passwordMatchValidator, validateFilesAmount, validateIdentification } from '../../../helpers/newUserValidations.helper';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData } from '@angular/fire/firestore';
 import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../../services/auth.service';
 import { ToastModule } from 'primeng/toast';
 import { ToastService } from '../../../services/toast.service';
+import { MultiSelectModule } from 'primeng/multiselect';
+
 
 @Component({
   selector: 'new-user',
@@ -24,6 +26,8 @@ import { ToastService } from '../../../services/toast.service';
     DropdownModule,
     InputTextModule,
     ToastModule,
+    MultiSelectModule,
+    FormsModule
   ],
   templateUrl: './new-user.component.html',
   styleUrl: './new-user.component.scss'
@@ -46,6 +50,9 @@ export class NewUserComponent implements OnInit {
   public allSpecialties = [];
   public newSpecialtyName = '';
 
+  public loadingSpecialty = false;
+  public addSpecialtyVisible = false;
+
   ngOnInit() {
     this.registerForm = this.formBuilder.group({
       firstName: ['', [Validators.required, Validators.minLength(3)]],
@@ -57,7 +64,7 @@ export class NewUserComponent implements OnInit {
       age: ['', [Validators.required, Validators.min(0), Validators.max(120)]],
       dni: ['', [Validators.required, validateIdentification()]],
       healthcare: ['', Validators.required],
-      specialty: [''],
+      specialty: [null],
       attachedImage: ['', [Validators.required, validateFilesAmount(2, 2)]],
     },
       { validators: passwordMatchValidator }
@@ -157,19 +164,48 @@ export class NewUserComponent implements OnInit {
   }
 
   handleCancelCreation(): void {
-    this.visible = false;
+    this.addSpecialtyVisible = false;
     this.newSpecialtyName = '';
     this.formControls['specialty'].patchValue('');
   }
 
+  handleConfirmCreation(): void {
+    const displayName = this.newSpecialtyName.trim();
+    if (displayName.length && displayName.length < 20 && !this.allSpecialties.some(s => s.displayName === displayName)) {
+      const specialtiesCollection = collection(this._firestore, 'specialties');
+
+      const specialtyFormControlValue = this.formControls['specialty'].value;
+      const cleanNewValue = specialtyFormControlValue.filter((s: string) => s !== 'Agregar +');
+
+      console.log(specialtyFormControlValue);
+
+
+      this.loadingSpecialty = true;
+      addDoc(specialtiesCollection, { displayName })
+        .then((data) => {
+
+          this.formControls['specialty'].patchValue([...cleanNewValue, displayName]);
+          this.addSpecialtyVisible = false;
+          this.loadingSpecialty = false;
+        })
+        .catch(() => {
+          this.formControls['specialty'].patchValue(cleanNewValue);
+          console.log('Ocurrio un error al crear');
+          this.loadingSpecialty = false;
+        });
+    }
+  }
+
   handleChangeSpecialty(event: DropdownChangeEvent): void {
+    console.log(event);
+
     const { value } = event;
-    if (value === 'Agregar +') {
-      this.visible = true;
+    if (value.some((v: string) => v === 'Agregar +')) {
+      this.addSpecialtyVisible = true;
       return;
     }
 
-    this.formControls['specialty'].setValue(value);
+    // this.formControls['specialty'].setValue(value);
   }
 
   handleCancel(): void {
