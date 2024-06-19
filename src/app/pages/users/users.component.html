@@ -8,9 +8,9 @@
             <h1>Gestión de Usuarios</h1>
             <button pButton (click)="registerModal = true" [draggable]="false">Nuevo +</button>
         </div>
-        <div>
+        <div style="max-height: 520px; overflow-y: scroll;">
 
-            <p-table [value]="allUsers" [tableStyle]="{ 'min-width': '50rem' }">
+            <p-table [value]="allUsers" [tableStyle]="{ 'min-width': '50rem', 'max-height': '550px' }">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Nombre</th>
