@@ -37,7 +37,7 @@ export class AuthService {
         userData = {
           ...baseUserData,
           healthcare,
-          disabled: initiallyDisabled,
+          disabled: false,
         }
         break;
       case 'specialist':
@@ -51,7 +51,7 @@ export class AuthService {
         userData = {
           ...baseUserData,
           admin: true,
-          disabled: initiallyDisabled,
+          disabled: false,
         }
         break;
     }

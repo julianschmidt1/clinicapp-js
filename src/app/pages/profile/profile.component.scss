@@ -1,0 +1,113 @@
+@import '../../../styles.scss';
+
+.screen {
+
+    .profile-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 15px 50px;
+        flex-wrap: wrap;
+
+        .user-data-row {
+            display: flex;
+            flex-wrap: wrap;
+
+            padding: 15px;
+            border-radius: 35px;
+            background-color: $color-1;
+
+            .user-detail {
+                display: flex;
+                flex-direction: column;
+                padding: 30px;
+
+                h2 {
+                    margin: 8px 0;
+                }
+
+                span {
+                    font-size: 18px;
+                    margin: 6px 0;
+
+                    label {
+                        color: $primary-color-darker;
+                        font-weight: 600;
+                    }
+                }
+                
+                i {
+                    align-self: center;
+                }
+            }
+        }
+
+        i {
+            color: $primary-color-1;
+            font-size: 35px;
+            margin-top: 40px;
+            align-self: center;
+        }
+
+        .image-loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+
+        }
+
+        .user-images {
+            display: flex;
+            position: relative;
+            width: 267px;
+
+            img {
+                transition: ease-in 0.3s;
+                height: 250px;
+                width: 250px;
+                border: 2px solid black;
+                border-radius: 40px;
+                cursor: pointer;
+                transition: ease all 0.3s;
+            }
+
+            .foreground {
+                z-index: 1;
+                transform: scale(1);
+                animation: fadeInAnimation 0.2s forwards;
+            }
+
+            .background {
+                position: absolute;
+                transform: scale(0.95);
+                top: 17px;
+                right: 0px;
+                opacity: 0.5;
+                animation: fadeOutAnimation 0.2s forwards;
+            }
+        }
+
+    }
+
+}
+
+@keyframes fadeInAnimation {
+    from {
+        opacity: 0.5;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOutAnimation {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0.5;
+    }
+}

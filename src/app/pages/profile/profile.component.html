@@ -1,0 +1,43 @@
+<div class="screen">
+    <div class="profile-container">
+
+        <h1>Tu perfil</h1>
+        <div class="user-data-row">
+            <div class="user-images">
+                <div *ngFor="let image of userImages" [ngClass]="image.foreground ? 'foreground' : 'background'">
+                    <img (click)="handleClickImage(image)" [src]="image.path" alt="">
+                </div>
+                <div class="image-loader" *ngIf="loadingImages">
+                    <i class="pi pi-spin pi-spinner"></i>
+                </div>
+            </div>
+
+            <div class="user-detail">
+                <ng-container *ngIf="!loadingUser">
+                    <h2>Informacion general</h2>
+                    <span><strong>Nombre:</strong> {{userData.firstName + ' ' + userData.lastName}}</span>
+                    <span><strong>Documento:</strong> {{userData.dni}}</span>
+                    <span><strong>Correo:</strong> {{userData.email}}</span>
+                    <span *ngIf="userData.admin"><label>Administrador</label></span>
+
+                    <ng-container *ngIf="userData.healthcare">
+                        <span><strong>Obra social:</strong> {{userData.healthcare}}</span>
+                        <span *ngIf="userData.healthcare"><label>Usuario Paciente</label></span>
+                    </ng-container>
+
+                    <ng-container *ngIf="userData.specialty">
+                        <span><strong>Especialidad:</strong> {{userData.specialty}}</span>
+                        <span *ngIf="userData.healthcare"><label>Usuario Especialista</label></span>
+                    </ng-container>
+
+                </ng-container>
+
+                <ng-container *ngIf="loadingUser">
+                    <i class="pi pi-spin pi-spinner"></i>
+                </ng-container>
+
+            </div>
+        </div>
+
+    </div>
+</div>

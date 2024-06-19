@@ -25,6 +25,7 @@ export class TopBarComponent implements OnInit {
 
   public routes = [
     { to: 'home', displayName: 'Inicio' },
+    { to: 'profile', displayName: 'Perfil' },
   ];
 
   ngOnInit(): void {
