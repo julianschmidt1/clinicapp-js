@@ -51,9 +51,15 @@ export class LoginComponent implements OnInit {
   public loginLoading = false;
 
   public userData = [
-
+    // Admin
     { id: 'qG97Ic97MJfLukrILG5z2Ua2xs63', password: 'Admin123' },
-    { id: 'Th62G3hHmvNkhRxIGhZuyy90lCH3', password: 'Admin123' },
+    // Specialists
+    { id: 'FZ0pQSBAoIQCaKzwzxS7Z7rrk0k2', password: 'Admin123' },
+    { id: 'oEgSqVapLLTBqd67ISssrSogcbg2', password: 'Admin123' },
+    // Patient
+    { id: 'W7TM5FeP0PV5vDj9XvhmDPDpARN2', password: 'Admin123' },
+    { id: 'ckHNHa3h1ZatBdHCYw3cWf5ubn53', password: 'Admin123' },
+    { id: 'vCJwaJgrInMBr83dlUfPUP2DcbR2', password: 'Admin123' },
   ]
 
   public defaultUsers = [];
