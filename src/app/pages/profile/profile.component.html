@@ -1,3 +1,22 @@
+<p-dialog header="Crear horario" [modal]="true" [(visible)]="visible" [draggable]="false" [style]="{ width: '550px' }">
+    <div style="display: flex; flex-direction: column; gap: 20px; padding: 5px;">
+        <div>
+            <label for="">Día</label>
+            <p-dropdown class="p-fluid" appendTo="body" [options]="days" [(ngModel)]="selectedDay"
+                placeholder="Seleccionar el dia" />
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <label>Hora</label>
+            <input pInputText class="p-fluid" type="time" [(ngModel)]="selectedTime">
+        </div>
+
+        <div style="display: flex; width: 100%; justify-content: flex-end; gap: 10px;">
+            <button class="outlined" pButton>Cancelar</button>
+            <button class="filled" (click)="handleConfirm()" pButton>Confirmar</button>
+        </div>
+    </div>
+</p-dialog>
+
 <div class="screen">
     <div class="profile-container">
 
@@ -38,6 +57,26 @@
 
             </div>
         </div>
+
+        <ng-container *ngIf="userData && userData?.specialty">
+            <div class="schedule-section">
+                <div class="schedule-title">
+                    <h1>Mis horarios</h1>
+                    <button (click)="visible = true" pButton>Nuevo horario</button>
+                </div>
+
+                <div class="days-row">
+                    <div class="day-card" *ngFor="let dayData of renderSchedule">
+                        <span>{{dayData[0] | titlecase}} </span>
+                        <div class="turn-list">
+                            <div *ngFor="let turn of dayData[1];">
+                                {{turn.time}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
 
     </div>
 </div>

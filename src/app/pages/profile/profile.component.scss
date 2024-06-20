@@ -35,7 +35,7 @@
                         font-weight: 600;
                     }
                 }
-                
+
                 i {
                     align-self: center;
                 }
@@ -85,6 +85,49 @@
                 right: 0px;
                 opacity: 0.5;
                 animation: fadeOutAnimation 0.2s forwards;
+            }
+        }
+
+
+        .schedule-section {
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+
+            .schedule-title {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            .days-row {
+                display: flex;
+                align-items: flex-start;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .day-card {
+                display: flex;
+                flex-direction: column;
+                border-left: 1px solid rgb(177, 177, 177);
+                padding: 5px 15px;
+                gap: 5px;
+                
+                .turn-list {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 5px;
+                    height: 90px;
+
+                    overflow-y: auto;
+                }
+
+                span {
+                    font-weight: bold;
+                    font-size: 18px;
+                }
             }
         }
 
