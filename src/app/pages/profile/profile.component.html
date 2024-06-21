@@ -11,11 +11,16 @@
         </div>
 
         <div style="display: flex; width: 100%; justify-content: flex-end; gap: 10px;">
-            <button class="outlined" pButton>Cancelar</button>
-            <button class="filled" (click)="handleConfirm()" pButton>Confirmar</button>
+            <button (click)="handleCloseAndSetDefault()" class="outlined" pButton>Cancelar</button>
+            <button class="filled" [disabled]="updateUserLoading" (click)="handleConfirm()" pButton>
+                Confirmar
+                <i *ngIf="updateUserLoading" class="pi pi-spin pi-spinner"></i>
+            </button>
         </div>
     </div>
 </p-dialog>
+
+<p-toast></p-toast>
 
 <div class="screen">
     <div class="profile-container">
@@ -66,7 +71,7 @@
                 </div>
 
                 <div class="days-row">
-                    <div class="day-card" *ngFor="let dayData of renderSchedule">
+                    <div class="day-card" *ngFor="let dayData of specialistSchedule">
                         <span>{{dayData[0] | titlecase}} </span>
                         <div class="turn-list">
                             <div *ngFor="let turn of dayData[1];">

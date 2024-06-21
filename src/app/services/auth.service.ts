@@ -22,45 +22,45 @@ export class AuthService {
 
     const { firstName, lastName, dni, email, password, healthcare, specialty, attachedImage } = form;
 
-    const attachedFilesPath = this.storageService.uploadFile(attachedImage, email);
-
-    const baseUserData = {
-      firstName,
-      lastName,
-      dni,
-      email,
-      attachedImage: attachedFilesPath
-    };
-
-    switch (userType) {
-      case 'patient':
-        userData = {
-          ...baseUserData,
-          healthcare,
-          disabled: false,
-        }
-        break;
-      case 'specialist':
-        userData = {
-          ...baseUserData,
-          specialty,
-          disabled: initiallyDisabled,
-        }
-        break;
-      case 'admin':
-        userData = {
-          ...baseUserData,
-          admin: true,
-          disabled: false,
-        }
-        break;
-    }
-
 
     createUserWithEmailAndPassword(this._auth, email, password)
       .then((newUser) => {
         // const usersCollection = collection(this._firestore, 'users');
         const userId = newUser.user.uid;
+
+        const attachedFilesPath = this.storageService.uploadFile(attachedImage, email);
+
+        const baseUserData = {
+          firstName,
+          lastName,
+          dni,
+          email,
+          attachedImage: attachedFilesPath
+        };
+
+        switch (userType) {
+          case 'patient':
+            userData = {
+              ...baseUserData,
+              healthcare,
+              disabled: false,
+            }
+            break;
+          case 'specialist':
+            userData = {
+              ...baseUserData,
+              specialty,
+              disabled: initiallyDisabled,
+            }
+            break;
+          case 'admin':
+            userData = {
+              ...baseUserData,
+              admin: true,
+              disabled: false,
+            }
+            break;
+        }
 
         sendEmailVerification(newUser.user);
         setDoc(doc(this.firestore, 'users', userId), { ...userData, id: userId });

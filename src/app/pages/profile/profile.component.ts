@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { Firestore, doc, getDoc } from '@angular/fire/firestore';
+import { Firestore, arrayUnion, doc, getDoc, onSnapshot, updateDoc } from '@angular/fire/firestore';
 import { StorageService } from '../../services/firebase-storage.service';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -8,6 +8,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { FormsModule } from '@angular/forms';
 import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
+import { ToastService } from '../../services/toast.service';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-profile',
@@ -19,18 +21,21 @@ import { InputTextModule } from 'primeng/inputtext';
     DropdownModule,
     FormsModule,
     CalendarModule,
-    InputTextModule
+    InputTextModule,
+    ToastModule
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
 })
 export class ProfileComponent implements OnInit {
 
-  private firestore = inject(Firestore)
-  private storageService = inject(StorageService)
+  private firestore = inject(Firestore);
+  private storageService = inject(StorageService);
+  private toastService = inject(ToastService);
 
   public loadingUser = true;
   public loadingImages = true;
+  public updateUserLoading = false;
 
   public userImages = [];
   public userData;
@@ -39,15 +44,7 @@ export class ProfileComponent implements OnInit {
   public selectedDay: string;
   public selectedTime: Date[];
 
-  public specialistSchedule = [
-    { day: 'lunes', time: '14.30' },
-    { day: 'lunes', time: '15.30' },
-    { day: 'lunes', time: '16.30' },
-    { day: 'martes', time: '12.00' },
-    { day: 'martes', time: '12.30' },
-    { day: 'miercoles', time: '12.30' },
-    { day: 'miercoles', time: '12.30' },
-  ]
+  public specialistSchedule = [];
 
   public readonly days = [
     'Lunes',
@@ -60,28 +57,35 @@ export class ProfileComponent implements OnInit {
 
   public renderSchedule = [];
 
-  public groupSchedule(array) {
 
+  public groupAndSortSchedule(array: ScheduleModel[]) {
     let result = {};
 
     array.forEach(({ day, time }) => {
 
       if (result[day]) {
-        result[day] = [...result[day], { day, time }];
+        result[day] = [
+          ...result[day],
+          { day, time }
+        ].sort((a, b) => new Date(`2000-01-01T${a.time}`).getTime() - new Date(`2000-01-01T${b.time}`).getTime());
+
       } else {
-        result[day] = [{ day, time }]
+        result[day] = [{ day, time }];
       }
     })
 
-    return Object.entries(result);
-    // return array.map()
+    const sortedDays = Object.entries(result).sort((a, b) => {
+      const [dayA] = a;
+      const [dayB] = b;
+
+      return this.days.indexOf(dayA) - this.days.indexOf(dayB);
+    })
+
+    return sortedDays;
   }
 
+
   ngOnInit(): void {
-
-    this.renderSchedule = this.groupSchedule(this.specialistSchedule);
-    console.log(this.renderSchedule);
-
 
     const storedUser = localStorage.getItem('user');
 
@@ -89,37 +93,98 @@ export class ProfileComponent implements OnInit {
       const parsedUserData = JSON.parse(storedUser);
       const userRef = doc(this.firestore, `users/${parsedUserData.uid}`);
 
-      getDoc(userRef).then(async (userDocument) => {
+      onSnapshot(userRef, async (userDocument) => {
+
         if (userDocument.exists()) {
-          console.log(userDocument.data());
           const retrievedUserData = userDocument.data() as any;
           this.userData = retrievedUserData;
           this.loadingUser = false;
 
+          if(retrievedUserData.schedule){
+            this.specialistSchedule = this.groupAndSortSchedule(retrievedUserData.schedule);
+          }
+
+          // Images
           const imagePromises = this.storageService.getUserFiles(retrievedUserData.attachedImage);
           const imagePath = await Promise.all(imagePromises);
-
-          this.loadingImages = false;
-
           const images = imagePath.map((i, index) => {
             const displayImageObject = { path: i, foreground: !Boolean(index) };
-
+            
             return displayImageObject;
-          })
+          });
+          
           this.userImages = images;
-
+          this.loadingImages = false;
         }
 
       })
+
+      // getDoc(userRef).then(async (userDocument) => {
+      //   if (userDocument.exists()) {
+      //     // console.log(userDocument.data());
+      //     const retrievedUserData = userDocument.data() as any;
+      //     this.userData = retrievedUserData;
+
+
+      //     console.log('sche: ', retrievedUserData.schedule);
+      //     this.specialistSchedule = this.groupSchedule(retrievedUserData.schedule);
+
+      //     this.loadingUser = false;
+
+      //     const imagePromises = this.storageService.getUserFiles(retrievedUserData.attachedImage);
+      //     const imagePath = await Promise.all(imagePromises);
+
+      //     this.loadingImages = false;
+
+      //     const images = imagePath.map((i, index) => {
+      //       const displayImageObject = { path: i, foreground: !Boolean(index) };
+
+      //       return displayImageObject;
+      //     })
+      //     this.userImages = images;
+
+      //   }
+
+      // })
     }
   }
 
+  handleCloseAndSetDefault() {
+    this.visible = false;
+    this.selectedDay = undefined;
+    this.selectedTime = undefined;
+  }
+
   handleConfirm() {
-    console.log(this.selectedDay);
-    console.log(this.selectedTime);
 
-    console.log(this.validateTime(this.selectedTime?.toString(), this.selectedDay));
+    if (!this.selectedDay || !this.selectedTime) {
+      //modal
+      this.toastService.errorMessage('Ingrese un dia y hora.', 'Error');
+      return;
+    }
 
+    if (!this.validateTime(this.selectedTime.toString(), this.selectedDay)) {
+      // modal
+      this.toastService.errorMessage('Horario de atencion invalido. Lun a Vie 8 a 19. Sáb 8 a 14.', 'Error');
+      return;
+    }
+
+    this.updateUserLoading = true;
+
+    const userDocRef = doc(this.firestore, `users/${this.userData.id}`);
+    updateDoc(userDocRef, {
+      schedule: arrayUnion({ day: this.selectedDay, time: this.selectedTime })
+    }).then((d) => {
+
+      this.toastService.successMessage('Usuario actualizado con exito');
+      this.updateUserLoading = false;
+
+      this.handleCloseAndSetDefault();
+    })
+      .catch(() => {
+        this.toastService.errorMessage('Error al actualizar usuario')
+        this.updateUserLoading = false;
+      })
 
   }
 
@@ -131,22 +196,13 @@ export class ProfileComponent implements OnInit {
     const startHour = 8;
     let endHour = 19;
 
-    console.log('HORAS:', hours);
-    console.log('MINUTOS:', minutes);
-
     if (isSaturday) {
       endHour = 14;
     }
 
-    if (
-      (hours < startHour || hours > endHour)
+    return !(hours < startHour || hours > endHour)
       || (isSaturday && (hours < startHour || hours > endHour))
       || (hours === endHour && minutes !== 0)
-    ) {
-      return false;
-    }
-
-    return true;
   }
 
   handleClickImage(image: { foreground: boolean, path: string }) {
@@ -159,5 +215,9 @@ export class ProfileComponent implements OnInit {
 
   }
 
+}
 
+interface ScheduleModel {
+  time: string,
+  day: string
 }
