@@ -10,6 +10,8 @@ import { CalendarModule } from 'primeng/calendar';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastService } from '../../services/toast.service';
 import { ToastModule } from 'primeng/toast';
+import { DateToDayNumberPipe } from '../../pipes/date-to-day-number.pipe';
+
 
 @Component({
   selector: 'app-profile',
@@ -22,7 +24,8 @@ import { ToastModule } from 'primeng/toast';
     FormsModule,
     CalendarModule,
     InputTextModule,
-    ToastModule
+    ToastModule,
+    DateToDayNumberPipe
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
@@ -43,6 +46,8 @@ export class ProfileComponent implements OnInit {
   public visible = false;
   public selectedDay: string;
   public selectedTime: Date[];
+
+  public readonly todayDate = new Date().toISOString().split('T')[0];
 
   public specialistSchedule = [];
 
@@ -78,7 +83,7 @@ export class ProfileComponent implements OnInit {
       const [dayA] = a;
       const [dayB] = b;
 
-      return this.days.indexOf(dayA) - this.days.indexOf(dayB);
+      return new Date(dayA).getDate() - new Date(dayB).getDate() 
     })
 
     return sortedDays;
@@ -100,7 +105,7 @@ export class ProfileComponent implements OnInit {
           this.userData = retrievedUserData;
           this.loadingUser = false;
 
-          if(retrievedUserData.schedule){
+          if (retrievedUserData.schedule) {
             this.specialistSchedule = this.groupAndSortSchedule(retrievedUserData.schedule);
           }
 
@@ -109,10 +114,10 @@ export class ProfileComponent implements OnInit {
           const imagePath = await Promise.all(imagePromises);
           const images = imagePath.map((i, index) => {
             const displayImageObject = { path: i, foreground: !Boolean(index) };
-            
+
             return displayImageObject;
           });
-          
+
           this.userImages = images;
           this.loadingImages = false;
         }
@@ -156,15 +161,12 @@ export class ProfileComponent implements OnInit {
   }
 
   handleConfirm() {
-
     if (!this.selectedDay || !this.selectedTime) {
-      //modal
       this.toastService.errorMessage('Ingrese un dia y hora.', 'Error');
       return;
     }
 
     if (!this.validateTime(this.selectedTime.toString(), this.selectedDay)) {
-      // modal
       this.toastService.errorMessage('Horario de atencion invalido. Lun a Vie 8 a 19. Sáb 8 a 14.', 'Error');
       return;
     }
@@ -176,33 +178,32 @@ export class ProfileComponent implements OnInit {
       schedule: arrayUnion({ day: this.selectedDay, time: this.selectedTime })
     }).then((d) => {
 
-      this.toastService.successMessage('Usuario actualizado con exito');
+      this.toastService.successMessage('Horario creado exitosamente.');
       this.updateUserLoading = false;
 
       this.handleCloseAndSetDefault();
     })
       .catch(() => {
-        this.toastService.errorMessage('Error al actualizar usuario')
+        this.toastService.errorMessage('Error al actualizar horario.');
         this.updateUserLoading = false;
       })
 
   }
 
   validateTime(time: string, day: string): boolean {
-    const [hoursStr, minutesStr] = time.split(':');
+    const [hoursStr] = time.split(':');
     const hours = +hoursStr
-    const minutes = +minutesStr;
-    const isSaturday = day === 'Sábado';
     const startHour = 8;
     let endHour = 19;
+
+    const dayName = new Date(day).getDay();
+    const isSaturday = this.days[dayName] === 'Sábado';
 
     if (isSaturday) {
       endHour = 14;
     }
 
-    return !(hours < startHour || hours > endHour)
-      || (isSaturday && (hours < startHour || hours > endHour))
-      || (hours === endHour && minutes !== 0)
+    return !(hours < startHour || hours > endHour) && !(hours === endHour)
   }
 
   handleClickImage(image: { foreground: boolean, path: string }) {

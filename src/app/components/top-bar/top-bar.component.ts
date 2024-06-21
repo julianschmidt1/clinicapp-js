@@ -22,7 +22,6 @@ export class TopBarComponent implements OnInit {
   private authService = inject(AuthService);
   public currentUser;
 
-
   public routes = [
     { to: 'home', displayName: 'Inicio' },
     { to: 'profile', displayName: 'Perfil' },

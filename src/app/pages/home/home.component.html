@@ -1,3 +1,20 @@
 <div class="screen">
-    <p>Home</p>
+
+    <div class="home-container">
+        <ng-container *ngIf="!currentUserLoading">
+
+            <h1 *ngIf="currentUser.firstName">¡Bienvenido, {{currentUser.firstName}}! 😄</h1>
+
+            <div (click)="handleNavigate('create-appointment')">
+                Solicitar turno
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="currentUserLoading">
+            <div style="display: flex; margin-top: 100px; justify-content: center; align-items: center;">
+                <i class="pi pi-spin pi-spinner"></i>
+            </div>
+        </ng-container>
+
+    </div>
 </div>

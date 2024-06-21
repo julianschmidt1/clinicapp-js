@@ -3,6 +3,12 @@
     <div style="width: 100%; padding: 0 50px;">
         <h1>Solicitar turno</h1>
 
+        <div style="width: 100%;">
+            <label for="">Especialidad</label>
+            <p-dropdown class="p-fluid" appendTo="body" [options]="allSpecialties" [(ngModel)]="selectedSpecialty"
+                placeholder="Seleccionar especialidad" optionValue="displayName" optionLabel="displayName" />
+        </div>
+
 
     </div>
 </div>

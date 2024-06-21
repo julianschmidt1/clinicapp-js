@@ -1,9 +1,10 @@
 <p-dialog header="Crear horario" [modal]="true" [(visible)]="visible" [draggable]="false" [style]="{ width: '550px' }">
     <div style="display: flex; flex-direction: column; gap: 20px; padding: 5px;">
-        <div>
+
+        <div style="display: flex; flex-direction: column;">
             <label for="">Día</label>
-            <p-dropdown class="p-fluid" appendTo="body" [options]="days" [(ngModel)]="selectedDay"
-                placeholder="Seleccionar el dia" />
+            <input pInputText [min]="todayDate" class="p-fluid" type="date" [(ngModel)]="selectedDay">
+
         </div>
         <div style="display: flex; flex-direction: column;">
             <label>Hora</label>
@@ -72,7 +73,7 @@
 
                 <div class="days-row">
                     <div class="day-card" *ngFor="let dayData of specialistSchedule">
-                        <span>{{dayData[0] | titlecase}} </span>
+                        <span>{{dayData[0] | dateToDayNumber}} </span>
                         <div class="turn-list">
                             <div *ngFor="let turn of dayData[1];">
                                 {{turn.time}}
