@@ -6,7 +6,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { authGuard } from './guards/auth.guard';
 import { LayoutComponent } from './pages/layout/layout.component';
 import { UsersComponent } from './pages/users/users.component';
-import { adminGuard } from './guards/admin.guard';
+import { userGuard } from './guards/admin.guard';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { CreateAppointmentComponent } from './pages/create-appointment/create-appointment.component';
 
@@ -17,10 +17,9 @@ const authRoutes = [
         canActivate: [authGuard],
         children: [
             { path: 'home', component: HomeComponent },
-            { path: 'users', component: UsersComponent, canActivate: [adminGuard] },
+            { path: 'users', component: UsersComponent, canActivate: [userGuard(['admin'])] },
             { path: 'profile', component: ProfileComponent },
-            { path: 'create-appointment', component: CreateAppointmentComponent },
-
+            { path: 'create-appointment', component: CreateAppointmentComponent, canActivate: [userGuard(['admin', 'patient'])] },
         ]
     },
 ];

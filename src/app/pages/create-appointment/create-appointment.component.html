@@ -1,9 +1,10 @@
+<p-toast></p-toast>
 <div class="screen">
 
     <div class="create-appointment-container">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h1>Solicitar turno</h1>
-            <button *ngIf="selectedDateTime.day" pButton>Solicitar</button>
+            <button (click)="handleSubmit()" [disabled]="!selectedDateTime.day || !selectedPatient" pButton>Solicitar</button>
         </div>
         <div class="grid">
 
@@ -20,6 +21,13 @@
                     appendTo="body" emptyMessage="No hay opciones disponibles" [options]="specialists"
                     [(ngModel)]="selectedSpecialist" placeholder="Seleccionar especialista" optionValue="id"
                     optionLabel="displayName" />
+            </div>
+
+            <div *ngIf="currentUser?.admin" class="col-12 md:col-6 input-container">
+                <label for="">Paciente</label>
+                <p-dropdown class="p-fluid" [loading]="loadingUsers" appendTo="body"
+                    emptyMessage="No hay opciones disponibles" [options]="patients" [(ngModel)]="selectedPatient"
+                    placeholder="Seleccionar paciente" optionValue="id" optionLabel="displayName" />
             </div>
         </div>
 

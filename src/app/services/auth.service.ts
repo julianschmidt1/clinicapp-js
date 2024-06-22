@@ -17,7 +17,6 @@ export class AuthService {
 
   async register(form: any, userType, initiallyDisabled = true): Promise<boolean> {
 
-    console.log(form);
     let userData;
 
     const { firstName, lastName, dni, email, password, healthcare, specialty, attachedImage } = form;
@@ -83,22 +82,20 @@ export class AuthService {
     return null;
   }
 
+  public getUserById(userId: string) {
+    this.usersCollection()
+      .subscribe({
+        next: (data: any) => {
+          const foundUser = data.find((user) => user.id === userId);
+
+          return foundUser;
+        }
+      })
+    return null;
+  }
+
   public usersCollection(): Observable<any> {
     const userDocRef = collection(this.firestore, `users`);
-    return collectionData(userDocRef)
+    return collectionData(userDocRef);
   }
-}
-
-function convertImageToBase64(imageFile: File): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(imageFile);
-    reader.onload = () => {
-      const base64Image = reader.result as string;
-      resolve(base64Image);
-    };
-    reader.onerror = (error) => {
-      reject(error);
-    };
-  });
 }

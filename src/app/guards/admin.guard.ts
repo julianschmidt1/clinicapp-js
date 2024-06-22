@@ -1,25 +1,29 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { map } from 'rxjs';
 
-export const adminGuard: CanActivateFn = () => {
-    const router = inject(Router);
-    const authService = inject(AuthService);
-    const storedUser = localStorage.getItem('user');
+export const userGuard: (userTypes: string[]) => CanActivateFn = (userTypes: string[]) => {
+    return () => {
+        const router = inject(Router);
+        const authService = inject(AuthService);
 
-    authService.usersCollection().subscribe({
-        next: (d) => {
-            const parsedUser = JSON.parse(storedUser);
-            const currentUser = d.find(u => u['id'] === parsedUser.uid)
+        return authService.usersCollection().pipe(
+            map((users) => {
+                const parsedUser = authService.getCurrentUserData();
+                const currentUser = users.find(u => u['id'] === parsedUser.uid);
 
-            if (!currentUser.admin) {
+                const isValidPatient = currentUser?.healthcare && userTypes.includes('patient');
+                const isValidAdmin = currentUser?.admin && userTypes.includes('admin');
+
+                if (isValidPatient || isValidAdmin) {
+                    return true;
+                }
+
                 router.navigateByUrl('auth/home');
                 return false;
-            }
 
-            return true;
-        }
-    })
-
-    return true;
+            })
+        );
+    };
 };
