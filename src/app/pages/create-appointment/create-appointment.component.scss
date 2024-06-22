@@ -1,0 +1,58 @@
+@import '../../../styles.scss';
+
+.screen {
+
+    .create-appointment-container {
+        width: 100%;
+        padding: 0 50px;
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+    }
+
+    h2 {
+        color: $primary-color-1;
+    }
+
+    .schedule-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .day-container {
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            background-color: $color-1;
+            border-radius: 8px;
+
+            span {
+                color: $primary-color-darker;
+                font-weight: bold;
+            }
+
+            .time-container {
+                display: flex;
+                width: fit-content;
+                background-color: $base-white;
+                padding: 8px;
+                border-radius: 8px;
+                margin-top: 8px;
+                cursor: pointer;
+                transition: 0.2s all ease-in;
+            }
+
+            .selected {
+                background-color: $primary-color-darker;
+                color: $base-white;
+                transform: scale(1.09);
+                
+            }
+        }
+    }
+
+
+}

@@ -1,14 +1,46 @@
 <div class="screen">
 
-    <div style="width: 100%; padding: 0 50px;">
-        <h1>Solicitar turno</h1>
+    <div class="create-appointment-container">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Solicitar turno</h1>
+            <button *ngIf="selectedDateTime.day" pButton>Solicitar</button>
+        </div>
+        <div class="grid">
 
-        <div style="width: 100%;">
-            <label for="">Especialidad</label>
-            <p-dropdown class="p-fluid" appendTo="body" [options]="allSpecialties" [(ngModel)]="selectedSpecialty"
-                placeholder="Seleccionar especialidad" optionValue="displayName" optionLabel="displayName" />
+            <div class="col-12 md:col-6 input-container">
+                <label for="">Especialidad</label>
+                <p-dropdown class="p-fluid" [loading]="loadingSpecialties" (onChange)="handleChangeSpecialty($event)"
+                    appendTo="body" [options]="allSpecialties" [(ngModel)]="selectedSpecialty"
+                    emptyMessage="No hay opciones disponibles" placeholder="Seleccionar especialidad"
+                    optionValue="displayName" optionLabel="displayName" />
+            </div>
+            <div class="col-12 md:col-6 input-container">
+                <label for="">Especialista</label>
+                <p-dropdown class="p-fluid" [loading]="loadingSpecialists" (onChange)="handleChangeSpecialist($event)"
+                    appendTo="body" emptyMessage="No hay opciones disponibles" [options]="specialists"
+                    [(ngModel)]="selectedSpecialist" placeholder="Seleccionar especialista" optionValue="id"
+                    optionLabel="displayName" />
+            </div>
         </div>
 
+        <div class="schedule-container" *ngIf="selectedSpecialistSchedule.length">
+            <h2>Turnos disponibles</h2>
+
+            <div style="display: flex; gap: 10px;">
+                <div class="day-container" *ngFor="let day of selectedSpecialistSchedule">
+                    <span>
+                        {{day[0] | dateToDayNumber}}
+                    </span>
+
+                    <div style="display: flex; flex-direction: row; gap: 8px;">
+                        <div *ngFor="let dayData of day[1]" (click)="handleSelectTime(dayData)" class="time-container"
+                            [class.selected]="selectedDateTime.day === dayData.day && selectedDateTime.time === dayData.time">
+                            {{dayData.time}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 </div>
