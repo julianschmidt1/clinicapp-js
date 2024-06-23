@@ -1,0 +1,22 @@
+<p-table [value]="appointments" [tableStyle]="{ 'min-width': '50rem' }">
+    <ng-template pTemplate="header">
+        <tr>
+            <th>Especialista</th>
+            <th>Paciente</th>
+            <th>Dia</th>
+            <th>Hora</th>
+            <th>Acciones</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-product>
+        <tr>
+            <td>{{ product.specialistId }}</td>
+            <td>{{ product.patientId }}</td>
+            <td>{{ product.day }}</td>
+            <td>{{ product.time }}</td>
+            <td>
+                <button pButton>Accion</button>
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

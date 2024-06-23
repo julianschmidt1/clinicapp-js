@@ -4,7 +4,11 @@
     <div class="create-appointment-container">
         <div style="display: flex; justify-content: space-between; align-items: center;">
             <h1>Solicitar turno</h1>
-            <button (click)="handleSubmit()" [disabled]="!selectedDateTime.day || !selectedPatient" pButton>Solicitar</button>
+            <button (click)="handleSubmit()"
+                [disabled]="!selectedDateTime.day || !selectedPatient || createAppointmentLoading" pButton>
+                Solicitar
+                <i *ngIf="createAppointmentLoading" class="pi pi-spin pi-spinner"></i>
+            </button>
         </div>
         <div class="grid">
 

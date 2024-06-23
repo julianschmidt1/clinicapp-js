@@ -9,6 +9,7 @@ import { UsersComponent } from './pages/users/users.component';
 import { userGuard } from './guards/admin.guard';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { CreateAppointmentComponent } from './pages/create-appointment/create-appointment.component';
+import { MyAppointmentsComponent } from './pages/my-appointments/my-appointments.component';
 
 const authRoutes = [
     {
@@ -20,6 +21,7 @@ const authRoutes = [
             { path: 'users', component: UsersComponent, canActivate: [userGuard(['admin'])] },
             { path: 'profile', component: ProfileComponent },
             { path: 'create-appointment', component: CreateAppointmentComponent, canActivate: [userGuard(['admin', 'patient'])] },
+            { path: 'my-appointments', component: MyAppointmentsComponent },
         ]
     },
 ];

@@ -53,6 +53,7 @@ export class CreateAppointmentComponent implements OnInit {
   public loadingSpecialties = false;
   public loadingSpecialists = false;
   public loadingUsers = false;
+  public createAppointmentLoading = false;
 
   ngOnInit(): void {
     const specialtiesCollection = collection(this._firestore, 'specialties');
@@ -95,15 +96,20 @@ export class CreateAppointmentComponent implements OnInit {
       specialty: this.selectedSpecialty,
       specialistId: this.selectedSpecialist,
       patientId: this._auth.getCurrentUserData().uid,
+      status: 'Pendiente',
       ...this.selectedDateTime,
     };
+    this.createAppointmentLoading = true;
+
 
     this._appointmentService.addAppointment(appointment)
       .then(() => {
         this._toastService.successMessage('Turno creado con exito.');
+        this.createAppointmentLoading = false;
       })
       .catch(() => {
         this._toastService.errorMessage('Ocurrio un error al crear el turno.');
+        this.createAppointmentLoading = false;
       })
   }
 
