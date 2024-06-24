@@ -14,4 +14,11 @@ Las secciones navegables son:
 
 #### Inicio
 
-En el inicio el usuario puede ingresar
+Desde el inicio es posible navegar a las pantallas para `solicitar turnos` y `visualizar turnos creados`
+
+Si el usuario es Administrador o Paciente puede ingresar a solicitar turnos.
+La pantalla cuenta con 2 input de tipo `SELECT` en donde debe seleccionar la especialidad y el especialista para el turno.
+Si el usuario es administrador tambien debera seleccionar que paciente asistira al turno.
+Finalmente se debe seleccionar el horario disponible para el turno.
+
+Una vez que la informacion requerida esta completa el usuario puede enviar el formulario y generando el turno.
