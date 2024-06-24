@@ -53,10 +53,17 @@
                         <button *ngIf="appointment.status === status.Done && !appointment?.rating" pButton
                             (click)="handleActionClick(appointment, 'rating')">Calificar atencion</button>
 
-                        <button *ngIf="appointment.status === status.Done && appointment?.reason && !appointment?.survey" pButton
-                            (click)="handleActionClick(appointment, 'survey')">Completar encuesta</button>
+                        <button
+                            *ngIf="appointment.status === status.Done && appointment?.reason && !appointment?.survey"
+                            pButton (click)="handleActionClick(appointment, 'survey')">Completar encuesta</button>
+                    </div>
+                </ng-container>
 
-
+                <ng-container *ngIf="userType === 'admin'">
+                    <div style="display: flex; gap: 8px;">
+                        <button class="outlined" pButton
+                            *ngIf="appointment.status !== status.Done  && appointment.status !== status.Cancelled"
+                            (click)="handleActionClick(appointment, status.Cancelled)">Cancelar</button>
                     </div>
                 </ng-container>
 
