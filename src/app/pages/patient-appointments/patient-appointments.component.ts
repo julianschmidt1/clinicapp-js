@@ -131,16 +131,16 @@ export class PatientAppointmentsComponent implements OnInit {
     };
 
     this._appointmentService.updateAppointment(updatedAppointment)
-    .then(() => {
-      this._toastService.successMessage('Encuesta enviada con exito.');
-      this.surveyDialogVisible = false;
-      this.loadingModal = false;
-      this.actionData = undefined;
-    })
-    .catch(() => {
-      this._toastService.errorMessage('Error al enviar encuesta.');
-      this.loadingModal = false;
-    });
+      .then(() => {
+        this._toastService.successMessage('Encuesta enviada con exito.');
+        this.surveyDialogVisible = false;
+        this.loadingModal = false;
+        this.actionData = undefined;
+      })
+      .catch(() => {
+        this._toastService.errorMessage('Error al enviar encuesta.');
+        this.loadingModal = false;
+      });
 
   }
 
@@ -177,6 +177,33 @@ export class PatientAppointmentsComponent implements OnInit {
       ...this.actionData.appointment,
       status: this.actionData.action,
       reason: this.reason,
+    }
+
+    // cuando cancelas el turno el estado del horario vuelve a libre
+    if (this.actionData.action === AppointmentStatus.Cancelled) {
+      const { appointment } = this.actionData;
+      const { day, time, specialistId } = appointment;
+
+      this._authService.getUserById(specialistId)
+        .then(data => {
+          const specialist = data.data();
+          const { schedule } = specialist;
+
+          let appointmentToUpdate = schedule.find((ap: AppointmentModel) => ap.day === day && ap.time === time);
+
+          const updatedSchedule = [
+            ...schedule.filter((ap: AppointmentModel) => ap.day !== day && ap.time !== time),
+            {
+              ...appointmentToUpdate,
+              busy: false,
+            }
+          ];
+
+          this._authService.updateUser({
+            ...specialist,
+            schedule: updatedSchedule
+          });
+        })
     }
 
     this._appointmentService.updateAppointment(updatedAppointment)

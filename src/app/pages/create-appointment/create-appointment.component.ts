@@ -100,9 +100,11 @@ export class CreateAppointmentComponent implements OnInit {
     const appointment: AppointmentModel = {
       specialty: this.selectedSpecialty,
       specialistId: this.selectedSpecialist,
-      patientId: this._auth.getCurrentUserData().uid,
+      patientId: this.selectedPatient,
       status: AppointmentStatus.Pending,
-      ...this.selectedDateTime,
+      // ...this.selectedDateTime,
+      day: this.selectedDateTime.day,
+      time: this.selectedDateTime.time,
     };
 
     // this._auth.getUserById(this.selectedSpecialist)
