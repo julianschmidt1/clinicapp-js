@@ -86,7 +86,6 @@ export class CreateAppointmentComponent implements OnInit {
     collectionData(specialtiesCollection).subscribe({
       next: (data) => {
         this.allSpecialties = data;
-        console.log(data)
         this.loadingSpecialties = false;
       },
       error: (error) => {
@@ -137,8 +136,14 @@ export class CreateAppointmentComponent implements OnInit {
     const selectedSpecialist = this.specialists.find(specialist => specialist.id === event.value);
     const sortedSchedule = groupAndSortSchedule(selectedSpecialist.schedule);
 
-    this.selectedSpecialistSchedule = sortedSchedule.filter(([_, value]: [string, ScheduleModel[]]) => value.some(ap => !ap.busy));
-    // console.log(sortedSchedule.filter(([_, value]: [string, ScheduleModel[]]) => value.some(ap => !ap.busy)));
+    const daysWithSchedule = sortedSchedule.map(([key, value]: [string, ScheduleModel[]]) => {
+      return [
+        key,
+        value.filter((a) => !a.busy)
+      ]
+    });
+
+    this.selectedSpecialistSchedule = daysWithSchedule.filter(([_, value]: [string, ScheduleModel[]]) => value.length);
   }
 
   public handleSelectTime(dayData: ScheduleModel): void {
@@ -149,7 +154,6 @@ export class CreateAppointmentComponent implements OnInit {
   }
 
   public handleChangeSpecialty(event: DropdownChangeEvent): void {
-    console.log(event.value);
 
     const specialtiesCollection = collection(this._firestore, 'users');
     this.loadingSpecialists = true;
@@ -163,7 +167,6 @@ export class CreateAppointmentComponent implements OnInit {
 
           this.specialists = selectedSpecialtyUsers.map((specialist: any) => ({ ...specialist, displayName: specialist.firstName + ' ' + specialist.lastName }));
           this.loadingSpecialists = false;
-          console.log(selectedSpecialtyUsers);
         },
         error: (error) => {
           console.log('error', error);
