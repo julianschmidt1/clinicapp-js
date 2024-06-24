@@ -4,9 +4,28 @@
         <ng-container *ngIf="!currentUserLoading">
 
             <h1 *ngIf="currentUser.firstName">¡Bienvenido, {{currentUser.firstName}}! 😄</h1>
+            <h2 *ngIf="currentUser">¿Qué vamos a hacer hoy?</h2>
 
-            <div (click)="handleNavigate('create-appointment')">
-                Solicitar turno
+            <div class="actions">
+                <div *ngIf="currentUser?.healthcare || currentUser?.admin" class="action-card"
+                    (click)="handleNavigate('create-appointment')">
+                    <span>
+                        Solicitar turno
+                    </span>
+                    <i class="pi pi-calendar-plus"></i>
+                </div>
+                <div class="action-card" (click)="handleNavigateByUserType()">
+                    <span>
+                        Ver mis turnos
+                    </span>
+                    <i class="pi pi-list-check"></i>
+                </div>
+                <div class="action-card" (click)="handleNavigate('profile')">
+                    <span>
+                        Ir a mi perfil
+                    </span>
+                    <i class="pi pi-id-card"></i>
+                </div>
             </div>
         </ng-container>
 

@@ -42,6 +42,25 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  public handleNavigateByUserType(): void {
+    let path: string;
+
+    console.log(this.currentUser);
+    if (this.currentUser?.admin) {
+      path = 'all-appointments';
+    }
+
+    if (this.currentUser?.healthcare) {
+      path = 'patient-appointments';
+    }
+
+    if (this.currentUser?.specialty) {
+      path = 'specialist-appointments';
+    }
+    
+    this.router.navigateByUrl('auth/' + path);
+  }
+
   public handleNavigate(path: string): void {
     this.router.navigateByUrl('auth/' + path);
   }
