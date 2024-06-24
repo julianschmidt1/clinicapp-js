@@ -12,6 +12,7 @@ import { AppointmentModel, AppointmentStatus } from '../../models/appointment.mo
 import { AppointmentService } from '../../services/appointment.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
+import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 
 @Component({
   selector: 'app-specialist-appointments',
@@ -23,7 +24,8 @@ import { ToastService } from '../../services/toast.service';
     ToastModule,
     DialogModule,
     ButtonModule,
-    CommonModule
+    CommonModule,
+  ArrowBackComponent
   ],
   templateUrl: './specialist-appointments.component.html',
   styleUrl: './specialist-appointments.component.scss'

@@ -3,7 +3,10 @@
 
     <div class="create-appointment-container">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1>Solicitar turno</h1>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <arrow-back></arrow-back>
+                <h1>Solicitar turno</h1>
+            </div>
             <button (click)="handleSubmit()"
                 [disabled]="!selectedDateTime.day || !selectedPatient || createAppointmentLoading" pButton>
                 Solicitar

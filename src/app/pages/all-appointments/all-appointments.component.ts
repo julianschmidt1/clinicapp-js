@@ -12,6 +12,7 @@ import { map } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 import { AppointmentService } from '../../services/appointment.service';
 import { ToastService } from '../../services/toast.service';
+import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 
 @Component({
   selector: 'app-all-appointments',
@@ -23,7 +24,8 @@ import { ToastService } from '../../services/toast.service';
     DialogModule,
     CommonModule,
     FormsModule,
-    AppointmentsTableComponent
+    AppointmentsTableComponent,
+    ArrowBackComponent
   ],
   templateUrl: './all-appointments.component.html',
   styleUrl: './all-appointments.component.scss'

@@ -13,6 +13,7 @@ import { AppointmentService } from '../../services/appointment.service';
 import { ToastModule } from 'primeng/toast';
 import { ToastService } from '../../services/toast.service';
 import { AppointmentModel, AppointmentStatus } from '../../models/appointment.model';
+import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 
 @Component({
   selector: 'app-create-appointment',
@@ -23,7 +24,8 @@ import { AppointmentModel, AppointmentStatus } from '../../models/appointment.mo
     CommonModule,
     DateToDayNumberPipe,
     ButtonModule,
-    ToastModule
+    ToastModule,
+    ArrowBackComponent
   ],
   templateUrl: './create-appointment.component.html',
   styleUrl: './create-appointment.component.scss'

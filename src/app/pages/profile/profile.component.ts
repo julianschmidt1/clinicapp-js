@@ -12,6 +12,7 @@ import { ToastService } from '../../services/toast.service';
 import { ToastModule } from 'primeng/toast';
 import { DateToDayNumberPipe } from '../../pipes/date-to-day-number.pipe';
 import { groupAndSortSchedule } from '../../helpers/parseModel.helper';
+import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 
 
 @Component({
@@ -26,7 +27,8 @@ import { groupAndSortSchedule } from '../../helpers/parseModel.helper';
     CalendarModule,
     InputTextModule,
     ToastModule,
-    DateToDayNumberPipe
+    DateToDayNumberPipe,
+    ArrowBackComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
@@ -97,34 +99,6 @@ export class ProfileComponent implements OnInit {
         }
 
       })
-
-      // getDoc(userRef).then(async (userDocument) => {
-      //   if (userDocument.exists()) {
-      //     // console.log(userDocument.data());
-      //     const retrievedUserData = userDocument.data() as any;
-      //     this.userData = retrievedUserData;
-
-
-      //     console.log('sche: ', retrievedUserData.schedule);
-      //     this.specialistSchedule = this.groupSchedule(retrievedUserData.schedule);
-
-      //     this.loadingUser = false;
-
-      //     const imagePromises = this.storageService.getUserFiles(retrievedUserData.attachedImage);
-      //     const imagePath = await Promise.all(imagePromises);
-
-      //     this.loadingImages = false;
-
-      //     const images = imagePath.map((i, index) => {
-      //       const displayImageObject = { path: i, foreground: !Boolean(index) };
-
-      //       return displayImageObject;
-      //     })
-      //     this.userImages = images;
-
-      //   }
-
-      // })
     }
   }
 

@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { RatingModule } from 'primeng/rating';
+import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 
 @Component({
   selector: 'app-patient-appointments',
@@ -25,7 +26,8 @@ import { RatingModule } from 'primeng/rating';
     FormsModule,
     ButtonModule,
     InputTextModule,
-    RatingModule
+    RatingModule,
+    ArrowBackComponent
   ],
   templateUrl: './patient-appointments.component.html',
   styleUrl: './patient-appointments.component.scss'
