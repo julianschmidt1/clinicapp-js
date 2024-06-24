@@ -14,6 +14,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { RatingModule } from 'primeng/rating';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
+import { getFilteredAppointments } from '../../helpers/appointmentFilter.helper';
 
 @Component({
   selector: 'app-patient-appointments',
@@ -65,9 +66,14 @@ export class PatientAppointmentsComponent implements OnInit {
     punctual: 1,
   }
 
+  //filters
+  public filterCriteria: string = '';
+  public specialists = [];
+
   ngOnInit(): void {
 
     const appointmentsCollection = collection(this._firestore, 'appointments');
+    const usersCollection = collection(this._firestore, 'users');
 
     const currentUserData = this._authService.getCurrentUserData();
 
@@ -94,8 +100,24 @@ export class PatientAppointmentsComponent implements OnInit {
             }
           });
 
+        collectionData(usersCollection)
+          .pipe(
+            map((users: any[]) => {
+              return users.filter((user) => user?.specialty);
+            })
+          )
+          .subscribe({
+            next: (users) => {
+              this.specialists = users;
+            }
+          });
+
       })
 
+  }
+
+  public getFilteredAppointments() {
+    return getFilteredAppointments(this.filterCriteria, this.allAppointments, this.specialists);
   }
 
   handleActionClick(data) {

@@ -86,7 +86,7 @@ export class AllAppointmentsComponent implements OnInit {
             next: (users) => {
               this.specialists = users;
             }
-          })
+          });
 
       })
 
