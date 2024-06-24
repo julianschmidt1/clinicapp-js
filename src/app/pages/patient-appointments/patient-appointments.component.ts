@@ -117,7 +117,7 @@ export class PatientAppointmentsComponent implements OnInit {
   }
 
   public getFilteredAppointments() {
-    return getFilteredAppointments(this.filterCriteria, this.allAppointments, this.specialists);
+    return getFilteredAppointments(this.filterCriteria, this.allAppointments, this.specialists, 'specialistId');
   }
 
   handleActionClick(data) {

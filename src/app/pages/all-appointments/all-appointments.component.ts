@@ -93,7 +93,7 @@ export class AllAppointmentsComponent implements OnInit {
   }
 
   public getFilteredAppointments() {
-    return getFilteredAppointments(this.filterCriteria, this.allAppointments, this.specialists);
+    return getFilteredAppointments(this.filterCriteria, this.allAppointments, this.specialists, 'specialistId');
   }
 
   public handleConfirmDialog(): void {

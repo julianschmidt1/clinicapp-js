@@ -26,11 +26,11 @@
                 <h1>Mis turnos</h1>
             </div>
 
-            <input type="text" pInputText placeholder="Filtrar">
+            <input type="text" pInputText [(ngModel)]="filterCriteria" placeholder="Filtrar">
         </div>
 
         <div>
-            <appointments-table [loading]="loadingAppointments" (onActionClick)="handleActionClick($event)" [appointments]="allAppointments"
+            <appointments-table [loading]="loadingAppointments" (onActionClick)="handleActionClick($event)" [appointments]="getFilteredAppointments()"
                 userType='specialist' />
         </div>
 

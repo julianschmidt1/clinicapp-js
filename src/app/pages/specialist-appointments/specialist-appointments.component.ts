@@ -13,6 +13,7 @@ import { AppointmentService } from '../../services/appointment.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
+import { getFilteredAppointments } from '../../helpers/appointmentFilter.helper';
 
 @Component({
   selector: 'app-specialist-appointments',
@@ -49,11 +50,13 @@ export class SpecialistAppointmentsComponent implements OnInit {
 
   public commentsDialogVisible = false;
 
-  public filter: string = '';
+  public filterCriteria: string = '';
+  public patients = [];
 
   ngOnInit(): void {
 
     const appointmentsCollection = collection(this._firestore, 'appointments');
+    const usersCollection = collection(this._firestore, 'users');
     const currentUserData = this._authService.getCurrentUserData();
     this.loadingAppointments = true;
 
@@ -81,16 +84,20 @@ export class SpecialistAppointmentsComponent implements OnInit {
             }
           });
 
+        collectionData(usersCollection)
+          .pipe(
+            map((users: any[]) => {
+              return users.filter((user) => user?.healthcare);
+            })
+          )
+          .subscribe({
+            next: (users) => {
+              this.patients = users;
+            }
+          });
+
       })
 
-  }
-
-  public getRows() {
-    if (this.filter.trim().length === 0) {
-    }
-
-    return this.allAppointments;
-    // return this.allAppointments.filter(a => );
   }
 
   public handleActionClick(event): void {
@@ -198,8 +205,8 @@ export class SpecialistAppointmentsComponent implements OnInit {
       });
   }
 
-  public handleFilter(event: Event): void {
-    console.log(event);
+  public getFilteredAppointments() {
+    return getFilteredAppointments(this.filterCriteria, this.allAppointments, this.patients, 'patientId');
   }
 
   get modalText() {
