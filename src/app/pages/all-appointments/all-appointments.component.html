@@ -25,11 +25,11 @@
                 <arrow-back></arrow-back>
                 <h1>Mis turnos</h1>
             </div>
-            <input type="text" pInputText placeholder="Filtrar">
+            <input type="text" pInputText [(ngModel)]="filterCriteria" placeholder="Filtrar">
         </div>
 
         <div>
-            <appointments-table (onActionClick)="handleActionClick($event)" [appointments]="allAppointments"
+            <appointments-table (onActionClick)="handleActionClick($event)" [appointments]="getFilteredAppointments()"
                 userType='admin' />
         </div>
 

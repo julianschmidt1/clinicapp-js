@@ -1,18 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
+import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { FormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
-import { AppointmentModel, AppointmentStatus } from '../../models/appointment.model';
-import { AppointmentsTableComponent } from '../../components/appointments-table/appointments-table.component';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { map } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
-import { AppointmentService } from '../../services/appointment.service';
-import { ToastService } from '../../services/toast.service';
+import { AppointmentsTableComponent } from '../../components/appointments-table/appointments-table.component';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
+import { getFilteredAppointments } from '../../helpers/appointmentFilter.helper';
+import { AppointmentModel, AppointmentStatus } from '../../models/appointment.model';
+import { AppointmentService } from '../../services/appointment.service';
+import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
 
 @Component({
   selector: 'app-all-appointments',
@@ -46,10 +47,14 @@ export class AllAppointmentsComponent implements OnInit {
   public allAppointments: AppointmentModel[] = [];
   public appointmentsLoading = false;
 
+  public filterCriteria: string = '';
+  public specialists = [];
+
   ngOnInit(): void {
 
-    const appointmentsCollection = collection(this._firestore, 'appointments');
     const currentUserData = this._authService.getCurrentUserData();
+    const appointmentsCollection = collection(this._firestore, 'appointments');
+    const usersCollection = collection(this._firestore, 'users');
 
     this.appointmentsLoading = true;
     this._authService.getUserById(currentUserData.uid)
@@ -71,8 +76,24 @@ export class AllAppointmentsComponent implements OnInit {
             }
           });
 
+        collectionData(usersCollection)
+          .pipe(
+            map((users: any[]) => {
+              return users.filter((user) => user?.specialty);
+            })
+          )
+          .subscribe({
+            next: (users) => {
+              this.specialists = users;
+            }
+          })
+
       })
 
+  }
+
+  public getFilteredAppointments() {
+    return getFilteredAppointments(this.filterCriteria, this.allAppointments, this.specialists);
   }
 
   public handleConfirmDialog(): void {
@@ -82,7 +103,7 @@ export class AllAppointmentsComponent implements OnInit {
       status: this.actionData.action,
       reason: this.reason,
     }
-    
+
     // cuando cancelas el turno el estado del horario vuelve a libre
     if (this.actionData.action === AppointmentStatus.Cancelled) {
       const { appointment } = this.actionData;
@@ -126,7 +147,7 @@ export class AllAppointmentsComponent implements OnInit {
   public handleActionClick(event): void {
     console.log(event)
     this.actionData = event;
-    if(event.action === AppointmentStatus.Cancelled) {
+    if (event.action === AppointmentStatus.Cancelled) {
       this.dialogVisible = true;
     }
   }
