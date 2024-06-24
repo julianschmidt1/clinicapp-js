@@ -1,19 +1,20 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Firestore, addDoc, collection, collectionData } from '@angular/fire/firestore';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidatorFn, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { TooltipModule } from 'primeng/tooltip';
-import { AuthService } from '../../services/auth.service';
-import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
-import { ToastService } from '../../services/toast.service';
-import { Router } from '@angular/router';
-import { ToastModule } from 'primeng/toast';
-import { passwordMatchValidator, validateFilesAmount, validateIdentification } from '../../helpers/newUserValidations.helper';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
+import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
+import { passwordMatchValidator, validateFilesAmount, validateIdentification } from '../../helpers/newUserValidations.helper';
+import { AuthService } from '../../services/auth.service';
+import { ToastService } from '../../services/toast.service';
+import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-register',
@@ -29,7 +30,9 @@ import { MultiSelectModule } from 'primeng/multiselect';
     FormsModule,
     ArrowBackComponent,
     ToastModule,
-    MultiSelectModule
+    MultiSelectModule,
+    RecaptchaModule,
+    RecaptchaFormsModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss'
@@ -67,6 +70,7 @@ export class RegisterComponent {
       healthcare: ['', Validators.required],
       specialty: [null],
       attachedImage: ['', [Validators.required, validateFilesAmount(2, 2)]],
+      captcha: ['', Validators.required],
     },
       { validators: passwordMatchValidator }
     );
@@ -82,6 +86,10 @@ export class RegisterComponent {
         this.allSpecialties = [];
       }
     });
+  }
+
+  resolved(captchaResponse: string) {
+    console.log(`Resolved captcha with response: ${captchaResponse}`);
   }
 
   handleSelectRegisterType(type: 'patient' | 'specialist'): void {
@@ -109,21 +117,7 @@ export class RegisterComponent {
       this.visible = true;
       return;
     }
-
-    // this.formControls['specialty'].setValue(value);
   }
-
-  // handleChangeSpecialty(event: DropdownChangeEvent): void {
-  //   console.log(event);
-
-  //   const { value } = event;
-  //   if (value === 'Agregar +') {
-  //     this.visible = true;
-  //     return;
-  //   }
-
-  //   this.formControls['specialty'].setValue(value);
-  // }
 
   handleConfirmCreation(): void {
     const displayName = this.newSpecialtyName.trim();

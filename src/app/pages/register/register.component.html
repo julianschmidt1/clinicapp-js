@@ -120,11 +120,12 @@
                     <!-- <p-dropdown class="p-fluid" [options]="allSpecialties" (onChange)="handleChangeSpecialty($event)"
                         formControlName="specialty" placeholder="Ingrese la especialidad" optionLabel="displayName"
                         optionValue="displayName" /> -->
-                        <p-multiSelect class="p-fluid" (onChange)="handleChangeSpecialty($event)" [showToggleAll]="false" [options]="allSpecialties" formControlName="specialty" optionLabel="displayName"
+                    <p-multiSelect class="p-fluid" (onChange)="handleChangeSpecialty($event)" [showToggleAll]="false"
+                        [options]="allSpecialties" formControlName="specialty" optionLabel="displayName"
                         optionValue="displayName" placeholder="Selecciona una especialidad" />
-                        <div *ngIf="formControls['specialty'].touched && formControls['specialty'].invalid" class="error">
-                            La especialidad es requerida
-                        </div>
+                    <div *ngIf="formControls['specialty'].touched && formControls['specialty'].invalid" class="error">
+                        La especialidad es requerida
+                    </div>
 
 
                 </div>
@@ -166,6 +167,14 @@
                         *ngIf="registerForm.hasError('passwordMatch') && (registerForm.get('confirmPassword').dirty || registerForm.get('confirmPassword').touched)">
                         Las contraseñas no coinciden.
                     </div>
+                </div>
+            </div>
+            <div class="input-container">
+                <re-captcha (resolved)="resolved($event)" formControlName="captcha"
+                    siteKey="6Lfw1_8pAAAAAF0htvreaY0pBKKLnqAcHYjrTXPF"></re-captcha>
+                <div class="error"
+                    *ngIf="formControls['captcha'].invalid && formControls['captcha'].touched">
+                    Debe validar que es un usuario real
                 </div>
             </div>
 
