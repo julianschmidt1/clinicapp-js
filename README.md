@@ -44,3 +44,15 @@ El usuario debe completar un formulario indicando observaciones y llenando un ra
 
 `Completar encuesta`
 El usuario debe completar un grupo de ratings en respuesta a las preguntas que se hagan.
+
+#### Gestion de usuarios
+
+Unicamente accesible por usuarios con rol administrador.
+Listado de usuarios de la aplicacion. Muestra informacion detallada de los usuarios y permite habilitar/deshabilitar a los especialistas.
+Tambien puede dar de alta usuarios de todo tipo.
+
+### Perfil
+
+Muestra la informacion general con la cual se registro al usuario, asi como sus imagenes.
+Si el usuario es de tipo `paciente`, este tendra la posibilidad de clickear en una de sus imagenes, alternando entre ellas.
+Si el usuario es de tipo `especialista`, este tendra una seccion debajo que le permitira ingresar sus horarios de atencion y disponibilidad.
