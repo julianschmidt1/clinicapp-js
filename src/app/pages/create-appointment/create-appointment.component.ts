@@ -14,6 +14,7 @@ import { ToastModule } from 'primeng/toast';
 import { ToastService } from '../../services/toast.service';
 import { AppointmentModel, AppointmentStatus } from '../../models/appointment.model';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-appointment',
@@ -36,6 +37,7 @@ export class CreateAppointmentComponent implements OnInit {
   private _auth = inject(AuthService);
   private _appointmentService = inject(AppointmentService);
   private _toastService = inject(ToastService);
+  private _router = inject(Router);
 
   public currentUser;
 
@@ -107,35 +109,22 @@ export class CreateAppointmentComponent implements OnInit {
       time: this.selectedDateTime.time,
     };
 
-    // this._auth.getUserById(this.selectedSpecialist)
-    //   .then(data => {
-    //     const specialist = data.data();
-
-    //     const { day, time } = this.selectedDateTime;
-    //     const { schedule } = specialist;
-
-    //     let appointmentToUpdate = schedule.find((ap: AppointmentModel) => ap.day === day && ap.time === time);
-
-    //     const updatedSchedule = [
-    //       ...schedule.filter((ap: AppointmentModel) => ap.day !== day && ap.time !== time),
-    //       {
-    //         ...appointmentToUpdate,
-    //         busy: true,
-    //       }
-    //     ];
-
-    //     this._auth.updateUser({
-    //       ...specialist,
-    //       schedule: updatedSchedule
-    //     }).then(() => {
-
-    //     });
-    //   })
-
     this._appointmentService.addAppointment(appointment)
       .then(() => {
         this._toastService.successMessage('Turno creado con exito.');
         this.createAppointmentLoading = false;
+        let path: string;
+
+        if (this.currentUser?.admin) {
+          path = 'all-appointments';
+        }
+
+        if (this.currentUser?.healthcare) {
+          path = 'patient-appointments';
+        }
+
+        this._router.navigateByUrl('auth/' + path);
+
       })
       .catch(() => {
         this._toastService.errorMessage('Ocurrio un error al crear el turno.');
