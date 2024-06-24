@@ -62,13 +62,16 @@ export class AuthService {
         }
 
         sendEmailVerification(newUser.user);
-        setDoc(doc(this.firestore, 'users', userId), { ...userData, id: userId }); 
+        setDoc(doc(this.firestore, 'users', userId), { ...userData, id: userId });
         return true;
       })
 
     return false;
   }
 
+  public updateUser(user): Promise<void> {
+    return setDoc(doc(this.firestore, 'users', user.id), user);
+  }
 
   public getCurrentUserData(): any {
 

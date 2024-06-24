@@ -172,5 +172,6 @@ export class ProfileComponent implements OnInit {
 
 export interface ScheduleModel {
   time: string,
-  day: string
+  day: string,
+  busy:  boolean,
 }

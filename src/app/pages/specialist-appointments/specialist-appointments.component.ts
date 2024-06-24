@@ -95,6 +95,8 @@ export class SpecialistAppointmentsComponent implements OnInit {
 
   public handleActionClick(event): void {
 
+    const { specialistId, day, time } = event.appointment;
+
     if (!event.action) {
       this.actionData = event;
       this.commentsDialogVisible = true;
@@ -111,26 +113,76 @@ export class SpecialistAppointmentsComponent implements OnInit {
       return;
     }
 
-    const updatedAppointment = {
-      ...event.appointment,
-      status: event.action
-    }
+    this._authService.getUserById(specialistId)
+      .then(data => {
+        const specialist = data.data();
+        const { schedule } = specialist;
 
-    this._appointmentService.updateAppointment(updatedAppointment)
-      .then(() => {
-        this._toastService.successMessage('Turno actualizado con exito');
+        let appointmentToUpdate = schedule.find((ap: AppointmentModel) => ap.day === day && ap.time === time);
+
+        const updatedSchedule = [
+          ...schedule.filter((ap: AppointmentModel) => ap.day !== day && ap.time !== time),
+          {
+            ...appointmentToUpdate,
+            busy: true,
+          }
+        ];
+
+        this._authService.updateUser({
+          ...specialist,
+          schedule: updatedSchedule
+        }).then(() => {
+
+          const updatedAppointment = {
+            ...event.appointment,
+            status: event.action
+          }
+
+          this._appointmentService.updateAppointment(updatedAppointment)
+            .then(() => {
+              this._toastService.successMessage('Turno actualizado con exito');
+            })
+            .catch(() => {
+              this._toastService.errorMessage('Error al actualizar el turno');
+            });
+
+        });
       })
-      .catch(() => {
-        this._toastService.errorMessage('Error al actualizar el turno');
-      });
   }
 
   public handleConfirmDialog(): void {
-    this.loadingModal = true
+    this.loadingModal = true;
     const updatedAppointment = {
       ...this.actionData.appointment,
       status: this.actionData.action,
       reason: this.reason,
+    }
+
+    // cuando cancelas el turno el estado del horario vuelve a libre
+    if (this.actionData.action === AppointmentStatus.Cancelled) {
+      const { appointment } = this.actionData;
+      const { day, time, specialistId } = appointment;
+
+      this._authService.getUserById(specialistId)
+        .then(data => {
+          const specialist = data.data();
+          const { schedule } = specialist;
+
+          let appointmentToUpdate = schedule.find((ap: AppointmentModel) => ap.day === day && ap.time === time);
+
+          const updatedSchedule = [
+            ...schedule.filter((ap: AppointmentModel) => ap.day !== day && ap.time !== time),
+            {
+              ...appointmentToUpdate,
+              busy: false,
+            }
+          ];
+
+          this._authService.updateUser({
+            ...specialist,
+            schedule: updatedSchedule
+          });
+        })
     }
 
     this._appointmentService.updateAppointment(updatedAppointment)

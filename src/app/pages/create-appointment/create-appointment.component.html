@@ -57,5 +57,9 @@
             </div>
         </div>
 
+        <div class="schedule-container" *ngIf="!selectedSpecialistSchedule.length && selectedSpecialist">
+            <h2 style="margin-top: 30px;">No hay turnos disponibles para el especialista seleccionado</h2>
+        </div>
+
     </div>
 </div>

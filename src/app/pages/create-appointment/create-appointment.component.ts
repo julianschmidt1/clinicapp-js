@@ -50,7 +50,7 @@ export class CreateAppointmentComponent implements OnInit {
   public selectedPatient;
   public selectedSpecialistSchedule = [];
 
-  public selectedDateTime: ScheduleModel = { time: '', day: '' };
+  public selectedDateTime: ScheduleModel = { time: '', day: '', busy: false, };
 
   // loading
   public loadingSpecialties = false;
@@ -95,6 +95,8 @@ export class CreateAppointmentComponent implements OnInit {
   }
 
   handleSubmit(): void {
+    this.createAppointmentLoading = true;
+
     const appointment: AppointmentModel = {
       specialty: this.selectedSpecialty,
       specialistId: this.selectedSpecialist,
@@ -102,8 +104,31 @@ export class CreateAppointmentComponent implements OnInit {
       status: AppointmentStatus.Pending,
       ...this.selectedDateTime,
     };
-    this.createAppointmentLoading = true;
 
+    // this._auth.getUserById(this.selectedSpecialist)
+    //   .then(data => {
+    //     const specialist = data.data();
+
+    //     const { day, time } = this.selectedDateTime;
+    //     const { schedule } = specialist;
+
+    //     let appointmentToUpdate = schedule.find((ap: AppointmentModel) => ap.day === day && ap.time === time);
+
+    //     const updatedSchedule = [
+    //       ...schedule.filter((ap: AppointmentModel) => ap.day !== day && ap.time !== time),
+    //       {
+    //         ...appointmentToUpdate,
+    //         busy: true,
+    //       }
+    //     ];
+
+    //     this._auth.updateUser({
+    //       ...specialist,
+    //       schedule: updatedSchedule
+    //     }).then(() => {
+
+    //     });
+    //   })
 
     this._appointmentService.addAppointment(appointment)
       .then(() => {
@@ -114,12 +139,15 @@ export class CreateAppointmentComponent implements OnInit {
         this._toastService.errorMessage('Ocurrio un error al crear el turno.');
         this.createAppointmentLoading = false;
       })
+
   }
 
   public handleChangeSpecialist(event: DropdownChangeEvent): void {
     const selectedSpecialist = this.specialists.find(specialist => specialist.id === event.value);
     const sortedSchedule = groupAndSortSchedule(selectedSpecialist.schedule);
-    this.selectedSpecialistSchedule = sortedSchedule;
+
+    this.selectedSpecialistSchedule = sortedSchedule.filter(([_, value]: [string, ScheduleModel[]]) => value.some(ap => !ap.busy));
+    // console.log(sortedSchedule.filter(([_, value]: [string, ScheduleModel[]]) => value.some(ap => !ap.busy)));
   }
 
   public handleSelectTime(dayData: ScheduleModel): void {
