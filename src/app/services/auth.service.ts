@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, sendEmailVerification } from '@angular/fire/auth';
-import { Firestore, collection, collectionData, doc, setDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, getDoc, setDoc } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { StorageService } from './firebase-storage.service';
 
@@ -62,7 +62,7 @@ export class AuthService {
         }
 
         sendEmailVerification(newUser.user);
-        setDoc(doc(this.firestore, 'users', userId), { ...userData, id: userId });
+        setDoc(doc(this.firestore, 'users', userId), { ...userData, id: userId }); 
         return true;
       })
 
@@ -83,15 +83,9 @@ export class AuthService {
   }
 
   public getUserById(userId: string) {
-    this.usersCollection()
-      .subscribe({
-        next: (data: any) => {
-          const foundUser = data.find((user) => user.id === userId);
+    const docRef = doc(this.firestore, `users/${userId}`);
 
-          return foundUser;
-        }
-      })
-    return null;
+    return getDoc(docRef);
   }
 
   public usersCollection(): Observable<any> {

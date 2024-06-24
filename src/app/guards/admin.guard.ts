@@ -15,8 +15,9 @@ export const userGuard: (userTypes: string[]) => CanActivateFn = (userTypes: str
 
                 const isValidPatient = currentUser?.healthcare && userTypes.includes('patient');
                 const isValidAdmin = currentUser?.admin && userTypes.includes('admin');
+                const isValidSpecialist = currentUser?.specialty && userTypes.includes('specialist');
 
-                if (isValidPatient || isValidAdmin) {
+                if (isValidPatient || isValidAdmin || isValidSpecialist) {
                     return true;
                 }
 

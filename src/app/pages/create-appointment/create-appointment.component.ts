@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
 import { AppointmentService } from '../../services/appointment.service';
 import { ToastModule } from 'primeng/toast';
 import { ToastService } from '../../services/toast.service';
+import { AppointmentModel, AppointmentStatus } from '../../models/appointment.model';
 
 @Component({
   selector: 'app-create-appointment',
@@ -92,11 +93,11 @@ export class CreateAppointmentComponent implements OnInit {
   }
 
   handleSubmit(): void {
-    const appointment = {
+    const appointment: AppointmentModel = {
       specialty: this.selectedSpecialty,
       specialistId: this.selectedSpecialist,
       patientId: this._auth.getCurrentUserData().uid,
-      status: 'Pendiente',
+      status: AppointmentStatus.Pending,
       ...this.selectedDateTime,
     };
     this.createAppointmentLoading = true;

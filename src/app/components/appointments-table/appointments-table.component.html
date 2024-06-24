@@ -5,17 +5,43 @@
             <th>Paciente</th>
             <th>Dia</th>
             <th>Hora</th>
+            <th>Estado</th>
             <th>Acciones</th>
         </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-product>
+    <ng-template pTemplate="body" let-appointment>
         <tr>
-            <td>{{ product.specialistId }}</td>
-            <td>{{ product.patientId }}</td>
-            <td>{{ product.day }}</td>
-            <td>{{ product.time }}</td>
+            <td>{{ appointment.specialistId | userIdToFullname | async }}</td>
+            <td>{{ appointment.patientId | userIdToFullname | async }}</td>
+            <td>{{ appointment.day }}</td>
+            <td>{{ appointment.time }}</td>
             <td>
-                <button pButton>Accion</button>
+                <div [ngClass]="getClassByStatus(appointment.status)" style="padding: 5px 8px; border-radius: 15px; width: min-content;">
+                    {{ appointment.status }}
+                </div>
+            </td>
+            <td>
+
+                <ng-container *ngIf="userType === 'specialist'">
+
+                    <div style="display: flex; gap: 8px;">
+                        <button class="outlined" *ngIf="appointment.status === status.Confirmed" pButton
+                            (click)="handleActionClick(appointment, status.Cancelled)">Cancelar</button>
+
+                        <button class="outlined" *ngIf="appointment.status === status.Pending" pButton
+                            (click)="handleActionClick(appointment,status.Rejected)">Rechazar</button>
+
+                        <button *ngIf="appointment.status === status.Pending" pButton
+                            (click)="handleActionClick(appointment,status.Confirmed)">Aceptar</button>
+
+                        <button *ngIf="appointment.status === status.Confirmed" pButton
+                            (click)="handleActionClick(appointment,status.Done)">Finalizar</button>
+
+                        <button *ngIf="appointment.reason" pButton (click)="handleActionClick(appointment)">Ver comentarios</button>
+                    </div>
+
+                </ng-container>
+
             </td>
         </tr>
     </ng-template>
