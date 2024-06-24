@@ -16,14 +16,14 @@
             <td>{{ appointment.day }}</td>
             <td>{{ appointment.time }}</td>
             <td>
-                <div [ngClass]="getClassByStatus(appointment.status)" style="padding: 5px 8px; border-radius: 15px; width: min-content;">
+                <div [ngClass]="getClassByStatus(appointment.status)"
+                    style="padding: 5px 8px; border-radius: 15px; width: min-content;">
                     {{ appointment.status }}
                 </div>
             </td>
             <td>
 
                 <ng-container *ngIf="userType === 'specialist'">
-
                     <div style="display: flex; gap: 8px;">
                         <button class="outlined" *ngIf="appointment.status === status.Confirmed" pButton
                             (click)="handleActionClick(appointment, status.Cancelled)">Cancelar</button>
@@ -37,9 +37,27 @@
                         <button *ngIf="appointment.status === status.Confirmed" pButton
                             (click)="handleActionClick(appointment,status.Done)">Finalizar</button>
 
-                        <button *ngIf="appointment.reason" pButton (click)="handleActionClick(appointment)">Ver comentarios</button>
+                        <button *ngIf="appointment.reason" pButton (click)="handleActionClick(appointment)">Ver
+                            comentarios</button>
                     </div>
+                </ng-container>
 
+                <ng-container *ngIf="userType === 'patient'">
+                    <div style="display: flex; gap: 8px;">
+                        <button class="outlined"
+                            *ngIf="appointment.status !== status.Done  && appointment.status !== status.Cancelled"
+                            pButton (click)="handleActionClick(appointment, status.Cancelled)">Cancelar</button>
+
+                        <button *ngIf="appointment.reason" pButton
+                            (click)="handleActionClick(appointment, 'comments')">Ver comentarios</button>
+                        <button *ngIf="appointment.status === status.Done && !appointment?.rating" pButton
+                            (click)="handleActionClick(appointment, 'rating')">Calificar atencion</button>
+
+                        <button *ngIf="appointment.status === status.Done && appointment?.reason && !appointment?.survey" pButton
+                            (click)="handleActionClick(appointment, 'survey')">Completar encuesta</button>
+
+
+                    </div>
                 </ng-container>
 
             </td>

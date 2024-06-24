@@ -1,3 +1,65 @@
+<p-toast></p-toast>
+
+<p-dialog [header]="'Motivo de cancelacion'" [(visible)]="dialogVisible" [modal]="true" [draggable]="false"
+    [style]="{ width: '350px' }">
+    <div style="width: 100%;">
+        <textarea placeholder="Comentario" style="width: 100%;" type="text" pInputText [(ngModel)]="reason"></textarea>
+    </div>
+    <div style="display: flex; width: 100%; justify-content: flex-end; align-items: center; margin-top: 10px;">
+        <button [disabled]="loadingModal" (click)="handleConfirmDialog()" pButton>
+            Confirmar
+            <i *ngIf="loadingModal" class="pi pi-spin pi-spinner"></i>
+        </button>
+    </div>
+</p-dialog>
+
+<p-dialog header="Comentarios" [(visible)]="commentsDialogVisible" [modal]="true" [draggable]="false"
+    [style]="{ width: '350px' }">
+    {{actionData?.appointment?.reason}}
+</p-dialog>
+
+<p-dialog header="Calificar atencion" [(visible)]="ratingDialogVisible" [modal]="true" [draggable]="false"
+    [style]="{ width: '350px' }">
+    <div style="width: 100%;">
+        <p-rating [(ngModel)]="starsRating" [cancel]="false" />
+        <textarea placeholder="Comentario" style="width: 100%; margin-top: 8px;" type="text" pInputText
+            [(ngModel)]="ratingComment"></textarea>
+    </div>
+    <div style="display: flex; width: 100%; justify-content: flex-end; align-items: center; margin-top: 10px;">
+        <button [disabled]="loadingModal || !starsRating || !ratingComment.trim()" (click)="handleConfirmRating()" pButton>
+            Confirmar
+            <i *ngIf="loadingModal" class="pi pi-spin pi-spinner"></i>
+        </button>
+    </div>
+</p-dialog>
+
+<p-dialog header="Encuesta" [(visible)]="surveyDialogVisible" [modal]="true" [draggable]="false"
+    [style]="{ width: '600px' }">
+    <div>
+        <h4>¿Cómo calificaría la atención del especialista en términos de amabilidad y empatía?</h4>
+        <p-rating [(ngModel)]="surveyAnswers.attention" [cancel]="false" />
+
+        <h4>¿Qué tan satisfecho/a está con la claridad de las explicaciones proporcionadas por el especialista?</h4>
+        <p-rating [(ngModel)]="surveyAnswers.detail" [cancel]="false" />
+
+        <h4>¿Cómo evaluaría la disponibilidad del especialista para responder preguntas y preocupaciones?</h4>
+        <p-rating [(ngModel)]="surveyAnswers.availability" [cancel]="false" />
+
+        <h4>¿Qué tan puntual fue el especialista con respecto a la hora de su cita?</h4>
+        <p-rating [(ngModel)]="surveyAnswers.punctual" [cancel]="false" />
+
+    </div>
+
+    <div style="display: flex; width: 100%; justify-content: flex-end; align-items: center; margin-top: 10px;">
+        <button [disabled]="loadingModal" (click)="handleConfirmSurvey()" pButton>
+            Confirmar
+            <i *ngIf="loadingModal" class="pi pi-spin pi-spinner"></i>
+        </button>
+    </div>
+
+</p-dialog>
+
+
 <div class="screen">
 
 
@@ -5,7 +67,8 @@
         <h1>Mis turnos</h1>
 
         <div>
-            <appointments-table [appointments]="allAppointments" />
+            <appointments-table [appointments]="allAppointments" userType="patient"
+                (onActionClick)="handleActionClick($event)" />
         </div>
     </div>
 </div>

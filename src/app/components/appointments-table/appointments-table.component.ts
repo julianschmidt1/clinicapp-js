@@ -24,7 +24,7 @@ export class AppointmentsTableComponent {
 
   public status = AppointmentStatus;
 
-  public handleActionClick(appointment: AppointmentModel, action?: AppointmentStatus): void {
+  public handleActionClick(appointment: AppointmentModel, action?: AppointmentStatus | string): void {
 
     this.onActionClick.emit({
       appointment,

@@ -8,6 +8,20 @@ export interface AppointmentModel {
     status: AppointmentStatus;
     specialty: string,
     reason?: string,
+    rating?: RatingModel,
+    survey?: SurveyModel
+}
+
+export interface RatingModel {
+    comment: string,
+    rating: number,
+}
+
+export interface SurveyModel {
+    attention: number,
+    availability: number,
+    detail: number,
+    punctual: number,
 }
 
 export enum AppointmentStatus {
