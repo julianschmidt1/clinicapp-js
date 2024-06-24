@@ -21,6 +21,7 @@ export class AppointmentsTableComponent {
   @Input() appointments: AppointmentModel[] = [];
   @Input() userType: string;
   @Output() onActionClick = new EventEmitter<any>();
+  @Input() loading = false;
 
   public status = AppointmentStatus;
 

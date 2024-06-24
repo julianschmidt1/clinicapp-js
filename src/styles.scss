@@ -114,3 +114,14 @@ button {
         margin-left: 8px;
     }
 }
+
+.loading-table-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    i {
+        font-size: 24px;
+        margin-left: 15px;
+    }
+}

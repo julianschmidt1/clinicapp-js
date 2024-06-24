@@ -30,7 +30,7 @@
         </div>
 
         <div>
-            <appointments-table (onActionClick)="handleActionClick($event)" [appointments]="allAppointments"
+            <appointments-table [loading]="loadingAppointments" (onActionClick)="handleActionClick($event)" [appointments]="allAppointments"
                 userType='specialist' />
         </div>
 

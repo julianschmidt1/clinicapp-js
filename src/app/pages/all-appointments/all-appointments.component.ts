@@ -44,12 +44,14 @@ export class AllAppointmentsComponent implements OnInit {
   public currentUser;
 
   public allAppointments: AppointmentModel[] = [];
+  public appointmentsLoading = false;
 
   ngOnInit(): void {
 
     const appointmentsCollection = collection(this._firestore, 'appointments');
     const currentUserData = this._authService.getCurrentUserData();
 
+    this.appointmentsLoading = true;
     this._authService.getUserById(currentUserData.uid)
       .then((data) => {
         this.currentUser = data.data();
@@ -61,6 +63,11 @@ export class AllAppointmentsComponent implements OnInit {
             next: (appointments: AppointmentModel[]) => {
               console.log(appointments);
               this.allAppointments = appointments;
+              this.appointmentsLoading = false;
+            },
+            error: () => {
+              this._toastService.errorMessage('Error al cargar turnos');
+              this.appointmentsLoading = false;
             }
           });
 

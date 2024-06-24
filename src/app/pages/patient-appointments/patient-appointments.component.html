@@ -70,7 +70,7 @@
         </div>
 
         <div>
-            <appointments-table [appointments]="allAppointments" userType="patient"
+            <appointments-table [loading]="loadingAppointments" [appointments]="allAppointments" userType="patient"
                 (onActionClick)="handleActionClick($event)" />
         </div>
     </div>

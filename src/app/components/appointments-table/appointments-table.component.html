@@ -70,4 +70,15 @@
             </td>
         </tr>
     </ng-template>
+    <ng-template pTemplate="emptymessage">
+        <tr>
+            <td *ngIf="loading" colspan="5">
+                <div class="loading-table-container">
+                    Cargando...
+                    <i class="pi pi-spin pi-spinner"></i>
+                </div>
+            </td>
+            <td *ngIf="!loading && !appointments.length" colspan="5">No se encontraron turnos</td>
+        </tr>
+    </ng-template>
 </p-table>

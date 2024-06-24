@@ -36,7 +36,7 @@
     padding: 12px;
     color: $primary-color-darker;
 
-    .svg-container{
+    .svg-container {
         width: 100%;
         display: flex;
         justify-content: center;
@@ -46,6 +46,7 @@
             height: 80px;
             width: 80px;
             color: $primary-color-1;
+
             path {
                 fill: $primary-color-darker;
             }
@@ -89,10 +90,21 @@
 }
 
 .topbar-logout {
+    display: flex;
+    align-items: center;
     cursor: pointer;
-    transition: 0.3s ease;
+    border-radius: 8px;
+    // border: 1px solid red;
+    padding: 12px;
+    transition: all 0.3s ease;
+
+    i {
+        transform: rotate(180deg);
+        margin-right: 10px;
+    }
 
     &:hover {
         color: red;
+        border: 1px solid red;
     }
 }

@@ -25,7 +25,7 @@ import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.compo
     DialogModule,
     ButtonModule,
     CommonModule,
-  ArrowBackComponent
+    ArrowBackComponent
   ],
   templateUrl: './specialist-appointments.component.html',
   styleUrl: './specialist-appointments.component.scss'
@@ -39,6 +39,7 @@ export class SpecialistAppointmentsComponent implements OnInit {
 
   public allAppointments: AppointmentModel[] = [];
   public currentUser;
+  public loadingAppointments = false;
 
   // Confirmation dialog
   public dialogVisible = false;
@@ -54,6 +55,7 @@ export class SpecialistAppointmentsComponent implements OnInit {
 
     const appointmentsCollection = collection(this._firestore, 'appointments');
     const currentUserData = this._authService.getCurrentUserData();
+    this.loadingAppointments = true;
 
     this._authService.getUserById(currentUserData.uid)
       .then((data) => {
@@ -72,6 +74,10 @@ export class SpecialistAppointmentsComponent implements OnInit {
             next: (appointments) => {
               console.log(appointments);
               this.allAppointments = appointments;
+              this.loadingAppointments = false;
+            },
+            error: () => {
+              this._toastService.errorMessage('Error al cargar turnos');
             }
           });
 
@@ -89,7 +95,7 @@ export class SpecialistAppointmentsComponent implements OnInit {
 
   public handleActionClick(event): void {
 
-    if(!event.action) {
+    if (!event.action) {
       this.actionData = event;
       this.commentsDialogVisible = true;
       return;

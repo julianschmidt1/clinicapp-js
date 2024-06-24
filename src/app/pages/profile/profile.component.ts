@@ -123,7 +123,11 @@ export class ProfileComponent implements OnInit {
 
     const userDocRef = doc(this.firestore, `users/${this.userData.id}`);
     updateDoc(userDocRef, {
-      schedule: arrayUnion({ day: this.selectedDay, time: this.selectedTime })
+      schedule: arrayUnion({
+        day: this.selectedDay,
+        time: this.selectedTime,
+        busy: false,
+      })
     }).then((d) => {
 
       this.toastService.successMessage('Horario creado exitosamente.');

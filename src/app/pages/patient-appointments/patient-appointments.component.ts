@@ -41,6 +41,7 @@ export class PatientAppointmentsComponent implements OnInit {
 
   public allAppointments: AppointmentModel[] = [];
   public currentUser;
+  public loadingAppointments = false;
 
   // Comment dialog
   public loadingModal = false;
@@ -70,6 +71,7 @@ export class PatientAppointmentsComponent implements OnInit {
 
     const currentUserData = this._authService.getCurrentUserData();
 
+    this.loadingAppointments = true;
     this._authService.getUserById(currentUserData.uid)
       .then((data) => {
         this.currentUser = data.data();
@@ -85,6 +87,10 @@ export class PatientAppointmentsComponent implements OnInit {
           .subscribe({
             next: (appointments) => {
               this.allAppointments = appointments;
+              this.loadingAppointments = false;
+            },
+            error: (e) => {
+              this._toastService.errorMessage('Error a cargar turnos');
             }
           });
 
