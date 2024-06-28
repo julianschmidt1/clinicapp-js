@@ -17,6 +17,7 @@ import { StorageService } from '../../services/firebase-storage.service';
 import { ToastService } from '../../services/toast.service';
 import { ChipModule } from 'primeng/chip';
 import { first } from 'rxjs';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-login',
@@ -34,18 +35,30 @@ import { first } from 'rxjs';
     ToastModule,
     ChipModule
   ],
+  animations: [
+    trigger('textoState', [
+      state('hidden', style({
+        transform: 'translateX(50%)',
+        opacity: 0
+      })),
+      state('visible', style({
+        transform: 'translateX(0)',
+        opacity: 1
+      })),
+      transition('hidden => visible', animate('150ms ease-in')),
+      transition('visible => hidden', animate('150ms ease-out'))
+    ])
+  ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent implements OnInit {
 
   private toastService = inject(ToastService);
-
   private auth = inject(Auth);
   private authService = inject(AuthService);
   private storageService = inject(StorageService);
   private router = inject(Router);
-
   private firestore = inject(Firestore);
 
   public loginLoading = false;
@@ -81,13 +94,14 @@ export class LoginComponent implements OnInit {
             return {
               ...u,
               imagePath,
-              password
+              password,
+              visible: false,
             };
           }));
 
           this.defaultUsersLoading = false;
           this.defaultUsers = parsedUsers;
-
+          
         },
         error: (error) => {
           console.log(error);
@@ -108,6 +122,9 @@ export class LoginComponent implements OnInit {
 
     this.user.email = user.email;
     this.user.password = user.password;
+    this.defaultUsers.forEach(u => {
+      u.visible = user.id === u.id
+    })
 
   }
 
@@ -118,8 +135,6 @@ export class LoginComponent implements OnInit {
       this.toastService.errorMessage('Uno de los campos esta vacio.');
       return;
     }
-
-    console.log(this.user);
 
     this.loginLoading = true;
     signInWithEmailAndPassword(this.auth, email, password)
