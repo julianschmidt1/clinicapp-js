@@ -15,6 +15,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { RatingModule } from 'primeng/rating';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 import { getFilteredAppointments } from '../../helpers/appointmentFilter.helper';
+import { SliderModule } from 'primeng/slider';
+import { CheckboxModule } from 'primeng/checkbox';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 @Component({
   selector: 'app-patient-appointments',
@@ -28,7 +31,10 @@ import { getFilteredAppointments } from '../../helpers/appointmentFilter.helper'
     ButtonModule,
     InputTextModule,
     RatingModule,
-    ArrowBackComponent
+    ArrowBackComponent,
+    SliderModule,
+    CheckboxModule,
+    RadioButtonModule
   ],
   templateUrl: './patient-appointments.component.html',
   styleUrl: './patient-appointments.component.scss'
@@ -62,8 +68,8 @@ export class PatientAppointmentsComponent implements OnInit {
   public surveyAnswers = {
     attention: 1,
     detail: 1,
-    availability: 1,
-    punctual: 1,
+    punctual: false,
+    attribute: '',
   }
 
   //filters
@@ -145,6 +151,12 @@ export class PatientAppointmentsComponent implements OnInit {
   }
 
   handleConfirmSurvey(): void {
+
+    if(!this.surveyAnswers.attribute) {
+      this._toastService.errorMessage('Debe elegir por lo menos un atributo del especialista');
+      return;
+    }
+
     this.loadingModal = true;
 
     const updatedAppointment = {

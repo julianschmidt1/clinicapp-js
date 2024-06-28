@@ -26,7 +26,8 @@
             [(ngModel)]="ratingComment"></textarea>
     </div>
     <div style="display: flex; width: 100%; justify-content: flex-end; align-items: center; margin-top: 10px;">
-        <button [disabled]="loadingModal || !starsRating || !ratingComment.trim()" (click)="handleConfirmRating()" pButton>
+        <button [disabled]="loadingModal || !starsRating || !ratingComment.trim()" (click)="handleConfirmRating()"
+            pButton>
             Confirmar
             <i *ngIf="loadingModal" class="pi pi-spin pi-spinner"></i>
         </button>
@@ -35,18 +36,52 @@
 
 <p-dialog header="Encuesta" [(visible)]="surveyDialogVisible" [modal]="true" [draggable]="false"
     [style]="{ width: '600px' }">
-    <div>
+    <div style="width: 100%;">
         <h4>¿Cómo calificaría la atención del especialista en términos de amabilidad y empatía?</h4>
         <p-rating [(ngModel)]="surveyAnswers.attention" [cancel]="false" />
 
         <h4>¿Qué tan satisfecho/a está con la claridad de las explicaciones proporcionadas por el especialista?</h4>
-        <p-rating [(ngModel)]="surveyAnswers.detail" [cancel]="false" />
+        <!-- <p-rating [(ngModel)]="surveyAnswers.detail" [cancel]="false" /> -->
+        <div style="display: flex; align-items: center; width: 100%;">
+            <p-slider class="slider" [(ngModel)]="surveyAnswers.detail" />
+            <span style="margin: 0 12px;">{{surveyAnswers.detail}}</span>
+        </div>
 
-        <h4>¿Cómo evaluaría la disponibilidad del especialista para responder preguntas y preocupaciones?</h4>
-        <p-rating [(ngModel)]="surveyAnswers.availability" [cancel]="false" />
+        <h4>¿Fue puntual el especialista con respecto a la hora de su cita?</h4>
+        <p-checkbox [(ngModel)]="surveyAnswers.punctual" [binary]="true" />
 
-        <h4>¿Qué tan puntual fue el especialista con respecto a la hora de su cita?</h4>
-        <p-rating [(ngModel)]="surveyAnswers.punctual" [cancel]="false" />
+        <h4>¿Cuál de los siguientes atributos describe mejor la atención recibida por el especialista?</h4>
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="display: flex; gap: 3px; align-items: center;">
+                <p-radioButton name="pizza" value="Excelente" [(ngModel)]="surveyAnswers.attribute" inputId="excellency" />
+                <label for="excellency" class="ml-2">
+                    Excelente
+                </label>
+            </div>
+            
+            <div style="display: flex; gap: 5px; align-items: center;">
+                <p-radioButton name="pizza" value="Explicativo" [(ngModel)]="surveyAnswers.attribute" inputId="explanations" />
+                <label for="explanations" class="ml-2">
+                    Explicativo
+                </label>
+            </div>
+            
+            <div style="display: flex; gap: 5px; align-items: center;">
+                <p-radioButton name="pizza" value="Cuidadoso" [(ngModel)]="surveyAnswers.attribute" inputId="carefulness" />
+                <label for="carefulness" class="ml-2">
+                    Cuidadoso
+                </label>
+            </div>
+            
+            <div style="display: flex; gap: 5px; align-items: center;">
+                <p-radioButton name="pizza" value="Eficiente" [(ngModel)]="surveyAnswers.attribute" inputId="efficiency" />
+                <label for="efficiency" class="ml-2">
+                    Eficiente
+                </label>
+            </div>
+            
+        </div>
+
 
     </div>
 
@@ -73,8 +108,8 @@
         </div>
 
         <div>
-            <appointments-table [loading]="loadingAppointments" [appointments]="getFilteredAppointments()" userType="patient"
-                (onActionClick)="handleActionClick($event)" />
+            <appointments-table [loading]="loadingAppointments" [appointments]="getFilteredAppointments()"
+                userType="patient" (onActionClick)="handleActionClick($event)" />
         </div>
     </div>
 </div>
