@@ -23,5 +23,10 @@ export const groupAndSortSchedule = (array: ScheduleModel[] = []) => {
     return new Date(dayA).getDate() - new Date(dayB).getDate()
   })
 
-  return sortedDays;
+  return sortedDays.map(([key, value]: [string, ScheduleModel[]]) => {
+    return {
+      day: key,
+      appointments: value.map(v => v)
+    }
+  });
 }

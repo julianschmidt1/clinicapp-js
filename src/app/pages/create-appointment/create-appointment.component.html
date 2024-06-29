@@ -13,7 +13,29 @@
                 <i *ngIf="createAppointmentLoading" class="pi pi-spin pi-spinner"></i>
             </button>
         </div>
-        <div class="grid">
+
+        <ng-container *ngIf="!selectedSpecialty">
+            <h2>Selecciona una especialidad</h2>
+            <div class="specialties-row">
+                <img (click)="handleChangeSpecialty(item.displayName)" [pTooltip]="item.displayName"
+                    tooltipPosition="bottom" *ngFor="let item of allSpecialties"
+                    [src]="item.attachedFilePath || 'assets/default-image.svg'" alt="">
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedSpecialty && !selectedSpecialist">
+            <h2>Selecciona un especialista en {{selectedSpecialty}}</h2>
+            <div class="specialties-row">
+                <div class="user" *ngFor="let item of specialists">
+                    <img (click)="handleChangeSpecialist(item)" tooltipPosition="bottom"
+                        [src]="item.attachedImage || 'assets/default-image.svg'">
+                    <span>{{item.firstName + ' ' + item.lastName}}</span>
+                </div>
+            </div>
+        </ng-container>
+
+
+        <!-- <div class="grid">
 
             <div class="col-12 md:col-6 input-container">
                 <label for="">Especialidad</label>
@@ -36,7 +58,7 @@
                     emptyMessage="No hay opciones disponibles" [options]="patients" [(ngModel)]="selectedPatient"
                     placeholder="Seleccionar paciente" optionValue="id" optionLabel="displayName" />
             </div>
-        </div>
+        </div> -->
 
         <div class="schedule-container" *ngIf="selectedSpecialistSchedule.length">
             <h2>Turnos disponibles</h2>

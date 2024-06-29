@@ -16,6 +16,7 @@ import { AppointmentModel, AppointmentStatus } from '../../models/appointment.mo
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 import { Router } from '@angular/router';
 import { StorageService } from '../../services/firebase-storage.service';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-create-appointment',
@@ -27,7 +28,8 @@ import { StorageService } from '../../services/firebase-storage.service';
     DateToDayNumberPipe,
     ButtonModule,
     ToastModule,
-    ArrowBackComponent
+    ArrowBackComponent,
+    TooltipModule
   ],
   templateUrl: './create-appointment.component.html',
   styleUrl: './create-appointment.component.scss'
@@ -97,20 +99,14 @@ export class CreateAppointmentComponent implements OnInit {
           return s?.attachedFilePath.find(d => d);
         });
 
-        console.log(allPaths);
-
         const imagePromises = this._storageService.getUserFiles(allPaths)
         Promise.all(imagePromises)
-        .then(data => {
-          data.forEach((path, index) => {
-            this.allSpecialties[index].attachedFilePath = path;
+          .then(data => {
+            data.forEach((path, index) => {
+              this.allSpecialties[index].attachedFilePath = path;
+            })
           })
-        })
-        .finally(() => {
-          console.log('GG: ',this.allSpecialties);
-        })
 
-        
         this.loadingSpecialties = false;
       },
       error: (error) => {
@@ -157,20 +153,6 @@ export class CreateAppointmentComponent implements OnInit {
 
   }
 
-  public handleChangeSpecialist(event: DropdownChangeEvent): void {
-    const selectedSpecialist = this.specialists.find(specialist => specialist.id === event.value);
-    const sortedSchedule = groupAndSortSchedule(selectedSpecialist.schedule);
-
-    const daysWithSchedule = sortedSchedule.map(([key, value]: [string, ScheduleModel[]]) => {
-      return [
-        key,
-        value.filter((a) => !a.busy)
-      ]
-    });
-
-    this.selectedSpecialistSchedule = daysWithSchedule.filter(([_, value]: [string, ScheduleModel[]]) => value.length);
-  }
-
   public handleSelectTime(dayData: ScheduleModel): void {
     this.selectedDateTime = dayData;
     if (!this.currentUser?.admin) {
@@ -178,27 +160,74 @@ export class CreateAppointmentComponent implements OnInit {
     }
   }
 
-  public handleChangeSpecialty(event: DropdownChangeEvent): void {
+  public handleChangeSpecialty(specialtyName: string): void {
 
     const specialtiesCollection = collection(this._firestore, 'users');
     this.loadingSpecialists = true;
+
     collectionData(specialtiesCollection)
-      .pipe(
-        first(),
-      )
+      .pipe(first())
       .subscribe({
         next: (users) => {
-          const selectedSpecialtyUsers = users.filter((user) => user.hasOwnProperty('specialty') && user['specialty'].includes(event.value))
-
+          const selectedSpecialtyUsers = users.filter((user) => user['specialty']?.includes(specialtyName))
           this.specialists = selectedSpecialtyUsers.map((specialist: any) => ({ ...specialist, displayName: specialist.firstName + ' ' + specialist.lastName }));
+
+          if (this.specialists.length) {
+            this.selectedSpecialty = specialtyName;
+          } else {
+            this._toastService.warningMessage('La especialidad seleccionada no tiene profesionales.', '¡Lo sentimos!')
+          }
+
           this.loadingSpecialists = false;
+
+          this.getSpecialistImages();
         },
         error: (error) => {
           console.log('error', error);
           this.loadingSpecialists = false;
+          this._toastService.errorMessage('Ocurrio un error al seleccionar especialidad')
           this.specialists = [];
         }
       });
+  }
+
+  private getSpecialistImages(): void {
+    const allPaths = this.specialists.map(s => {
+      if (!s?.attachedImage) return null;
+
+      return s?.attachedImage.find(d => d);
+    });
+
+    const imagePromises = this._storageService.getUserFiles(allPaths)
+
+    Promise.all(imagePromises)
+      .then(data => {
+        data.forEach((path, index) => {
+          this.specialists[index].attachedImage = path;
+        })
+      })
+  }
+
+  public handleChangeSpecialist(user): void {
+    console.log('user: ', user);
+
+    const sortedSchedule = groupAndSortSchedule(user.schedule);
+    if (!sortedSchedule.length) {
+      this._toastService.warningMessage('El especialista seleccionado no tiene turnos disponibles', '¡Lo sentimos!');
+      return;
+    }
+
+    console.log(sortedSchedule);
+
+    // const daysWithSchedule = sortedSchedule.map(([key, value]: [string, ScheduleModel[]]) => {
+    //   return [
+    //     key,
+    //     value.filter((a) => !a.busy)
+    //   ]
+    // });
+    // console.log(daysWithSchedule);
+
+    // this.selectedSpecialistSchedule = daysWithSchedule.filter(([_, value]: [string, ScheduleModel[]]) => value.length);
   }
 
 }

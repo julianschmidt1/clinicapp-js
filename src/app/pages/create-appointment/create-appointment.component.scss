@@ -13,6 +13,41 @@
         }
     }
 
+    .specialties-row {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 25px;
+        margin-top: 30px;
+
+        img {
+            border-radius: 50%;
+            border: 3px solid $primary-color-1;
+            height: 130px;
+            width: 130px;
+            transition: 0.2s ease;
+            cursor: pointer;
+
+            &:hover {
+                transform: scale(1.08);
+            }
+        }
+
+        .user {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            span {
+                color: $primary-color-1;
+                margin-top: 10px;
+                font-weight: bold;
+                font-size: 18px;
+            }
+        }
+    }
+
     h2 {
         color: $primary-color-1;
     }
@@ -49,7 +84,7 @@
                 background-color: $primary-color-darker;
                 color: $base-white;
                 transform: scale(1.09);
-                
+
             }
         }
     }
