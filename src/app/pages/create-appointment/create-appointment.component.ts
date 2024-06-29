@@ -54,7 +54,9 @@ export class CreateAppointmentComponent implements OnInit {
   public selectedSpecialty: string;
   public selectedSpecialist;
   public selectedPatient;
-  public selectedSpecialistSchedule = [];
+
+  public selectedSpecialistDay: string;
+  // public selectedSpecialistSchedule = [];
 
   public selectedDateTime: ScheduleModel = { time: '', day: '', busy: false, };
 
@@ -63,8 +65,6 @@ export class CreateAppointmentComponent implements OnInit {
   public loadingSpecialists = false;
   public loadingUsers = false;
   public createAppointmentLoading = false;
-
-  public defaultImagePath = '../'
 
   ngOnInit(): void {
     const specialtiesCollection = collection(this._firestore, 'specialties');
@@ -211,13 +211,16 @@ export class CreateAppointmentComponent implements OnInit {
   public handleChangeSpecialist(user): void {
     console.log('user: ', user);
 
-    const sortedSchedule = groupAndSortSchedule(user.schedule);
-    if (!sortedSchedule.length) {
+    // const sortedSchedule = groupAndSortSchedule(user.schedule);
+    if (!user.schedule.length) {
       this._toastService.warningMessage('El especialista seleccionado no tiene turnos disponibles', '¡Lo sentimos!');
       return;
     }
 
-    console.log(sortedSchedule);
+    user.schedule.sort((a, b) => {
+      return new Date(a.day).getDate() - new Date(b.day).getDate();
+    })
+    this.selectedSpecialist = user;
 
     // const daysWithSchedule = sortedSchedule.map(([key, value]: [string, ScheduleModel[]]) => {
     //   return [
@@ -228,6 +231,46 @@ export class CreateAppointmentComponent implements OnInit {
     // console.log(daysWithSchedule);
 
     // this.selectedSpecialistSchedule = daysWithSchedule.filter(([_, value]: [string, ScheduleModel[]]) => value.length);
+  }
+
+  public handleSetDay(dayData) {
+    const { day, time } = dayData;
+    this.selectedSpecialistDay = day;
+
+    const scheduleIntervals = this.generateTimeIntervals(time.start, time.end, day);
+    
+    console.log('IN: ',scheduleIntervals);
+  }
+
+  public generateTimeIntervals(startTime: string, endTime: string, day: string) {
+    const intervals: string[] = [];
+
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
+
+    let current = new Date();
+    current.setHours(startHour);
+    current.setMinutes(startMinute);
+
+    const end = endHour * 60 + endMinute;
+
+    while (true) {
+      const hour = ('0' + current.getHours()).slice(-2);
+      const minute = ('0' + current.getMinutes()).slice(-2);
+      intervals.push(`${hour}:${minute}`);
+
+      current.setMinutes(current.getMinutes() + 30);
+
+      if (current.getHours() * 60 + current.getMinutes() > end) {
+        break;
+      }
+    }
+
+    return intervals.map(i => ({
+      time: i,
+      day: day
+    }));
+
   }
 
 }

@@ -179,38 +179,6 @@ export class ProfileComponent implements OnInit {
 
   }
 
-  public generateTimeIntervals(startTime: string, endTime: string) {
-    const intervals: string[] = [];
-
-    const [startHour, startMinute] = startTime.split(':').map(Number);
-    const [endHour, endMinute] = endTime.split(':').map(Number);
-
-    let current = new Date();
-    current.setHours(startHour);
-    current.setMinutes(startMinute);
-
-    const end = endHour * 60 + endMinute;
-
-    while (true) {
-      const hour = ('0' + current.getHours()).slice(-2);
-      const minute = ('0' + current.getMinutes()).slice(-2);
-      intervals.push(`${hour}:${minute}`);
-
-      current.setMinutes(current.getMinutes() + 30);
-
-      if (current.getHours() * 60 + current.getMinutes() > end) {
-        break;
-      }
-    }
-
-    return intervals.map(i => ({
-      time: i,
-      day: this.selectedDay,
-      busy: false
-    }));
-
-  }
-
   validateTime(startTime: string, endTime: string, day: string): boolean {
     const [hoursStr1, minutesStr1] = startTime.split(':');
     const [hoursStr2, minutesStr2] = endTime.split(':');

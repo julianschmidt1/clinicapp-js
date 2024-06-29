@@ -34,6 +34,15 @@
             </div>
         </ng-container>
 
+        <ng-container *ngIf="selectedSpecialist">
+            <h2>Selecciona el dia</h2>
+            <div class="specialties-row">
+                <div (click)="handleSetDay(day)" class="day-container" *ngFor="let day of selectedSpecialist.schedule">
+                    {{day.day}}
+                </div>
+            </div>
+        </ng-container>
+
 
         <!-- <div class="grid">
 
@@ -60,7 +69,7 @@
             </div>
         </div> -->
 
-        <div class="schedule-container" *ngIf="selectedSpecialistSchedule.length">
+        <!-- <div class="schedule-container" *ngIf="selectedSpecialistSchedule.length">
             <h2>Turnos disponibles</h2>
 
             <div style="display: flex; gap: 10px;">
@@ -77,11 +86,11 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
-        <div class="schedule-container" *ngIf="!selectedSpecialistSchedule.length && selectedSpecialist">
+        <!-- <div class="schedule-container" *ngIf="!selectedSpecialistSchedule.length && selectedSpecialist">
             <h2 style="margin-top: 30px;">No hay turnos disponibles para el especialista seleccionado</h2>
-        </div>
+        </div> -->
 
     </div>
 </div>

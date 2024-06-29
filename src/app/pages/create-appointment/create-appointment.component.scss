@@ -46,6 +46,20 @@
                 font-size: 18px;
             }
         }
+
+        .day-container {
+            padding: 8px;
+            border-radius: 6px;
+            border: 2px solid $primary-color-1;
+            transition: 0.3s ease;
+            cursor: pointer;
+            color: $primary-color-1;
+            font-weight: 700;
+
+            &:hover {
+                transform: scale(1.08);
+            }
+        }
     }
 
     h2 {
