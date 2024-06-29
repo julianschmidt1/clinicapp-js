@@ -15,6 +15,7 @@ import { ToastService } from '../../services/toast.service';
 import { AppointmentModel, AppointmentStatus } from '../../models/appointment.model';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 import { Router } from '@angular/router';
+import { StorageService } from '../../services/firebase-storage.service';
 
 @Component({
   selector: 'app-create-appointment',
@@ -38,6 +39,7 @@ export class CreateAppointmentComponent implements OnInit {
   private _appointmentService = inject(AppointmentService);
   private _toastService = inject(ToastService);
   private _router = inject(Router);
+  private _storageService = inject(StorageService);
 
   public currentUser;
 
@@ -59,6 +61,8 @@ export class CreateAppointmentComponent implements OnInit {
   public loadingSpecialists = false;
   public loadingUsers = false;
   public createAppointmentLoading = false;
+
+  public defaultImagePath = '../'
 
   ngOnInit(): void {
     const specialtiesCollection = collection(this._firestore, 'specialties');
@@ -86,6 +90,27 @@ export class CreateAppointmentComponent implements OnInit {
     collectionData(specialtiesCollection).subscribe({
       next: (data) => {
         this.allSpecialties = data;
+
+        const allPaths = this.allSpecialties.map(s => {
+          if (!s?.attachedFilePath) return null;
+
+          return s?.attachedFilePath.find(d => d);
+        });
+
+        console.log(allPaths);
+
+        const imagePromises = this._storageService.getUserFiles(allPaths)
+        Promise.all(imagePromises)
+        .then(data => {
+          data.forEach((path, index) => {
+            this.allSpecialties[index].attachedFilePath = path;
+          })
+        })
+        .finally(() => {
+          console.log('GG: ',this.allSpecialties);
+        })
+
+        
         this.loadingSpecialties = false;
       },
       error: (error) => {

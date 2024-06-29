@@ -30,8 +30,8 @@ export class StorageService {
         const storage = getStorage();
 
         const imagePromises = filePath.map((file: string) => {
+            if(!file) return null;
             const pathRef = ref(storage, file);
-
             const imagePath = getDownloadURL(pathRef)
 
             return imagePath;
