@@ -172,8 +172,7 @@
             <div class="input-container">
                 <re-captcha (resolved)="resolved($event)" formControlName="captcha"
                     siteKey="6Lfw1_8pAAAAAF0htvreaY0pBKKLnqAcHYjrTXPF"></re-captcha>
-                <div class="error"
-                    *ngIf="formControls['captcha'].invalid && formControls['captcha'].touched">
+                <div class="error" *ngIf="formControls['captcha'].invalid && formControls['captcha'].touched">
                     Debe validar que es un usuario real
                 </div>
             </div>
@@ -200,7 +199,21 @@
 <p-dialog class="modal" header="Crear especialidad" [closable]="false" [draggable]="false" [visible]="visible"
     [modal]="true">
 
-    <input class="p-fluid" type="text" pInputText [(ngModel)]="newSpecialtyName">
+    <div style="display: flex; flex-direction: column;gap: 5px;">
+        <label for="">Nombre</label>
+        <input style="margin-bottom: 12px;" class="p-fluid" type="text" pInputText [(ngModel)]="newSpecialtyName">
+    </div>
+
+    <div class="input-container" style="width: 100%;">
+
+        <label for="imageInput" class="file-label" pButton>Agregar imagen</label>
+        <input id="imageInput" (change)="handleAddSpecialtyImage($event)" type="file" hidden pInputText>
+        <div class="chip-row">
+            <div *ngIf="newSpecialtyImage" class="file-chip" [pTooltip]="newSpecialtyImage.name">
+                <span>{{newSpecialtyImage.name}}</span> <i (click)="newSpecialtyImage = null" class="pi pi-times"></i>
+            </div>
+        </div>
+    </div>
 
     <div class="actions">
         <button (click)="handleCancelCreation()" class="outlined" pButton>Cancelar</button>

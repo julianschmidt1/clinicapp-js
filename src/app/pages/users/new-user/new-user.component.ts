@@ -12,6 +12,7 @@ import { AuthService } from '../../../services/auth.service';
 import { ToastModule } from 'primeng/toast';
 import { ToastService } from '../../../services/toast.service';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { StorageService } from '../../../services/firebase-storage.service';
 
 
 @Component({
@@ -42,6 +43,7 @@ export class NewUserComponent implements OnInit {
   private _firestore = inject(Firestore);
   private authService = inject(AuthService);
   private toastService = inject(ToastService);
+  private storageService = inject(StorageService);
 
   public userType: 'patient' | 'specialist' | 'admin';
   public registerForm: FormGroup;
@@ -51,6 +53,7 @@ export class NewUserComponent implements OnInit {
   public newSpecialtyName = '';
 
   public loadingSpecialty = false;
+  public newSpecialtyImage: File = null;
   public addSpecialtyVisible = false;
 
   ngOnInit() {
@@ -177,11 +180,10 @@ export class NewUserComponent implements OnInit {
       const specialtyFormControlValue = this.formControls['specialty'].value;
       const cleanNewValue = specialtyFormControlValue.filter((s: string) => s !== 'Agregar +');
 
-      console.log(specialtyFormControlValue);
-
+      const attachedFilePath = this.storageService.uploadFile([this.newSpecialtyImage], displayName);
 
       this.loadingSpecialty = true;
-      addDoc(specialtiesCollection, { displayName })
+      addDoc(specialtiesCollection, { displayName, attachedFilePath })
         .then((data) => {
 
           this.formControls['specialty'].patchValue([...cleanNewValue, displayName]);
@@ -196,6 +198,16 @@ export class NewUserComponent implements OnInit {
     }
   }
 
+  handleAddSpecialtyImage(event: any): void {
+    const file = (event.target as HTMLInputElement).files[0];
+    if (!file.type.startsWith('image')) {
+      this.toastService.errorMessage('El archivo no es una imagen valida');
+      return;
+    }
+
+    this.newSpecialtyImage = file;
+  }
+
   handleChangeSpecialty(event: DropdownChangeEvent): void {
     console.log(event);
 
@@ -204,8 +216,6 @@ export class NewUserComponent implements OnInit {
       this.addSpecialtyVisible = true;
       return;
     }
-
-    // this.formControls['specialty'].setValue(value);
   }
 
   handleCancel(): void {
@@ -214,6 +224,5 @@ export class NewUserComponent implements OnInit {
     this.registerForm.reset();
     this.userType = undefined;
   }
-
 
 }

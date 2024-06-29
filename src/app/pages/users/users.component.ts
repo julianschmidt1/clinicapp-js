@@ -37,7 +37,6 @@ export class UsersComponent implements OnInit {
     const usersCollection = collection(this.firestore, 'users');
     this.getUsersLoading = true;
 
-    console.log(collectionData(usersCollection));
     collectionData(usersCollection).subscribe({
       next: (data) => {
         this.allUsers = data;

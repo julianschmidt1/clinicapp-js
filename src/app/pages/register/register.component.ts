@@ -15,6 +15,7 @@ import { passwordMatchValidator, validateFilesAmount, validateIdentification } f
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 import { RecaptchaFormsModule, RecaptchaModule } from 'ng-recaptcha';
+import { StorageService } from '../../services/firebase-storage.service';
 
 @Component({
   selector: 'app-register',
@@ -44,6 +45,7 @@ export class RegisterComponent {
   private toastService = inject(ToastService);
   private router = inject(Router);
   public formBuilder = inject(FormBuilder);
+  private storageService = inject(StorageService);
 
   // form props
   public registerForm!: FormGroup;
@@ -54,6 +56,7 @@ export class RegisterComponent {
   public allSpecialties = [];
   public visible = false;
   public newSpecialtyName = '';
+  public newSpecialtyImage: File = null;
   public loadingSpecialty = false;
 
 
@@ -93,7 +96,6 @@ export class RegisterComponent {
   }
 
   handleSelectRegisterType(type: 'patient' | 'specialist'): void {
-    console.log(type);
     this.userType = type;
     if (type === 'specialist') {
       this.formControls['healthcare'].clearValidators();
@@ -127,9 +129,10 @@ export class RegisterComponent {
       const specialtyFormControlValue = this.formControls['specialty'].value;
       const cleanNewValue = specialtyFormControlValue.filter((s: string) => s !== 'Agregar +');
 
+      const attachedFilePath = this.storageService.uploadFile([this.newSpecialtyImage], displayName);
 
       this.loadingSpecialty = true;
-      addDoc(specialtiesCollection, { displayName })
+      addDoc(specialtiesCollection, { displayName, attachedFilePath })
         .then((data) => {
 
           this.formControls['specialty'].patchValue([...cleanNewValue, displayName]);
@@ -142,6 +145,16 @@ export class RegisterComponent {
           this.loadingSpecialty = false;
         });
     }
+  }
+
+  handleAddSpecialtyImage(event: any): void {
+    const file = (event.target as HTMLInputElement).files[0];
+    if (!file.type.startsWith('image')) {
+      this.toastService.errorMessage('El archivo no es una imagen valida');
+      return;
+    }
+
+    this.newSpecialtyImage = file;
   }
 
   handleAddFile(event: any): void {

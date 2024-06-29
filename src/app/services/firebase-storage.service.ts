@@ -8,10 +8,10 @@ export class StorageService {
 
     constructor(private storage: Storage) { }
 
-    uploadFile(fileGroup: File[], email: string): any {
+    uploadFile(fileGroup: File[], id: string): any {
 
         return fileGroup.map((file: File) => {
-            const filePath = `images/${file.name}-${email}`;
+            const filePath = `images/${file.name}-${id}`;
             const storageRef = ref(this.storage, filePath);
 
             uploadBytes(storageRef, file)
@@ -24,29 +24,9 @@ export class StorageService {
                 })
             return filePath;
         })
-
-
     }
 
-    // getFiles() {
-    //     const storageRef = ref(this.storage, 'images');
-
-    //     listAll(storageRef).then(async images => {
-    //         for (let image of images.items) {
-    //             const url = await getDownloadURL(image);
-    //         }
-    //     })
-    // }
-
-    // getFileByPath(filePath: string) {
-    //     const storage = getStorage();
-    //     const pathRef = ref(storage, filePath);
-
-    //     return getStream(pathRef);
-
-    // }
-
-    getUserFiles(filePath: string[]){
+    getUserFiles(filePath: string[]) {
         const storage = getStorage();
 
         const imagePromises = filePath.map((file: string) => {
@@ -55,7 +35,7 @@ export class StorageService {
             const imagePath = getDownloadURL(pathRef)
 
             return imagePath;
-        });        
+        });
 
         return imagePromises;
     }
