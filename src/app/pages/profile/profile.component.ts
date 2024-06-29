@@ -13,7 +13,7 @@ import { ToastModule } from 'primeng/toast';
 import { DateToDayNumberPipe } from '../../pipes/date-to-day-number.pipe';
 import { groupAndSortSchedule } from '../../helpers/parseModel.helper';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
-
+import moment from 'moment';
 
 @Component({
   selector: 'app-profile',
@@ -50,9 +50,10 @@ export class ProfileComponent implements OnInit {
   public selectedDay: string;
   public selectedTime: Date[];
 
-  public readonly todayDate = new Date().toISOString().split('T')[0];
+  public startTime: string;
+  public endTime: string;
 
-  public specialistSchedule = [];
+  public readonly todayDate = new Date().toISOString().split('T')[0];
 
   public readonly days = [
     'Lunes',
@@ -62,9 +63,6 @@ export class ProfileComponent implements OnInit {
     'Viernes',
     'Sábado'
   ]
-
-  public renderSchedule = [];
-
 
   ngOnInit(): void {
 
@@ -81,8 +79,11 @@ export class ProfileComponent implements OnInit {
           this.userData = retrievedUserData;
           this.loadingUser = false;
 
-          if (retrievedUserData.schedule) {
-            this.specialistSchedule = groupAndSortSchedule(retrievedUserData.schedule);
+          if (retrievedUserData?.schedule) {
+            retrievedUserData.schedule.sort((a, b) => {
+              return new Date(a.day).getDate() - new Date(b.day).getDate();
+            })
+
           }
 
           // Images
@@ -109,15 +110,49 @@ export class ProfileComponent implements OnInit {
   }
 
   handleConfirm() {
-    if (!this.selectedDay || !this.selectedTime) {
-      this.toastService.errorMessage('Ingrese un dia y hora.', 'Error');
+    if (!this.selectedDay || !this.startTime || !this.endTime) {
+      this.toastService.errorMessage('Ingrese un dia y rango horario.', 'Error');
       return;
     }
 
-    if (!this.validateTime(this.selectedTime.toString(), this.selectedDay)) {
+    if (!this.validateTime(
+      this.startTime.toString(),
+      this.endTime.toString(),
+      this.selectedDay
+    )) {
       this.toastService.errorMessage('Horario de atencion invalido. Lun a Vie 8 a 19. Sáb 8 a 14.', 'Error');
       return;
     }
+
+    let timeOverlap = false;
+    if (this.userData?.schedule.some(s => s.day === this.selectedDay)) {
+      const appointments = this.userData?.schedule.filter(s => s.day === this.selectedDay);
+
+      const currentStartDate = moment(this.startTime, 'HH:mm');
+      const currentEndDate = moment(this.endTime, 'HH:mm');
+
+      appointments.forEach(element => {
+        const elementStartDate = moment(element.time.start, 'HH:mm');
+        const elementEndDate = moment(element.time.end, 'HH:mm');
+
+        if (currentStartDate.isSameOrAfter(currentEndDate) || elementStartDate.isSameOrAfter(elementEndDate)) {
+          // no overlap
+        } else if (currentStartDate.isSameOrAfter(elementEndDate) || elementStartDate.isSameOrAfter(currentEndDate)) {
+          // no overlap
+        } else {
+          // overlay
+          timeOverlap = true;
+        }
+      });
+    }
+
+    if (timeOverlap) {
+      this.toastService.errorMessage('El rango horario seleccionado para este dia genera conflicto');
+      return;
+    }
+
+    // const intervals = this.generateTimeIntervals(this.startTime, this.endTime);
+    // console.log('INTERVALS: ', intervals);
 
     this.updateUserLoading = true;
 
@@ -125,8 +160,10 @@ export class ProfileComponent implements OnInit {
     updateDoc(userDocRef, {
       schedule: arrayUnion({
         day: this.selectedDay,
-        time: this.selectedTime,
-        busy: false,
+        time: {
+          start: this.startTime,
+          end: this.endTime,
+        },
       })
     }).then((d) => {
 
@@ -142,21 +179,63 @@ export class ProfileComponent implements OnInit {
 
   }
 
-  validateTime(time: string, day: string): boolean {
-    const [hoursStr] = time.split(':');
-    const hours = +hoursStr
-    const startHour = 8;
-    let endHour = 19;
+  public generateTimeIntervals(startTime: string, endTime: string) {
+    const intervals: string[] = [];
+
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
+
+    let current = new Date();
+    current.setHours(startHour);
+    current.setMinutes(startMinute);
+
+    const end = endHour * 60 + endMinute;
+
+    while (true) {
+      const hour = ('0' + current.getHours()).slice(-2);
+      const minute = ('0' + current.getMinutes()).slice(-2);
+      intervals.push(`${hour}:${minute}`);
+
+      current.setMinutes(current.getMinutes() + 30);
+
+      if (current.getHours() * 60 + current.getMinutes() > end) {
+        break;
+      }
+    }
+
+    return intervals.map(i => ({
+      time: i,
+      day: this.selectedDay,
+      busy: false
+    }));
+
+  }
+
+  validateTime(startTime: string, endTime: string, day: string): boolean {
+    const [hoursStr1, minutesStr1] = startTime.split(':');
+    const [hoursStr2, minutesStr2] = endTime.split(':');
+    const startHour = +hoursStr1;
+    const endHour = +hoursStr2;
+
+    const dateObj = new Date(day);
+    const dayOfWeek = dateObj.getDay();
+
+    let validStartHour = 8;
+    let validEndHour = 19;
 
     const dayName = new Date(day).getDay();
     const isSaturday = this.days[dayName] === 'Sábado';
-
     if (isSaturday) {
-      endHour = 14;
+      validEndHour = 14;
     }
 
-    return !(hours < startHour || hours > endHour) && !(hours === endHour)
+    const isValidStartTime = startHour >= validStartHour && startHour <= validEndHour;
+    const isValidEndTime = endHour >= validStartHour && endHour <= validEndHour;
+    const isValidRange = startHour < endHour || (startHour === endHour && minutesStr1 < minutesStr2);
+
+    return isValidStartTime && isValidEndTime && isValidRange;
   }
+
 
   handleClickImage(image: { foreground: boolean, path: string }) {
     if (this.userImages.length > 1) {
@@ -173,5 +252,5 @@ export class ProfileComponent implements OnInit {
 export interface ScheduleModel {
   time: string,
   day: string,
-  busy:  boolean,
+  busy: boolean,
 }

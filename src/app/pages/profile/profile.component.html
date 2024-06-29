@@ -6,9 +6,17 @@
             <input pInputText [min]="todayDate" class="p-fluid" type="date" [(ngModel)]="selectedDay">
 
         </div>
-        <div style="display: flex; flex-direction: column;">
+        <!-- <div style="display: flex; flex-direction: column;">
             <label>Hora</label>
             <input pInputText class="p-fluid" type="time" [(ngModel)]="selectedTime">
+        </div> -->
+        <div style="display: flex; flex-direction: column;">
+            <label>Hora inicio</label>
+            <input pInputText class="p-fluid" type="time" [(ngModel)]="startTime">
+        </div>
+        <div style="display: flex; flex-direction: column;">
+            <label>Hora fin</label>
+            <input pInputText class="p-fluid" type="time" [(ngModel)]="endTime">
         </div>
 
         <div style="display: flex; width: 100%; justify-content: flex-end; gap: 10px;">
@@ -74,13 +82,11 @@
                     <button (click)="visible = true" pButton>Nuevo horario</button>
                 </div>
 
-                <div class="days-row">
-                    <div class="day-card" *ngFor="let dayData of specialistSchedule">
-                        <span>{{dayData[0] | dateToDayNumber}} </span>
+                <div *ngIf="userData?.schedule" class="days-row">
+                    <div class="day-card" *ngFor="let dayData of userData.schedule">
+                        <span>{{dayData.day | dateToDayNumber}} </span>
                         <div class="turn-list">
-                            <div *ngFor="let turn of dayData[1];">
-                                {{turn.time}}
-                            </div>
+                            <div>De {{dayData.time.start}} a {{dayData.time.end}}</div>
                         </div>
                     </div>
                 </div>
