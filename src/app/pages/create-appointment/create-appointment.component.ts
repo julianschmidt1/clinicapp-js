@@ -17,6 +17,7 @@ import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.compo
 import { Router } from '@angular/router';
 import { StorageService } from '../../services/firebase-storage.service';
 import { TooltipModule } from 'primeng/tooltip';
+import { DateFormatPipe } from '../../pipes/format-date.pipe';
 
 @Component({
   selector: 'app-create-appointment',
@@ -29,7 +30,8 @@ import { TooltipModule } from 'primeng/tooltip';
     ButtonModule,
     ToastModule,
     ArrowBackComponent,
-    TooltipModule
+    TooltipModule,
+    DateFormatPipe
   ],
   templateUrl: './create-appointment.component.html',
   styleUrl: './create-appointment.component.scss'
@@ -56,7 +58,12 @@ export class CreateAppointmentComponent implements OnInit {
   public selectedPatient;
 
   public selectedSpecialistDay: string;
+
+  public availableIntervals = [];
+  public selectedInterval: string;
+  public specialistId: string;
   // public selectedSpecialistSchedule = [];
+  public allAppointments: AppointmentModel[] = [];
 
   public selectedDateTime: ScheduleModel = { time: '', day: '', busy: false, };
 
@@ -68,6 +75,7 @@ export class CreateAppointmentComponent implements OnInit {
 
   ngOnInit(): void {
     const specialtiesCollection = collection(this._firestore, 'specialties');
+    const appointmentsCollection = collection(this._firestore, 'appointments');
     const usersCollection = collection(this._firestore, 'users');
     const userId = this._auth.getCurrentUserData();
     this.loadingSpecialties = true;
@@ -88,6 +96,12 @@ export class CreateAppointmentComponent implements OnInit {
         }
       });
 
+    collectionData(appointmentsCollection)
+      .subscribe({
+        next: (appointments: any) => {
+          this.allAppointments = appointments;
+        }
+      });
 
     collectionData(specialtiesCollection).subscribe({
       next: (data) => {
@@ -121,12 +135,12 @@ export class CreateAppointmentComponent implements OnInit {
 
     const appointment: AppointmentModel = {
       specialty: this.selectedSpecialty,
-      specialistId: this.selectedSpecialist,
+      specialistId: this.specialistId,
       patientId: this.selectedPatient,
       status: AppointmentStatus.Pending,
       // ...this.selectedDateTime,
-      day: this.selectedDateTime.day,
-      time: this.selectedDateTime.time,
+      day: this.selectedSpecialistDay,
+      time: this.selectedInterval,
     };
 
     this._appointmentService.addAppointment(appointment)
@@ -208,19 +222,39 @@ export class CreateAppointmentComponent implements OnInit {
       })
   }
 
+  public handleCancelSelection(step: number): void {
+    switch (step) {
+      case 2:
+        this.selectedSpecialty = null;
+        break;
+      case 3:
+        this.selectedSpecialist = null;
+        break;
+      case 4:
+        this.selectedSpecialistDay = null;
+        this.selectedInterval = null;
+        break;
+      case 5:
+        this.selectedInterval = null;
+        this.selectedPatient = null;
+        break;
+    }
+  }
+
   public handleChangeSpecialist(user): void {
     console.log('user: ', user);
 
     // const sortedSchedule = groupAndSortSchedule(user.schedule);
-    if (!user.schedule.length) {
+    if (!user.schedule?.length) {
       this._toastService.warningMessage('El especialista seleccionado no tiene turnos disponibles', '¡Lo sentimos!');
       return;
     }
 
     user.schedule.sort((a, b) => {
-      return new Date(a.day).getDate() - new Date(b.day).getDate();
+      return new Date(a.day).getTime() - new Date(b.day).getTime();
     })
     this.selectedSpecialist = user;
+    this.specialistId = user.id;
 
     // const daysWithSchedule = sortedSchedule.map(([key, value]: [string, ScheduleModel[]]) => {
     //   return [
@@ -238,8 +272,17 @@ export class CreateAppointmentComponent implements OnInit {
     this.selectedSpecialistDay = day;
 
     const scheduleIntervals = this.generateTimeIntervals(time.start, time.end, day);
-    
-    console.log('IN: ',scheduleIntervals);
+    // falta filtrar horarios ocupados
+    this.availableIntervals = scheduleIntervals.filter(i =>
+      !this.allAppointments.some(a => a.day === i.day && a.time === i.time && (a.status === AppointmentStatus.Confirmed || a.status === AppointmentStatus.Done))
+    );
+  }
+
+  public handleSetInterval(interval): void {
+    if (!this.currentUser?.admin) {
+      this.selectedPatient = this.currentUser.id;
+    }
+    this.selectedInterval = interval.time;
   }
 
   public generateTimeIntervals(startTime: string, endTime: string, day: string) {

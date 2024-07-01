@@ -8,14 +8,26 @@
                 <h1>Solicitar turno</h1>
             </div>
             <button (click)="handleSubmit()"
-                [disabled]="!selectedDateTime.day || !selectedPatient || createAppointmentLoading" pButton>
-                Solicitar
+                [disabled]="createAppointmentLoading || !selectedSpecialty || !selectedSpecialist || !selectedSpecialistDay || !selectedInterval || !selectedPatient"
+                pButton>
+                Confirmar
                 <i *ngIf="createAppointmentLoading" class="pi pi-spin pi-spinner"></i>
             </button>
         </div>
 
+        <ng-container *ngIf="selectedSpecialty">
+            <div class="brief">
+                <h3>Resumen</h3>
+                <span>Especialidad: {{selectedSpecialty}}</span>
+                <span *ngIf="selectedSpecialist">Especialista: {{selectedSpecialist.firstName + ' '+
+                    selectedSpecialist.lastName}}</span>
+                <span *ngIf="selectedSpecialistDay">Dia: {{selectedSpecialistDay}}</span>
+                <span *ngIf="selectedInterval">Horario: {{selectedInterval}}</span>
+            </div>
+        </ng-container>
+
         <ng-container *ngIf="!selectedSpecialty">
-            <h2>Selecciona una especialidad</h2>
+            <h2> Selecciona una especialidad</h2>
             <div class="specialties-row">
                 <img (click)="handleChangeSpecialty(item.displayName)" [pTooltip]="item.displayName"
                     tooltipPosition="bottom" *ngFor="let item of allSpecialties"
@@ -24,7 +36,8 @@
         </ng-container>
 
         <ng-container *ngIf="selectedSpecialty && !selectedSpecialist">
-            <h2>Selecciona un especialista en {{selectedSpecialty}}</h2>
+            <h2><span (click)="handleCancelSelection(2)"><- </span> Selecciona un especialista en {{selectedSpecialty}}
+            </h2>
             <div class="specialties-row">
                 <div class="user" *ngFor="let item of specialists">
                     <img (click)="handleChangeSpecialist(item)" tooltipPosition="bottom"
@@ -34,12 +47,35 @@
             </div>
         </ng-container>
 
-        <ng-container *ngIf="selectedSpecialist">
-            <h2>Selecciona el dia</h2>
+        <ng-container *ngIf="selectedSpecialist && !selectedSpecialistDay">
+            <h2><span (click)="handleCancelSelection(3)"><- </span> Selecciona el dia</h2>
             <div class="specialties-row">
                 <div (click)="handleSetDay(day)" class="day-container" *ngFor="let day of selectedSpecialist.schedule">
-                    {{day.day}}
+                    {{day.day | formatDate}}
                 </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedSpecialistDay && (!selectedInterval || !currentUser?.admin)">
+            <h2><span (click)="handleCancelSelection(4)"><- </span> Selecciona el horario</h2>
+            <div class="specialties-row">
+                <div (click)="handleSetInterval(interval)" class="day-container"
+                    [class.selected]="interval.time === selectedInterval" *ngFor="let interval of availableIntervals">
+                    {{interval.time}}
+                </div>
+            </div>
+        </ng-container>
+
+        <ng-container *ngIf="selectedInterval && currentUser?.admin">
+            <h2><span (click)="handleCancelSelection(5)"><- </span> Selecciona el paciente</h2>
+            <div class="specialties-row">
+
+                <div *ngIf="currentUser?.admin" class="col-12 md:col-6 input-container">
+                    <p-dropdown class="p-fluid" [loading]="loadingUsers" appendTo="body"
+                        emptyMessage="No hay opciones disponibles" [options]="patients" [(ngModel)]="selectedPatient"
+                        placeholder="Seleccionar paciente" optionValue="id" optionLabel="displayName" />
+                </div>
+
             </div>
         </ng-container>
 

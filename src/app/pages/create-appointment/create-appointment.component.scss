@@ -3,6 +3,8 @@
 .screen {
 
     .create-appointment-container {
+        display: flex;
+        flex-direction: column;
         width: 100%;
         padding: 0 50px;
 
@@ -10,6 +12,29 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
+        }
+    }
+
+    .brief {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        width: fit-content;
+        padding: 10px 16px;
+        border: 2px solid $primary-color-1;
+        border-radius: 10px;
+        
+        span {
+            color: $primary-color-1;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        h3 {
+            color: $primary-color-1;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 0px;
         }
     }
 
@@ -64,6 +89,7 @@
 
     h2 {
         color: $primary-color-1;
+        cursor: pointer;
     }
 
     .schedule-container {
@@ -103,5 +129,9 @@
         }
     }
 
+    .selected {
+        background-color: $primary-color-1;
+        color: $base-white !important;
+    }
 
 }

@@ -120,41 +120,40 @@ export class SpecialistAppointmentsComponent implements OnInit {
       return;
     }
 
-    this._authService.getUserById(specialistId)
-      .then(data => {
-        const specialist = data.data();
-        const { schedule } = specialist;
+    const updatedAppointment = {
+      ...event.appointment,
+      status: event.action
+    }
 
-        let appointmentToUpdate = schedule.find((ap: AppointmentModel) => ap.day === day && ap.time === time);
-
-        const updatedSchedule = [
-          ...schedule.filter((ap: AppointmentModel) => ap.day !== day && ap.time !== time),
-          {
-            ...appointmentToUpdate,
-            busy: true,
-          }
-        ];
-
-        this._authService.updateUser({
-          ...specialist,
-          schedule: updatedSchedule
-        }).then(() => {
-
-          const updatedAppointment = {
-            ...event.appointment,
-            status: event.action
-          }
-
-          this._appointmentService.updateAppointment(updatedAppointment)
-            .then(() => {
-              this._toastService.successMessage('Turno actualizado con exito');
-            })
-            .catch(() => {
-              this._toastService.errorMessage('Error al actualizar el turno');
-            });
-
-        });
+    this._appointmentService.updateAppointment(updatedAppointment)
+      .then(() => {
+        this._toastService.successMessage('Turno actualizado con exito');
       })
+      .catch(() => {
+        this._toastService.errorMessage('Error al actualizar el turno');
+      });
+
+    // this._authService.getUserById(specialistId)
+    //   .then(data => {
+    //     const specialist = data.data();
+    //     const { schedule } = specialist;
+
+    //     let appointmentToUpdate = schedule.find((ap: AppointmentModel) => ap.day === day && ap.time === time);
+
+    //     const updatedSchedule = [
+    //       ...schedule.filter((ap: AppointmentModel) => ap.day !== day && ap.time !== time),
+    //       {
+    //         ...appointmentToUpdate,
+    //         busy: true,
+    //       }
+    //     ];
+
+    //     this._authService.updateUser({
+    //       ...specialist,
+    //       schedule: updatedSchedule
+    //     }).then(() => {
+    //     });
+    //   })
   }
 
   public handleConfirmDialog(): void {
@@ -166,31 +165,31 @@ export class SpecialistAppointmentsComponent implements OnInit {
     }
 
     // cuando cancelas el turno el estado del horario vuelve a libre
-    if (this.actionData.action === AppointmentStatus.Cancelled) {
-      const { appointment } = this.actionData;
-      const { day, time, specialistId } = appointment;
+    // if (this.actionData.action === AppointmentStatus.Cancelled) {
+    //   const { appointment } = this.actionData;
+    //   const { day, time, specialistId } = appointment;
 
-      this._authService.getUserById(specialistId)
-        .then(data => {
-          const specialist = data.data();
-          const { schedule } = specialist;
+    //   this._authService.getUserById(specialistId)
+    //     .then(data => {
+    //       const specialist = data.data();
+    //       const { schedule } = specialist;
 
-          let appointmentToUpdate = schedule.find((ap: AppointmentModel) => ap.day === day && ap.time === time);
+    //       let appointmentToUpdate = schedule.find((ap: AppointmentModel) => ap.day === day && ap.time === time);
 
-          const updatedSchedule = [
-            ...schedule.filter((ap: AppointmentModel) => ap.day !== day && ap.time !== time),
-            {
-              ...appointmentToUpdate,
-              busy: false,
-            }
-          ];
+    //       const updatedSchedule = [
+    //         ...schedule.filter((ap: AppointmentModel) => ap.day !== day && ap.time !== time),
+    //         {
+    //           ...appointmentToUpdate,
+    //           busy: false,
+    //         }
+    //       ];
 
-          this._authService.updateUser({
-            ...specialist,
-            schedule: updatedSchedule
-          });
-        })
-    }
+    //       this._authService.updateUser({
+    //         ...specialist,
+    //         schedule: updatedSchedule
+    //       });
+    //     })
+    // }
 
     this._appointmentService.updateAppointment(updatedAppointment)
       .then(() => {
