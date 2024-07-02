@@ -14,6 +14,7 @@ import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 import { getFilteredAppointments } from '../../helpers/appointmentFilter.helper';
+import { PatientHistory } from '../../models/patient-history.model';
 
 @Component({
   selector: 'app-specialist-appointments',
@@ -47,9 +48,18 @@ export class SpecialistAppointmentsComponent implements OnInit {
   public reason = '';
   public actionData;
   public loadingModal = false;
-
   public commentsDialogVisible = false;
 
+  // patient history
+  public loadPatientHistoryVisible = false;
+  public patientHistory: Partial<PatientHistory> = {
+    height: null,
+    weight: null,
+    temperature: null,
+    pressure: null,
+  };
+
+  // filters
   public filterCriteria: string = '';
   public patients = [];
 
@@ -101,12 +111,16 @@ export class SpecialistAppointmentsComponent implements OnInit {
   }
 
   public handleActionClick(event): void {
-
-    const { specialistId, day, time } = event.appointment;
-
+    // const { specialistId, day, time } = event.appointment;
     if (!event.action) {
       this.actionData = event;
       this.commentsDialogVisible = true;
+      return;
+    }
+
+    if (event.action === 'patient-history') {
+      console.log(event);
+      this.loadPatientHistoryVisible = true;
       return;
     }
 
@@ -156,7 +170,21 @@ export class SpecialistAppointmentsComponent implements OnInit {
     //   })
   }
 
+  public handleConfirmPatientHistory(): void {
+    const { height, weight, temperature, pressure } = this.patientHistory;
+    if(!height || !weight || !temperature || !pressure) {
+      this._toastService.errorMessage('Debe cargar: Altura, Peso, Temperatura, Presión');
+      return;
+    }
+    console.log(this.patientHistory)
+  }
+
   public handleConfirmDialog(): void {
+    if(!this.reason) {
+      this._toastService.errorMessage('Debe proporcionar un motivo.');
+      return;
+    }
+
     this.loadingModal = true;
     const updatedAppointment = {
       ...this.actionData.appointment,

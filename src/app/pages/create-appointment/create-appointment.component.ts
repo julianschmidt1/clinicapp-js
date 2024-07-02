@@ -2,22 +2,21 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { Firestore, collection, collectionData } from '@angular/fire/firestore';
 import { FormsModule } from '@angular/forms';
-import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
-import { first } from 'rxjs';
-import { groupAndSortSchedule } from '../../helpers/parseModel.helper';
-import { DateToDayNumberPipe } from '../../pipes/date-to-day-number.pipe';
-import { ButtonModule } from 'primeng/button';
-import { ScheduleModel } from '../profile/profile.component';
-import { AuthService } from '../../services/auth.service';
-import { AppointmentService } from '../../services/appointment.service';
-import { ToastModule } from 'primeng/toast';
-import { ToastService } from '../../services/toast.service';
-import { AppointmentModel, AppointmentStatus } from '../../models/appointment.model';
-import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 import { Router } from '@angular/router';
-import { StorageService } from '../../services/firebase-storage.service';
+import { ButtonModule } from 'primeng/button';
+import { DropdownModule } from 'primeng/dropdown';
+import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
+import { first } from 'rxjs';
+import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
+import { AppointmentModel, AppointmentStatus } from '../../models/appointment.model';
+import { DateToDayNumberPipe } from '../../pipes/date-to-day-number.pipe';
 import { DateFormatPipe } from '../../pipes/format-date.pipe';
+import { AppointmentService } from '../../services/appointment.service';
+import { AuthService } from '../../services/auth.service';
+import { StorageService } from '../../services/firebase-storage.service';
+import { ToastService } from '../../services/toast.service';
+import { ScheduleModel } from '../profile/profile.component';
 
 @Component({
   selector: 'app-create-appointment',
@@ -255,16 +254,6 @@ export class CreateAppointmentComponent implements OnInit {
     })
     this.selectedSpecialist = user;
     this.specialistId = user.id;
-
-    // const daysWithSchedule = sortedSchedule.map(([key, value]: [string, ScheduleModel[]]) => {
-    //   return [
-    //     key,
-    //     value.filter((a) => !a.busy)
-    //   ]
-    // });
-    // console.log(daysWithSchedule);
-
-    // this.selectedSpecialistSchedule = daysWithSchedule.filter(([_, value]: [string, ScheduleModel[]]) => value.length);
   }
 
   public handleSetDay(dayData) {
@@ -272,7 +261,6 @@ export class CreateAppointmentComponent implements OnInit {
     this.selectedSpecialistDay = day;
 
     const scheduleIntervals = this.generateTimeIntervals(time.start, time.end, day);
-    // falta filtrar horarios ocupados
     this.availableIntervals = scheduleIntervals.filter(i =>
       !this.allAppointments.some(a => a.day === i.day && a.time === i.time && (a.status === AppointmentStatus.Confirmed || a.status === AppointmentStatus.Done))
     );

@@ -31,16 +31,21 @@
                             (click)="handleActionClick(appointment, status.Cancelled)">Cancelar</button>
 
                         <button class="outlined" *ngIf="appointment.status === status.Pending" pButton
-                            (click)="handleActionClick(appointment,status.Rejected)">Rechazar</button>
+                            (click)="handleActionClick(appointment, status.Rejected)">Rechazar</button>
 
                         <button *ngIf="appointment.status === status.Pending" pButton
-                            (click)="handleActionClick(appointment,status.Confirmed)">Aceptar</button>
+                            (click)="handleActionClick(appointment, status.Confirmed)">Aceptar</button>
 
                         <button *ngIf="appointment.status === status.Confirmed" pButton
-                            (click)="handleActionClick(appointment,status.Done)">Finalizar</button>
+                            (click)="handleActionClick(appointment, status.Done)">Finalizar</button>
 
                         <button *ngIf="appointment.reason" pButton (click)="handleActionClick(appointment)">Ver
                             comentarios</button>
+
+                        <button pButton (click)="handleActionClick(appointment, 'patient-history')"
+                            *ngIf="appointment.status === status.Done">
+                            Actualizar historia clínica
+                        </button>
                     </div>
                 </ng-container>
 

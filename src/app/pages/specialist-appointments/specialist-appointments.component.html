@@ -17,6 +17,30 @@
     {{actionData?.appointment?.reason}}
 </p-dialog>
 
+<p-dialog header="Cargar historia clinica" [(visible)]="loadPatientHistoryVisible" [modal]="true" [draggable]="false"
+    [style]="{ width: '400px' }">
+    <div style="width: 100%; display: flex; flex-direction: column; gap: 10px;">
+        <label>Altura</label>
+        <input type="text" pInputText [(ngModel)]="patientHistory.height" placeholder="Ingrese la altura (centimetros)">
+
+        <label>Peso</label>
+        <input type="text" pInputText [(ngModel)]="patientHistory.weight" placeholder="Ingrese el peso">
+
+        <label>Temperatura</label>
+        <input type="text" pInputText [(ngModel)]="patientHistory.temperature" placeholder="Ingrese la temperatura">
+
+        <label>Presión</label>
+        <input type="text" pInputText [(ngModel)]="patientHistory.pressure" placeholder="Ingrese la presión">
+    </div>
+
+    <div style="display: flex; width: 100%; justify-content: flex-end; align-items: center; margin-top: 10px;">
+        <button [disabled]="loadingModal" (click)="handleConfirmPatientHistory()" pButton>
+            Confirmar
+            <i *ngIf="loadingModal" class="pi pi-spin pi-spinner"></i>
+        </button>
+    </div>
+</p-dialog>
+
 <div class="screen">
 
     <div style="display: flex; flex-direction: column; width: 100%; padding: 0 50px;">
@@ -30,8 +54,8 @@
         </div>
 
         <div>
-            <appointments-table [loading]="loadingAppointments" (onActionClick)="handleActionClick($event)" [appointments]="getFilteredAppointments()"
-                userType='specialist' />
+            <appointments-table [loading]="loadingAppointments" (onActionClick)="handleActionClick($event)"
+                [appointments]="getFilteredAppointments()" userType='specialist' />
         </div>
 
     </div>
