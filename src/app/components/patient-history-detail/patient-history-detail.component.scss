@@ -1,26 +1,61 @@
 @import '../../../styles.scss';
 
 .patient-history-detail {
-
+    border: 2px solid $primary-color-1;
+    border-radius: 10px;
+    padding: 0 20px;
+    padding-bottom: 25px;
 
     .history-content {
         display: flex;
-        margin-top: 40px;
+        margin-top: 10px;
         width: 100%;
         flex-wrap: wrap;
         gap: 30px;
     }
 
     .appointment-list {
-        width: 330px;
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        gap: 8px;
+        border-right: 2px solid $color-1;
+        padding-right: 25px;
+        max-height: 600px;
+        overflow-y: auto;
+
+        .appointment-item {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            border: 2px solid $primary-color-1;
+            border-radius: 8px;
+            cursor: pointer;
+
+            .time-row {
+                margin: 5px 0;
+
+            }
+
+            span {
+                font-weight: bold;
+                color: $primary-color-1;
+            }
+        }
     }
 
     .stats {
         display: flex;
         justify-content: flex-start;
-        max-width: 750px;
+        max-width: 700px;
         flex-wrap: wrap;
         gap: 30px;
+
+        .field-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
     }
 
     input {

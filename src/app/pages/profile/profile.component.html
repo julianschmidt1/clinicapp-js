@@ -94,7 +94,9 @@
         </ng-container>
 
         <ng-container *ngIf="userData && userData?.healthcare">
-            <patient-history-detail [userId]="userData?.id"/>
+            <div style="margin-top: 20px;">
+                <patient-history-detail [userId]="userData?.id"/>
+            </div>
         </ng-container>
 
     </div>

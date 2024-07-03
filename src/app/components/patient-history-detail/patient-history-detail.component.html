@@ -4,26 +4,46 @@
     <div class="history-content">
 
         <div class="appointment-list">
-            Lista de turnos
+            <h2>Atenciones</h2>
+            <ng-container *ngIf="relatedAppointments.length">
+                <div class="appointment-item" *ngFor="let appointment of relatedAppointments">
+                    <span>
+                        {{appointment.specialty}}
+                    </span>
+                    <div class="time-row">
+                        {{appointment.day}}
+                        {{appointment.time}}
+                    </div>
+                </div>
+            </ng-container>
         </div>
 
         <div class="stats" *ngIf="historyData">
-            <div style="display: flex; flex-direction: column;">
+            <h2 style="width: 100%;">Detalles</h2>
+            <div class="field-section">
                 <label for="">Altura (CM)</label>
                 <input type="text" pInputText [value]="historyData.height" disabled>
             </div>
-            <div style="display: flex; flex-direction: column;">
+            <div class="field-section">
                 <label for="">Peso</label>
                 <input type="text" pInputText [value]="historyData.weight" disabled>
             </div>
-            <div style="display: flex; flex-direction: column;">
+            <div class="field-section">
                 <label for="">Presión</label>
                 <input type="text" pInputText [value]="historyData.pressure" disabled>
             </div>
-            <div style="display: flex; flex-direction: column;">
+            <div class="field-section">
                 <label for="">Temperatura</label>
                 <input type="text" pInputText [value]="historyData.temperature" disabled>
             </div>
+
+            <ng-container *ngIf="historyData?.customProperties?.length">
+                <div class="field-section" *ngFor="let item of historyData.customProperties">
+                    <label for="">{{item.displayName}}</label>
+                    <input type="text" [value]="item.value" disabled pInputText>
+                </div>
+            </ng-container>
+
         </div>
 
     </div>
