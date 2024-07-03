@@ -138,10 +138,6 @@ export class SpecialistAppointmentsComponent implements OnInit {
     if (event.action === 'patient-history') {
       console.log(event);
       const { patientId, id } = event.appointment;
-      this.patientHistory.patientId = patientId;
-      this.patientHistory.appointmentIds.push(id);
-      this.patientHistory.id = `history-${patientId}`;
-      this.selectedAppointment = event.appointment;
 
       this._patientHistoryService.getHistoryById(patientId)
         .then((data) => {
@@ -150,6 +146,13 @@ export class SpecialistAppointmentsComponent implements OnInit {
             console.log(this.patientHistory)
           }
         })
+        .finally(() => {
+          this.patientHistory.patientId = patientId;
+          this.patientHistory.appointmentIds.push(id);
+          this.patientHistory.id = `history-${patientId}`;
+          this.selectedAppointment = event.appointment;
+        })
+
 
       this.loadPatientHistoryVisible = true;
       return;
