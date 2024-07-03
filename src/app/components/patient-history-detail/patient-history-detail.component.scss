@@ -1,0 +1,29 @@
+@import '../../../styles.scss';
+
+.patient-history-detail {
+
+
+    .history-content {
+        display: flex;
+        margin-top: 40px;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    .appointment-list {
+        width: 330px;
+    }
+
+    .stats {
+        display: flex;
+        justify-content: flex-start;
+        max-width: 750px;
+        flex-wrap: wrap;
+        gap: 30px;
+    }
+
+    input {
+        width: 280px;
+    }
+}

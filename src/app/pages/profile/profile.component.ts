@@ -14,6 +14,8 @@ import { DateToDayNumberPipe } from '../../pipes/date-to-day-number.pipe';
 import { groupAndSortSchedule } from '../../helpers/parseModel.helper';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 import moment from 'moment';
+import { PatientHistoryService } from '../../services/patient-history.service';
+import { PatientHistoryDetailComponent } from '../../components/patient-history-detail/patient-history-detail.component';
 
 @Component({
   selector: 'app-profile',
@@ -28,7 +30,8 @@ import moment from 'moment';
     InputTextModule,
     ToastModule,
     DateToDayNumberPipe,
-    ArrowBackComponent
+    ArrowBackComponent,
+    PatientHistoryDetailComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.scss'
@@ -38,6 +41,7 @@ export class ProfileComponent implements OnInit {
   private firestore = inject(Firestore);
   private storageService = inject(StorageService);
   private toastService = inject(ToastService);
+  private _patientHistoryService = inject(PatientHistoryService);
 
   public loadingUser = true;
   public loadingImages = true;
@@ -98,9 +102,9 @@ export class ProfileComponent implements OnInit {
           this.userImages = images;
           this.loadingImages = false;
         }
-
-      })
+      });
     }
+
   }
 
   handleCloseAndSetDefault() {

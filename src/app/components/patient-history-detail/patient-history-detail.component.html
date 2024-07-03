@@ -1,0 +1,30 @@
+<div class="patient-history-detail">
+    <h1>Historia clinica</h1>
+
+    <div class="history-content">
+
+        <div class="appointment-list">
+            Lista de turnos
+        </div>
+
+        <div class="stats" *ngIf="historyData">
+            <div style="display: flex; flex-direction: column;">
+                <label for="">Altura (CM)</label>
+                <input type="text" pInputText [value]="historyData.height" disabled>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+                <label for="">Peso</label>
+                <input type="text" pInputText [value]="historyData.weight" disabled>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+                <label for="">Presión</label>
+                <input type="text" pInputText [value]="historyData.pressure" disabled>
+            </div>
+            <div style="display: flex; flex-direction: column;">
+                <label for="">Temperatura</label>
+                <input type="text" pInputText [value]="historyData.temperature" disabled>
+            </div>
+        </div>
+
+    </div>
+</div>
