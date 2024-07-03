@@ -11,6 +11,7 @@ import { ToastService } from '../../services/toast.service';
 import { AuthService } from '../../services/auth.service';
 import { map } from 'rxjs';
 import { AppointmentModel, AppointmentStatus } from '../../models/appointment.model';
+import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 
 @Component({
   selector: 'app-my-patients',
@@ -22,6 +23,7 @@ import { AppointmentModel, AppointmentStatus } from '../../models/appointment.mo
     ToastModule,
     DialogModule,
     PatientHistoryDetailComponent,
+    ArrowBackComponent
   ],
   templateUrl: './my-patients.component.html',
   styleUrl: './my-patients.component.scss'
