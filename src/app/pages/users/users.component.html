@@ -1,6 +1,13 @@
 <p-toast></p-toast>
 <new-user [visible]="registerModal" (onCancel)="registerModal = false" />
 
+<p-dialog *ngIf="selectedUserId" [draggable]="false" [(visible)]="patientHistoryModal" [modal]="true"
+    (onHide)="handleHideModal()" [style]="{ minWidth: '550px' }">
+    <ng-container *ngIf="selectedUserId">
+        <patient-history-detail [userId]="selectedUserId" />
+    </ng-container>
+</p-dialog>
+
 <div class="screen">
     <div style="width: 100%; padding: 0 50px;">
 
@@ -23,8 +30,6 @@
                 </ng-template>
 
                 <ng-template pTemplate="body" let-user>
-
-
                     <tr>
                         <td>{{ user.firstName }}</td>
                         <td>{{ user.lastName }}</td>
@@ -32,10 +37,16 @@
                         <td>{{ user.healthcare ?? '-' }}</td>
                         <td>{{ user.specialty ?? '-' }}</td>
                         <td *ngIf="user.specialty">
-                            <button style="width: 100%; justify-content: center;" (click)="handleSetUserStatus(user)"
+                            <button class="action-button" (click)="handleSetUserStatus(user)"
                                 [disabled]="updateUserLoading" pButton>
                                 {{user.disabled ? 'Habilitar' : 'Deshabilitar'}}
                                 <i *ngIf="updateUserLoading" class="pi pi-spin pi-spinner"></i>
+                            </button>
+                        </td>
+                        <td *ngIf="user.healthcare">
+                            <button class="action-button" [disabled]="updateUserLoading" pButton
+                                (click)="handlePatientHistoryModal(user)">
+                                Ver historia clinica
                             </button>
                         </td>
                     </tr>

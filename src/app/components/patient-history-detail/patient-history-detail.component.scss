@@ -14,6 +14,16 @@
         gap: 30px;
     }
 
+    .loading-container {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        i {
+            font-size: 24px;
+            color: $primary-color-1;
+        }
+    }
+
     .appointment-list {
         display: flex;
         flex-direction: column;

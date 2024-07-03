@@ -26,15 +26,16 @@ export class PatientHistoryDetailComponent implements OnInit {
   private _firestore = inject(Firestore);
 
   public historyData: PatientHistory;
+  public historyDataLoading = false;
   public relatedAppointments: AppointmentModel[] = [];
 
   ngOnInit(): void {
     const appointmentsCollection = collection(this._firestore, 'appointments');
 
+    this.historyDataLoading = true;
     this._patientHistoryService.getHistoryById(this.userId)
       .then((data) => {
         if (data.exists()) {
-          console.log(data.data())
           this.historyData = data.data() as PatientHistory;
 
           collectionData(appointmentsCollection)
@@ -46,8 +47,20 @@ export class PatientHistoryDetailComponent implements OnInit {
                 console.log('appointments: ', appointments);
                 this.relatedAppointments = appointments;
               },
+              error: (e) => {
+                this.historyDataLoading = false;
+                console.log('Error: ', e);
+              }
             })
         }
+      })
+      .finally(() => {
+        this.historyDataLoading = false;
+      })
+      .catch((e) => {
+        this.historyDataLoading = false;
+        console.log('Error: ', e);
+
       })
   }
 }

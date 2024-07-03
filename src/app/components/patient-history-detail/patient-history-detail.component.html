@@ -1,8 +1,7 @@
 <div class="patient-history-detail">
     <h1>Historia clinica</h1>
 
-    <div class="history-content">
-
+    <div *ngIf="!historyDataLoading && historyData" class="history-content">
         <div class="appointment-list">
             <h2>Atenciones</h2>
             <ng-container *ngIf="relatedAppointments.length">
@@ -18,7 +17,7 @@
             </ng-container>
         </div>
 
-        <div class="stats" *ngIf="historyData">
+        <div class="stats">
             <h2 style="width: 100%;">Detalles</h2>
             <div class="field-section">
                 <label for="">Altura (CM)</label>
@@ -45,6 +44,15 @@
             </ng-container>
 
         </div>
+    </div>
 
+    <div *ngIf="!historyData && !historyDataLoading">
+        <h3>No hay datos disponibles</h3>
+    </div>
+
+    <div *ngIf="historyDataLoading" class="history-content">
+        <div class="loading-container">
+            <i class="pi pi-spin pi-spinner"></i>
+        </div>
     </div>
 </div>
