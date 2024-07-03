@@ -43,7 +43,7 @@
                             comentarios</button>
 
                         <button pButton (click)="handleActionClick(appointment, 'patient-history')"
-                            *ngIf="appointment.status === status.Done">
+                            *ngIf="appointment.status === status.Done && !appointment?.hasHistory">
                             Actualizar historia clínica
                         </button>
                     </div>

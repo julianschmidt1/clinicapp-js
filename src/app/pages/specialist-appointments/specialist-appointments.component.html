@@ -18,25 +18,43 @@
 </p-dialog>
 
 <p-dialog header="Cargar historia clinica" [(visible)]="loadPatientHistoryVisible" [modal]="true" [draggable]="false"
-    [style]="{ width: '400px' }">
+    [style]="{ width: '450px' }">
     <div style="width: 100%; display: flex; flex-direction: column; gap: 10px;">
         <label>Altura</label>
-        <input type="text" pInputText [(ngModel)]="patientHistory.height" placeholder="Ingrese la altura (centimetros)">
+        <input type="number" pInputText [(ngModel)]="patientHistory.height" placeholder="Ingrese la altura (centimetros)">
 
         <label>Peso</label>
-        <input type="text" pInputText [(ngModel)]="patientHistory.weight" placeholder="Ingrese el peso">
+        <input type="number" pInputText [(ngModel)]="patientHistory.weight" placeholder="Ingrese el peso">
 
         <label>Temperatura</label>
-        <input type="text" pInputText [(ngModel)]="patientHistory.temperature" placeholder="Ingrese la temperatura">
+        <input type="number" pInputText [(ngModel)]="patientHistory.temperature" placeholder="Ingrese la temperatura">
 
         <label>Presión</label>
-        <input type="text" pInputText [(ngModel)]="patientHistory.pressure" placeholder="Ingrese la presión">
+        <input type="number" pInputText [(ngModel)]="patientHistory.pressure" placeholder="Ingrese la presión">
+
+        <ng-container *ngFor="let field of newFields">
+            <label>{{field.displayName}}</label>
+            <input type="text" pInputText [(ngModel)]="dynamicValues[field.prop]">
+        </ng-container>
+
+        <button style="width: fit-content;" *ngIf="!addingValue && newFields.length < 3" (click)="addingValue = true" pButton>Agregar valor
+            dinamico</button>
+        <ng-container *ngIf="addingValue">
+            <div style="display: flex; gap: 5px; margin-top: 5px;">
+
+                <input style="width: 100%;" placeholder="Ingrese el nombre del campo" type="text" pInputText
+                    [(ngModel)]="newFieldName">
+                <button pTooltip="Cancelar campo" (click)="addingValue = false" pButton class="outlined"
+                    icon="pi pi-times"></button>
+                <button (click)="handleAddField()" pTooltip="Confirmar campo" pButton icon="pi pi-check"></button>
+            </div>
+        </ng-container>
     </div>
 
     <div style="display: flex; width: 100%; justify-content: flex-end; align-items: center; margin-top: 10px;">
-        <button [disabled]="loadingModal" (click)="handleConfirmPatientHistory()" pButton>
+        <button [disabled]="loadingPatientHistory" (click)="handleConfirmPatientHistory()" pButton>
             Confirmar
-            <i *ngIf="loadingModal" class="pi pi-spin pi-spinner"></i>
+            <i *ngIf="loadingPatientHistory" class="pi pi-spin pi-spinner"></i>
         </button>
     </div>
 </p-dialog>

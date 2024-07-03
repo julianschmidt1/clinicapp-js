@@ -14,7 +14,10 @@ import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
 import { getFilteredAppointments } from '../../helpers/appointmentFilter.helper';
-import { PatientHistory } from '../../models/patient-history.model';
+import { KeyValuePair, PatientHistory } from '../../models/patient-history.model';
+import { TooltipModule } from 'primeng/tooltip';
+import moment from 'moment';
+import { PatientHistoryService } from '../../services/patient-history.service';
 
 @Component({
   selector: 'app-specialist-appointments',
@@ -27,7 +30,8 @@ import { PatientHistory } from '../../models/patient-history.model';
     DialogModule,
     ButtonModule,
     CommonModule,
-    ArrowBackComponent
+    ArrowBackComponent,
+    TooltipModule
   ],
   templateUrl: './specialist-appointments.component.html',
   styleUrl: './specialist-appointments.component.scss'
@@ -38,6 +42,7 @@ export class SpecialistAppointmentsComponent implements OnInit {
   private _authService = inject(AuthService);
   private _appointmentService = inject(AppointmentService);
   private _toastService = inject(ToastService);
+  private _patientHistoryService = inject(PatientHistoryService);
 
   public allAppointments: AppointmentModel[] = [];
   public currentUser;
@@ -57,7 +62,19 @@ export class SpecialistAppointmentsComponent implements OnInit {
     weight: null,
     temperature: null,
     pressure: null,
+    appointmentIds: [],
+    customProperties: [],
   };
+
+  public loadingPatientHistory = false;
+  public selectedAppointment: AppointmentModel;
+  public currentHistory: PatientHistory;
+
+  // dynamic form data
+  public dynamicValues = {};
+  public newFieldName = '';
+  public addingValue = false;
+  public newFields = [];
 
   // filters
   public filterCriteria: string = '';
@@ -120,6 +137,20 @@ export class SpecialistAppointmentsComponent implements OnInit {
 
     if (event.action === 'patient-history') {
       console.log(event);
+      const { patientId, id } = event.appointment;
+      this.patientHistory.patientId = patientId;
+      this.patientHistory.appointmentIds.push(id);
+      this.patientHistory.id = `history-${patientId}`;
+      this.selectedAppointment = event.appointment;
+
+      this._patientHistoryService.getHistoryById(patientId)
+        .then((data) => {
+          if (data.exists()) {
+            this.patientHistory = data.data();
+            console.log(this.patientHistory)
+          }
+        })
+
       this.loadPatientHistoryVisible = true;
       return;
     }
@@ -172,15 +203,72 @@ export class SpecialistAppointmentsComponent implements OnInit {
 
   public handleConfirmPatientHistory(): void {
     const { height, weight, temperature, pressure } = this.patientHistory;
-    if(!height || !weight || !temperature || !pressure) {
+    if (!height || height < 0 || !weight || weight < 0 || !temperature || temperature < 0 || !pressure || pressure < 0) {
       this._toastService.errorMessage('Debe cargar: Altura, Peso, Temperatura, Presión');
       return;
     }
-    console.log(this.patientHistory)
+
+    if (this.newFields.some(f => !this.dynamicValues[f.prop])) {
+      this._toastService.errorMessage('Los valores dinamicos son requeridos.');
+      return;
+    }
+
+    if (this.newFields?.length) {
+
+      this.newFields.map((field) => {
+
+        if (this.patientHistory.customProperties.find(prop => prop.key === field.prop)) {
+          this.patientHistory.customProperties = this.patientHistory.customProperties.filter(prop => prop.key !== field.prop);
+        }
+
+        this.patientHistory.customProperties.push({
+          key: field.prop,
+          displayName: field.displayName,
+          value: this.dynamicValues[field.prop]
+        });
+
+      });
+    }
+
+    this.loadingPatientHistory = true;
+
+    this._patientHistoryService.setPatientHistory(this.patientHistory)
+      .then(() => {
+        this._toastService.successMessage('Historia clinica cargada con exito');
+        this.loadPatientHistoryVisible = false;
+        this.loadingPatientHistory = false;
+      })
+      .catch(() => {
+        this._toastService.errorMessage('Error al cargar historia clinica');
+        this.loadingPatientHistory = false;
+      });
+
+    this._appointmentService.updateAppointment({ ...this.selectedAppointment, hasHistory: true })
+      .then(() => { })
+      .catch(() => {
+        this._toastService.errorMessage('Error al actualizar el turno');
+      })
+  }
+
+  public handleAddField(): void {
+
+    const newPropName = this.newFieldName.replaceAll(' ', '').toLowerCase().trim();
+    this.newFields.push({
+      prop: newPropName,
+      displayName: this.newFieldName.trim(),
+    });
+
+    this.dynamicValues = {
+      ...this.dynamicValues,
+      [newPropName]: '',
+    }
+
+    this.addingValue = false;
+    this.newFieldName = '';
   }
 
   public handleConfirmDialog(): void {
-    if(!this.reason) {
+    if (!this.reason) {
       this._toastService.errorMessage('Debe proporcionar un motivo.');
       return;
     }

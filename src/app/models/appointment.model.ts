@@ -10,6 +10,7 @@ export interface AppointmentModel {
     reason?: string,
     rating?: RatingModel,
     survey?: SurveyModel
+    hasHistory?: boolean,
 }
 
 export interface RatingModel {
