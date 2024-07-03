@@ -16,15 +16,21 @@
                 </div>
                 <div class="action-card" (click)="handleNavigateByUserType()">
                     <span>
-                        Ver mis turnos
+                        Mis turnos
                     </span>
                     <i class="pi pi-list-check"></i>
                 </div>
                 <div class="action-card" (click)="handleNavigate('profile')">
                     <span>
-                        Ir a mi perfil
+                        Perfil
                     </span>
                     <i class="pi pi-id-card"></i>
+                </div>
+                <div *ngIf="currentUser?.specialty" class="action-card" (click)="handleNavigate('my-patients')">
+                    <span>
+                        Mis pacientes
+                    </span>
+                    <i class="pi pi-users"></i>
                 </div>
             </div>
         </ng-container>
