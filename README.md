@@ -14,7 +14,10 @@ Las secciones navegables son:
 
 #### Inicio
 
-Desde el inicio es posible navegar a las pantallas para `solicitar turnos` y `visualizar turnos creados`
+Desde el inicio es posible navegar a las pantallas para `solicitar turnos`, `visualizar turnos creados` y `perfil`
+
+![home](https://github.com/julianschmidt1/clinicapp-js/assets/47337611/ea886342-b278-427a-9fb7-75663f77c1f8)
+
 
 `Solicitar turnos`
 Si el usuario es Administrador o Paciente puede ingresar a solicitar turnos.
