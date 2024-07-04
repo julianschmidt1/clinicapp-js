@@ -8,8 +8,8 @@ import { ToastService } from '../../services/toast.service';
 import { ToastModule } from 'primeng/toast';
 import { DialogModule } from 'primeng/dialog';
 import { NewUserComponent } from './new-user/new-user.component';
-import { PatientHistoryService } from '../../services/patient-history.service';
 import { PatientHistoryDetailComponent } from '../../components/patient-history-detail/patient-history-detail.component';
+import { ExportService } from '../../services/export.service';
 
 @Component({
   selector: 'app-users',
@@ -30,7 +30,7 @@ export class UsersComponent implements OnInit {
 
   private _firestore = inject(Firestore);
   private _toastService = inject(ToastService);
-  private _patientHistoryService = inject(PatientHistoryService);
+  private _exportService = inject(ExportService);
 
   public updateUserLoading = false;
   public usersData$: Observable<any>;
@@ -60,7 +60,6 @@ export class UsersComponent implements OnInit {
   }
 
   public handlePatientHistoryModal(user): void {
-    console.log(user);
     this.selectedUserId = user.id;
     this.patientHistoryModal = true;
   }
@@ -70,7 +69,35 @@ export class UsersComponent implements OnInit {
     this.selectedUserId = null
   }
 
-  handleSetUserStatus(user: any): void {
+  public handleDownloadTable(): void {
+
+    const arrayToExport = this.allUsers.map(user => {
+      return {
+        id: user.id,
+        email: user.email,
+        fullName: user.firstName + ' ' + user.lastName,
+        dni: user.dni,
+        specialty: user?.specialty ? user.specialty.join(', ') : 'N/A',
+        healthcare: user?.healthcare ? user.healthcare : 'N/A',
+        admin: user?.admin ? 'SI' : 'NO',
+      };
+    })
+    console.log(arrayToExport);
+
+    const headers = {
+      id: 'Identificador',
+      email: 'Correo',
+      fullName: 'Nombre completo',
+      dni: 'DNI',
+      specialty: 'Especialidad/es',
+      healthcare: 'Obra social',
+      admin: 'Administrador'
+    };
+
+    this._exportService.exportToExcel(arrayToExport, 'listado-usuarios.xlsx', headers);
+  }
+
+  public handleSetUserStatus(user: any): void {
     const userDocRef = doc(this._firestore, `users/${user.id}`);
 
     this.updateUserLoading = true;
@@ -83,7 +110,6 @@ export class UsersComponent implements OnInit {
       .catch(() => {
         this._toastService.errorMessage('Error al actualizar usuario')
         this.updateUserLoading = false;
-
-      })
+      });
   }
 }

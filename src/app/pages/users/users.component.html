@@ -13,7 +13,10 @@
 
         <div class="action-header">
             <h1>Gestión de Usuarios</h1>
-            <button pButton (click)="registerModal = true" [draggable]="false">Nuevo +</button>
+            <div style="display: flex; gap: 8px;">
+                <button pButton (click)="handleDownloadTable()">Exportar como Excel</button>
+                <button pButton (click)="registerModal = true">Nuevo +</button>
+            </div>
         </div>
         <div style="max-height: 520px; overflow-y: scroll;">
 
