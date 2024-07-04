@@ -20,22 +20,22 @@ const authRoutes = [
         component: LayoutComponent,
         canActivate: [authGuard],
         children: [
-            { path: 'home', component: HomeComponent },
-            { path: 'users', component: UsersComponent, canActivate: [userGuard(['admin'])] },
-            { path: 'profile', component: ProfileComponent },
-            { path: 'create-appointment', component: CreateAppointmentComponent, canActivate: [userGuard(['admin', 'patient'])] },
-            { path: 'patient-appointments', component: PatientAppointmentsComponent, canActivate: [userGuard(['patient'])] },
-            { path: 'specialist-appointments', component: SpecialistAppointmentsComponent, canActivate: [userGuard(['specialist'])] },
-            { path: 'my-patients', component: MyPatientsComponent, canActivate: [userGuard(['specialist'])] },
-            { path: 'all-appointments', component: AllAppointmentsComponent, canActivate: [userGuard(['admin'])] },
+            { path: 'home', component: HomeComponent, data: { state: 'home' } },
+            { path: 'users', component: UsersComponent, canActivate: [userGuard(['admin'])], data: { state: 'users' } },
+            { path: 'profile', component: ProfileComponent, data: { state: 'profile' } },
+            { path: 'create-appointment', component: CreateAppointmentComponent, canActivate: [userGuard(['admin', 'patient'])], data: { state: 'create-appointment' } },
+            { path: 'patient-appointments', component: PatientAppointmentsComponent, canActivate: [userGuard(['patient'])], data: { state: 'patient-appointments' } },
+            { path: 'specialist-appointments', component: SpecialistAppointmentsComponent, canActivate: [userGuard(['specialist'])], data: { state: 'specialist-appointments' } },
+            { path: 'my-patients', component: MyPatientsComponent, canActivate: [userGuard(['specialist'])], data: { state: 'my-patients' } },
+            { path: 'all-appointments', component: AllAppointmentsComponent, canActivate: [userGuard(['admin'])], data: { state: 'all-appointments' } },
         ]
     },
 ];
 
 export const routes: Routes = [
-    { path: '', component: WelcomeComponent },
-    { path: 'register', component: RegisterComponent },
-    { path: 'login', component: LoginComponent },
+    { path: '', component: WelcomeComponent, data: { state: '' } },
+    { path: 'register', component: RegisterComponent, data: { state: 'register' } },
+    { path: 'login', component: LoginComponent, data: { state: 'login' } },
     { path: 'auth', children: authRoutes },
     { path: '**', redirectTo: '' },
 ];

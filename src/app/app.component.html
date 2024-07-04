@@ -1,1 +1,3 @@
-<router-outlet />
+<div [@slideTransition]="getState(o)">
+    <router-outlet #o="outlet" />
+</div>

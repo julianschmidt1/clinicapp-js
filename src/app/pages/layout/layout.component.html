@@ -1,6 +1,6 @@
 <div>
     <top-bar />
-    <div style="padding-top: 72px;">
-        <router-outlet></router-outlet>
+    <div style="padding-top: 72px;" [@routerTransition]="getState(o)">
+        <router-outlet #o="outlet"></router-outlet>
     </div>
 </div>
