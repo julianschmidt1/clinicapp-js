@@ -13,7 +13,7 @@ import { AppointmentService } from '../../services/appointment.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
-import { getFilteredAppointments } from '../../helpers/appointmentFilter.helper';
+import { getFilteredAppointments, getFilteredAppointmentsByAllFields } from '../../helpers/appointmentFilter.helper';
 import { KeyValuePair, PatientHistory } from '../../models/patient-history.model';
 import { TooltipModule } from 'primeng/tooltip';
 import moment from 'moment';
@@ -44,7 +44,7 @@ export class SpecialistAppointmentsComponent implements OnInit {
   private _toastService = inject(ToastService);
   private _patientHistoryService = inject(PatientHistoryService);
 
-  public allAppointments: AppointmentModel[] = [];
+  public allAppointments: any[] = [];
   public currentUser;
   public loadingAppointments = false;
 
@@ -84,6 +84,8 @@ export class SpecialistAppointmentsComponent implements OnInit {
 
     const appointmentsCollection = collection(this._firestore, 'appointments');
     const usersCollection = collection(this._firestore, 'users');
+    const patientHistoryCollection = collection(this._firestore, 'patientHistory');
+
     const currentUserData = this._authService.getCurrentUserData();
     this.loadingAppointments = true;
 
@@ -104,6 +106,27 @@ export class SpecialistAppointmentsComponent implements OnInit {
             next: (appointments) => {
               console.log(appointments);
               this.allAppointments = appointments;
+
+              console.log(appointments);
+
+              collectionData(patientHistoryCollection)
+                .subscribe({
+                  next: (data: PatientHistory[]) => {
+
+                    const relatedAppointments = this.allAppointments.map((a) => {
+
+                      const relatedParentHistory = data.find(ph => ph.patientId === a.patientId);
+
+                      if (!relatedParentHistory) {
+                        return { ...a };
+                      }
+
+                      return { ...a, relatedParentHistory };
+                    });
+
+                    this.allAppointments = relatedAppointments;
+                  }
+                });
               this.loadingAppointments = false;
             },
             error: () => {
@@ -112,11 +135,11 @@ export class SpecialistAppointmentsComponent implements OnInit {
           });
 
         collectionData(usersCollection)
-          .pipe(
-            map((users: any[]) => {
-              return users.filter((user) => user?.healthcare);
-            })
-          )
+          // .pipe(
+          //   map((users: any[]) => {
+          //     return users.filter((user) => user?.healthcare);
+          //   })
+          // )
           .subscribe({
             next: (users) => {
               this.patients = users;
@@ -324,7 +347,7 @@ export class SpecialistAppointmentsComponent implements OnInit {
   }
 
   public getFilteredAppointments() {
-    return getFilteredAppointments(this.filterCriteria, this.allAppointments, this.patients, 'patientId');
+    return getFilteredAppointmentsByAllFields(this.filterCriteria, this.allAppointments, this.patients, 'patientId');
   }
 
   get modalText() {

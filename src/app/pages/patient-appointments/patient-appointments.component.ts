@@ -14,10 +14,11 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { RatingModule } from 'primeng/rating';
 import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.component';
-import { getFilteredAppointments } from '../../helpers/appointmentFilter.helper';
+import { getFilteredAppointments, getFilteredAppointmentsByAllFields } from '../../helpers/appointmentFilter.helper';
 import { SliderModule } from 'primeng/slider';
 import { CheckboxModule } from 'primeng/checkbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { PatientHistory } from '../../models/patient-history.model';
 
 @Component({
   selector: 'app-patient-appointments',
@@ -46,7 +47,7 @@ export class PatientAppointmentsComponent implements OnInit {
   private _appointmentService = inject(AppointmentService);
   private _toastService = inject(ToastService);
 
-  public allAppointments: AppointmentModel[] = [];
+  public allAppointments: any[] = [];
   public currentUser;
   public loadingAppointments = false;
 
@@ -80,6 +81,7 @@ export class PatientAppointmentsComponent implements OnInit {
 
     const appointmentsCollection = collection(this._firestore, 'appointments');
     const usersCollection = collection(this._firestore, 'users');
+    const patientHistoryCollection = collection(this._firestore, 'patientHistory');
 
     const currentUserData = this._authService.getCurrentUserData();
 
@@ -99,6 +101,27 @@ export class PatientAppointmentsComponent implements OnInit {
           .subscribe({
             next: (appointments) => {
               this.allAppointments = appointments;
+              console.log(appointments);
+
+              collectionData(patientHistoryCollection)
+                .subscribe({
+                  next: (data: PatientHistory[]) => {
+
+                    const relatedAppointments = this.allAppointments.map((a) => {
+
+                      const relatedParentHistory = data.find(ph => ph.patientId === a.patientId);
+
+                      if (!relatedParentHistory) {
+                        return { ...a };
+                      }
+
+                      return { ...a, relatedParentHistory };
+                    });
+
+                    this.allAppointments = relatedAppointments;
+                  }
+                });
+
               this.loadingAppointments = false;
             },
             error: (e) => {
@@ -107,23 +130,24 @@ export class PatientAppointmentsComponent implements OnInit {
           });
 
         collectionData(usersCollection)
-          .pipe(
-            map((users: any[]) => {
-              return users.filter((user) => user?.specialty);
-            })
-          )
+          // .pipe(
+          //   map((users: any[]) => {
+          //     return users.filter((user) => user?.specialty);
+          //   })
+          // )
           .subscribe({
             next: (users) => {
               this.specialists = users;
             }
           });
 
-      })
-
+      });
   }
 
   public getFilteredAppointments() {
-    return getFilteredAppointments(this.filterCriteria, this.allAppointments, this.specialists, 'specialistId');
+    const records = getFilteredAppointmentsByAllFields(this.filterCriteria, this.allAppointments, this.specialists, 'specialistId');
+
+    return records;
   }
 
   handleActionClick(data) {
@@ -152,7 +176,7 @@ export class PatientAppointmentsComponent implements OnInit {
 
   handleConfirmSurvey(): void {
 
-    if(!this.surveyAnswers.attribute) {
+    if (!this.surveyAnswers.attribute) {
       this._toastService.errorMessage('Debe elegir por lo menos un atributo del especialista');
       return;
     }
