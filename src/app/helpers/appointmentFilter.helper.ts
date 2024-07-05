@@ -60,7 +60,8 @@ export const getFilteredAppointmentsByAllFields = (
             register?.relatedParentHistory?.weight.toString().includes(sanitizedCriteria) ||
             register?.relatedParentHistory?.pressure.toString().includes(sanitizedCriteria) ||
             register?.relatedParentHistory?.temperature.toString().includes(sanitizedCriteria) ||
-            register?.relatedParentHistory?.customProperties?.some((v) => v.value.includes(sanitizedCriteria))
+            register?.relatedParentHistory?.customProperties?.some((v) => v.value.includes(sanitizedCriteria)) ||
+            register?.relatedParentHistory?.customProperties?.some((v) => v.key.includes(sanitizedCriteria))
             || availableTableUsers.some(user => user.id === register.patientId)
             || availableTableUsers.some(user => user.id === register.specialistId);
     });

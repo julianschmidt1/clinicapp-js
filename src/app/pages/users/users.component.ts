@@ -73,7 +73,6 @@ export class UsersComponent implements OnInit {
 
     const arrayToExport = this.allUsers.map(user => {
       return {
-        id: user.id,
         email: user.email,
         fullName: user.firstName + ' ' + user.lastName,
         dni: user.dni,
@@ -85,7 +84,6 @@ export class UsersComponent implements OnInit {
     console.log(arrayToExport);
 
     const headers = {
-      id: 'Identificador',
       email: 'Correo',
       fullName: 'Nombre completo',
       dni: 'DNI',

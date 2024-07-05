@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { getState, slideTransition } from './animations/layout.animation';
+import { fromBelowTransition, getState } from './animations/layout.animation';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +8,7 @@ import { getState, slideTransition } from './animations/layout.animation';
   imports: [RouterOutlet],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
-  animations: [slideTransition]
+  animations: [fromBelowTransition]
 })
 export class AppComponent {
   title = 'clinicapp-js';
