@@ -1,11 +1,13 @@
 <div class="patient-history-detail">
     <h1>Historia clinica</h1>
 
-    <div *ngIf="!historyDataLoading && historyData" class="history-content">
+    <div *ngIf="!historyDataLoading && fullHistory" class="history-content">
         <div class="appointment-list">
             <h2>Atenciones</h2>
             <ng-container *ngIf="relatedAppointments.length">
-                <div class="appointment-item" *ngFor="let appointment of relatedAppointments">
+                <div class="appointment-item" *ngFor="let appointment of relatedAppointments"
+                    (click)="handleSelectAppointment(appointment)"
+                    [class.selected]="appointment?.id === selectedPatientHistory?.appointmentId">
                     <span>
                         {{appointment.specialty}}
                     </span>
@@ -17,36 +19,40 @@
             </ng-container>
         </div>
 
-        <div class="stats">
+        <div class="stats" *ngIf="selectedPatientHistory">
             <h2 style="width: 100%;">Detalles</h2>
             <div class="field-section">
                 <label for="">Altura (CM)</label>
-                <input type="text" pInputText [value]="historyData.height" disabled>
+                <input type="text" pInputText [value]="selectedPatientHistory.height" disabled>
             </div>
             <div class="field-section">
                 <label for="">Peso</label>
-                <input type="text" pInputText [value]="historyData.weight" disabled>
+                <input type="text" pInputText [value]="selectedPatientHistory.weight" disabled>
             </div>
             <div class="field-section">
                 <label for="">Presión</label>
-                <input type="text" pInputText [value]="historyData.pressure" disabled>
+                <input type="text" pInputText [value]="selectedPatientHistory.pressure" disabled>
             </div>
             <div class="field-section">
                 <label for="">Temperatura</label>
-                <input type="text" pInputText [value]="historyData.temperature" disabled>
+                <input type="text" pInputText [value]="selectedPatientHistory.temperature" disabled>
             </div>
 
-            <ng-container *ngIf="historyData?.customProperties?.length">
-                <div class="field-section" *ngFor="let item of historyData.customProperties">
+            <ng-container *ngIf="selectedPatientHistory?.customProperties?.length">
+                <div class="field-section" *ngFor="let item of selectedPatientHistory.customProperties">
                     <label for="">{{item.displayName}}</label>
                     <input type="text" [value]="item.value" disabled pInputText>
                 </div>
             </ng-container>
+        </div>
 
+        <div class="select-history" *ngIf="fullHistory && !selectedPatientHistory">
+            <h3>Selecciona una atención para visualizar</h3>
         </div>
     </div>
 
-    <div *ngIf="!historyData && !historyDataLoading">
+
+    <div *ngIf="!fullHistory && !historyDataLoading">
         <h3>No hay datos disponibles</h3>
     </div>
 

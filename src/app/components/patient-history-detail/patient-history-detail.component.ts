@@ -25,7 +25,9 @@ export class PatientHistoryDetailComponent implements OnInit {
 
   private _firestore = inject(Firestore);
 
-  public historyData: PatientHistory;
+  public fullHistory: PatientHistory[];
+  public selectedPatientHistory = null;
+
   public historyDataLoading = false;
   public relatedAppointments: AppointmentModel[] = [];
 
@@ -36,11 +38,12 @@ export class PatientHistoryDetailComponent implements OnInit {
     this._patientHistoryService.getHistoryById(this.userId)
       .then((data) => {
         if (data.exists()) {
-          this.historyData = data.data() as PatientHistory;
+          const historyData = data.data() as any;
+          this.fullHistory = historyData.history;
 
           collectionData(appointmentsCollection)
             .pipe(map((appointments: AppointmentModel[]) => {
-              return appointments.filter(a => this.historyData.appointmentIds.includes(a.id))
+              return appointments.filter(a => this.fullHistory.some(hd => hd.appointmentId === a.id))
             }))
             .subscribe({
               next: (appointments) => {
@@ -62,5 +65,9 @@ export class PatientHistoryDetailComponent implements OnInit {
         console.log('Error: ', e);
 
       })
+  }
+
+  handleSelectAppointment(appointment: AppointmentModel): void {
+    this.selectedPatientHistory = this.fullHistory.find(h => h.appointmentId === appointment.id);
   }
 }
