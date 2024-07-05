@@ -6,7 +6,8 @@ export interface PatientHistory {
     temperature: number,
     pressure: number,
     customProperties: KeyValuePair[],
-    appointmentIds: string[],
+    appointmentIds?: string[],
+    appointmentId: string,
     creationDate?: Date,
     modificationDate?: Date,
 }

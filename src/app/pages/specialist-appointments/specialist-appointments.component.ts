@@ -62,7 +62,7 @@ export class SpecialistAppointmentsComponent implements OnInit {
     weight: null,
     temperature: null,
     pressure: null,
-    appointmentIds: [],
+    appointmentId: null,
     customProperties: [],
   };
 
@@ -111,11 +111,11 @@ export class SpecialistAppointmentsComponent implements OnInit {
 
               collectionData(patientHistoryCollection)
                 .subscribe({
-                  next: (data: PatientHistory[]) => {
-
+                  next: (data: any) => {
+                    
                     const relatedAppointments = this.allAppointments.map((a) => {
-
-                      const relatedParentHistory = data.find(ph => ph.patientId === a.patientId);
+                      
+                      const relatedParentHistory = data.find(d => d.history.some(ph => ph.patientId === a.patientId))
 
                       if (!relatedParentHistory) {
                         return { ...a };
@@ -135,11 +135,6 @@ export class SpecialistAppointmentsComponent implements OnInit {
           });
 
         collectionData(usersCollection)
-          // .pipe(
-          //   map((users: any[]) => {
-          //     return users.filter((user) => user?.healthcare);
-          //   })
-          // )
           .subscribe({
             next: (users) => {
               this.patients = users;
@@ -159,24 +154,12 @@ export class SpecialistAppointmentsComponent implements OnInit {
     }
 
     if (event.action === 'patient-history') {
-      console.log(event);
       const { patientId, id } = event.appointment;
 
-      this._patientHistoryService.getHistoryById(patientId)
-        .then((data) => {
-          if (data.exists()) {
-            this.patientHistory = data.data();
-            console.log(this.patientHistory)
-          }
-        })
-        .finally(() => {
-          this.patientHistory.patientId = patientId;
-          this.patientHistory.appointmentIds.push(id);
-          this.patientHistory.id = `history-${patientId}`;
-          this.selectedAppointment = event.appointment;
-        })
-
-
+      this.patientHistory.appointmentId = id;
+      this.patientHistory.patientId = patientId;
+      this.patientHistory.id = `history-${patientId}`;
+      this.selectedAppointment = event.appointment;
       this.loadPatientHistoryVisible = true;
       return;
     }
@@ -242,10 +225,6 @@ export class SpecialistAppointmentsComponent implements OnInit {
     if (this.newFields?.length) {
 
       this.newFields.map((field) => {
-
-        if (this.patientHistory.customProperties.find(prop => prop.key === field.prop)) {
-          this.patientHistory.customProperties = this.patientHistory.customProperties.filter(prop => prop.key !== field.prop);
-        }
 
         this.patientHistory.customProperties.push({
           key: field.prop,

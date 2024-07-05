@@ -50,18 +50,19 @@ export const getFilteredAppointmentsByAllFields = (
 
     const filteredValues = allAppointments.filter((register: any) => {
         const availableTableUsers = availableUsers.filter(s => s.filterFullname.toLowerCase().includes(sanitizedCriteria));
+        const historyItem = register?.relatedParentHistory?.history.find(history => history.appointmentId === register.id)
 
         return register?.specialty.toLowerCase().includes(sanitizedCriteria) ||
             register.day.toLowerCase().includes(sanitizedCriteria) ||
             register.status.toLowerCase().includes(sanitizedCriteria) ||
             register.time.toLowerCase().includes(sanitizedCriteria) ||
             register?.reason.toLowerCase().includes(sanitizedCriteria) ||
-            register?.relatedParentHistory?.height.toString().includes(sanitizedCriteria) ||
-            register?.relatedParentHistory?.weight.toString().includes(sanitizedCriteria) ||
-            register?.relatedParentHistory?.pressure.toString().includes(sanitizedCriteria) ||
-            register?.relatedParentHistory?.temperature.toString().includes(sanitizedCriteria) ||
-            register?.relatedParentHistory?.customProperties?.some((v) => v.value.includes(sanitizedCriteria)) ||
-            register?.relatedParentHistory?.customProperties?.some((v) => v.key.includes(sanitizedCriteria))
+            historyItem?.height.toString().includes(sanitizedCriteria) ||
+            historyItem?.weight.toString().includes(sanitizedCriteria) ||
+            historyItem?.pressure.toString().includes(sanitizedCriteria) ||
+            historyItem?.temperature.toString().includes(sanitizedCriteria) ||
+            historyItem?.customProperties?.some((v) => v.value.includes(sanitizedCriteria)) ||
+            historyItem?.customProperties?.some((v) => v.key.includes(sanitizedCriteria))
             || availableTableUsers.some(user => user.id === register.patientId)
             || availableTableUsers.some(user => user.id === register.specialistId);
     });

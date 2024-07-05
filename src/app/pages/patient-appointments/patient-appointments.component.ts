@@ -105,11 +105,11 @@ export class PatientAppointmentsComponent implements OnInit {
 
               collectionData(patientHistoryCollection)
                 .subscribe({
-                  next: (data: PatientHistory[]) => {
+                  next: (data: any) => {
 
                     const relatedAppointments = this.allAppointments.map((a) => {
 
-                      const relatedParentHistory = data.find(ph => ph.patientId === a.patientId);
+                      const relatedParentHistory = data.find(d => d.history.some(ph => ph.patientId === a.patientId))
 
                       if (!relatedParentHistory) {
                         return { ...a };
