@@ -76,9 +76,9 @@
 
     .select-history {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
-        margin-left: 100px;
+        width: max-content;
 
         h3 {
             color: $primary-color-1;
