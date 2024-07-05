@@ -12,7 +12,6 @@ export class PatientHistoryService {
   constructor() { }
 
   public setPatientHistory(data: Partial<PatientHistory>): Promise<void> {
-    console.log('Setting: ', data);
 
     const response = this.getHistoryById(data.patientId).then(d => {
       if (d.exists()) {

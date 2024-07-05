@@ -65,7 +65,7 @@ export class LoginComponent implements OnInit {
 
   public userData = [
     // Admin
-    { id: 'qG97Ic97MJfLukrILG5z2Ua2xs63', password: 'Admin123' },
+    { id: 'yDXvWi9xFmVSoMUqLKsehMA4eKq2', password: 'Admin123' },
     // Specialists
     { id: 'FZ0pQSBAoIQCaKzwzxS7Z7rrk0k2', password: 'Admin123' },
     { id: 'oEgSqVapLLTBqd67ISssrSogcbg2', password: 'Admin123' },
@@ -118,7 +118,6 @@ export class LoginComponent implements OnInit {
   };
 
   handleSelectUser(user) {
-    console.log(user);
 
     this.user.email = user.email;
     this.user.password = user.password;

@@ -48,7 +48,6 @@ export class UsersComponent implements OnInit {
     collectionData(usersCollection).subscribe({
       next: (data) => {
         this.allUsers = data;
-        console.log(data);
 
         this.getUsersLoading = false;
       },
@@ -81,7 +80,6 @@ export class UsersComponent implements OnInit {
         admin: user?.admin ? 'SI' : 'NO',
       };
     })
-    console.log(arrayToExport);
 
     const headers = {
       email: 'Correo',

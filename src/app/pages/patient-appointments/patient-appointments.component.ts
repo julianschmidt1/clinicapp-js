@@ -101,7 +101,6 @@ export class PatientAppointmentsComponent implements OnInit {
           .subscribe({
             next: (appointments) => {
               this.allAppointments = appointments;
-              console.log(appointments);
 
               collectionData(patientHistoryCollection)
                 .subscribe({
@@ -225,7 +224,6 @@ export class PatientAppointmentsComponent implements OnInit {
         this.loadingModal = false;
       });
 
-    console.log(this.starsRating, this.ratingComment);
 
   }
 

@@ -129,21 +129,25 @@ export class RegisterComponent {
       const specialtyFormControlValue = this.formControls['specialty'].value;
       const cleanNewValue = specialtyFormControlValue.filter((s: string) => s !== 'Agregar +');
 
-      const attachedFilePath = this.storageService.uploadFile([this.newSpecialtyImage], displayName);
+      // const attachedFilePath = 
+      this.storageService.uploadFile([this.newSpecialtyImage], displayName).then((attachedFilePath: string[]) => {
 
-      this.loadingSpecialty = true;
-      addDoc(specialtiesCollection, { displayName, attachedFilePath })
-        .then((data) => {
+        console.log('FILE: ', attachedFilePath);
 
-          this.formControls['specialty'].patchValue([...cleanNewValue, displayName]);
-          this.visible = false;
-          this.loadingSpecialty = false;
-        })
-        .catch(() => {
-          this.formControls['specialty'].patchValue(cleanNewValue);
-          console.log('Ocurrio un error al crear');
-          this.loadingSpecialty = false;
-        });
+        this.loadingSpecialty = true;
+        addDoc(specialtiesCollection, { displayName, attachedFilePath })
+          .then((data) => {
+
+            this.formControls['specialty'].patchValue([...cleanNewValue, displayName]);
+            this.visible = false;
+            this.loadingSpecialty = false;
+          })
+          .catch(() => {
+            this.formControls['specialty'].patchValue(cleanNewValue);
+            console.log('Ocurrio un error al crear');
+            this.loadingSpecialty = false;
+          });
+      })
     }
   }
 

@@ -105,7 +105,6 @@ export class NewUserComponent implements OnInit {
             this.toastService.successMessage('Usuario creado con exito');
           })
       } else {
-        console.log('asd', this.registerForm);
 
         this.registerForm.markAllAsTouched();
         this.registerLoading = false;
@@ -117,7 +116,6 @@ export class NewUserComponent implements OnInit {
   }
 
   handleSelectRegisterType(type: 'patient' | 'specialist' | 'admin'): void {
-    console.log(type);
     this.userType = type;
 
     if (type === 'specialist') {
@@ -138,24 +136,17 @@ export class NewUserComponent implements OnInit {
   }
 
   handleAddFile(event: any): void {
-    console.log(event);
 
     const file = (event.target as HTMLInputElement).files[0];
 
     if (file.type.startsWith('image')) {
       const imageControl = this.formControls['attachedImage'];
 
-      console.log(imageControl.value);
-
-
       if (imageControl.value && imageControl.value.length) {
         imageControl.setValue([...imageControl.value, file]);
       } else {
         imageControl.setValue([file]);
       }
-
-
-      console.log(imageControl.value);
 
       imageControl.updateValueAndValidity();
     }
@@ -180,21 +171,22 @@ export class NewUserComponent implements OnInit {
       const specialtyFormControlValue = this.formControls['specialty'].value;
       const cleanNewValue = specialtyFormControlValue.filter((s: string) => s !== 'Agregar +');
 
-      const attachedFilePath = this.storageService.uploadFile([this.newSpecialtyImage], displayName);
+      this.storageService.uploadFile([this.newSpecialtyImage], displayName)
+        .then((attachedFilePath: string[]) => {
 
-      this.loadingSpecialty = true;
-      addDoc(specialtiesCollection, { displayName, attachedFilePath })
-        .then((data) => {
+          this.loadingSpecialty = true;
+          addDoc(specialtiesCollection, { displayName, attachedFilePath })
+            .then((data) => {
 
-          this.formControls['specialty'].patchValue([...cleanNewValue, displayName]);
-          this.addSpecialtyVisible = false;
-          this.loadingSpecialty = false;
+              this.formControls['specialty'].patchValue([...cleanNewValue, displayName]);
+              this.addSpecialtyVisible = false;
+              this.loadingSpecialty = false;
+            })
+            .catch(() => {
+              this.formControls['specialty'].patchValue(cleanNewValue);
+              this.loadingSpecialty = false;
+            });
         })
-        .catch(() => {
-          this.formControls['specialty'].patchValue(cleanNewValue);
-          console.log('Ocurrio un error al crear');
-          this.loadingSpecialty = false;
-        });
     }
   }
 
@@ -209,7 +201,6 @@ export class NewUserComponent implements OnInit {
   }
 
   handleChangeSpecialty(event: DropdownChangeEvent): void {
-    console.log(event);
 
     const { value } = event;
     if (value.some((v: string) => v === 'Agregar +')) {

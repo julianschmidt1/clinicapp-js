@@ -45,7 +45,6 @@ export class HomeComponent implements OnInit {
   public handleNavigateByUserType(): void {
     let path: string;
 
-    console.log(this.currentUser);
     if (this.currentUser?.admin) {
       path = 'all-appointments';
     }

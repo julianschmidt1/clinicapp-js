@@ -155,9 +155,6 @@ export class ProfileComponent implements OnInit {
       return;
     }
 
-    // const intervals = this.generateTimeIntervals(this.startTime, this.endTime);
-    // console.log('INTERVALS: ', intervals);
-
     this.updateUserLoading = true;
 
     const userDocRef = doc(this.firestore, `users/${this.userData.id}`);

@@ -59,17 +59,12 @@ export class MyPatientsComponent {
             }
           })
 
-
-          console.log('MY APPOINTMENTS: ', data)
-          console.log(userIds);
-
           this.getSpecialistUsers(userIds);
         }
       })
   }
 
   public handlePatientHistoryModal(user): void {
-    console.log(user);
     this.selectedUserId = user.id;
     this.patientHistoryModal = true;
   }
@@ -90,8 +85,6 @@ export class MyPatientsComponent {
         next: (data) => {
           this.allUsers = data;
           this.getUsersLoading = false;
-
-          console.log('USERS: ', data);
         },
         error: (error) => {
           this._toastService.errorMessage('Ocurrio un error al obtener los usuarios');

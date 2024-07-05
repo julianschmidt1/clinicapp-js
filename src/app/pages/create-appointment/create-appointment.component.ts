@@ -241,7 +241,6 @@ export class CreateAppointmentComponent implements OnInit {
   }
 
   public handleChangeSpecialist(user): void {
-    console.log('user: ', user);
 
     // const sortedSchedule = groupAndSortSchedule(user.schedule);
     if (!user.schedule?.length) {

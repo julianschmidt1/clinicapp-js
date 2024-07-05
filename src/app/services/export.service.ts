@@ -27,8 +27,6 @@ export class ExportService {
           } else {
             newItem[key] = item[key];
           }
-          console.log('key: ', key)
-          console.log('value: ', item[key])
         }
         return newItem;
       });

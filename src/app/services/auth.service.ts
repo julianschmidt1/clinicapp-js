@@ -24,46 +24,48 @@ export class AuthService {
 
     createUserWithEmailAndPassword(this._auth, email, password)
       .then((newUser) => {
-        // const usersCollection = collection(this._firestore, 'users');
         const userId = newUser.user.uid;
 
-        const attachedFilesPath = this.storageService.uploadFile(attachedImage, email);
+        // const attachedFilesPath = 
+        this.storageService.uploadFile(attachedImage, email).then((attachedFilesPath: string[]) => {
 
-        const baseUserData = {
-          firstName,
-          lastName,
-          dni,
-          email,
-          attachedImage: attachedFilesPath
-        };
+          const baseUserData = {
+            firstName,
+            lastName,
+            dni,
+            email,
+            attachedImage: attachedFilesPath
+          };
 
-        switch (userType) {
-          case 'patient':
-            userData = {
-              ...baseUserData,
-              healthcare,
-              disabled: false,
-            }
-            break;
-          case 'specialist':
-            userData = {
-              ...baseUserData,
-              specialty,
-              disabled: initiallyDisabled,
-            }
-            break;
-          case 'admin':
-            userData = {
-              ...baseUserData,
-              admin: true,
-              disabled: false,
-            }
-            break;
-        }
+          switch (userType) {
+            case 'patient':
+              userData = {
+                ...baseUserData,
+                healthcare,
+                disabled: false,
+              }
+              break;
+            case 'specialist':
+              userData = {
+                ...baseUserData,
+                specialty,
+                disabled: initiallyDisabled,
+              }
+              break;
+            case 'admin':
+              userData = {
+                ...baseUserData,
+                admin: true,
+                disabled: false,
+              }
+              break;
+          }
 
-        sendEmailVerification(newUser.user);
-        setDoc(doc(this.firestore, 'users', userId), { ...userData, id: userId });
-        return true;
+          sendEmailVerification(newUser.user);
+          setDoc(doc(this.firestore, 'users', userId), { ...userData, id: userId });
+          return true;
+
+        })
       })
 
     return false;

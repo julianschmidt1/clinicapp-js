@@ -104,10 +104,7 @@ export class SpecialistAppointmentsComponent implements OnInit {
           )
           .subscribe({
             next: (appointments) => {
-              console.log(appointments);
               this.allAppointments = appointments;
-
-              console.log(appointments);
 
               collectionData(patientHistoryCollection)
                 .subscribe({

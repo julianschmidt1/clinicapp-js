@@ -66,7 +66,6 @@ export class AllAppointmentsComponent implements OnInit {
         collectionData(appointmentsCollection)
           .subscribe({
             next: (appointments: AppointmentModel[]) => {
-              console.log(appointments);
               this.allAppointments = appointments;
               this.appointmentsLoading = false;
             },
@@ -145,7 +144,6 @@ export class AllAppointmentsComponent implements OnInit {
   }
 
   public handleActionClick(event): void {
-    console.log(event)
     this.actionData = event;
     if (event.action === AppointmentStatus.Cancelled) {
       this.dialogVisible = true;
