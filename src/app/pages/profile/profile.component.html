@@ -29,6 +29,21 @@
     </div>
 </p-dialog>
 
+<p-dialog header="Exportar atenciones" [modal]="true" [draggable]="false" [(visible)]="visibleExport">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+        <label style="margin-bottom: 8px;" for="">Selecciona una especialidad</label>
+        <p-dropdown class="p-fluid" appendTo="body" emptyMessage="No hay opciones disponibles" [options]="allSpecialties"
+        [(ngModel)]="selectedSpecialty" placeholder="Seleccionar paciente" optionValue="displayName" optionLabel="displayName" />
+    </div>
+
+    <div style="display: flex; width: 100%; justify-content: flex-end; align-items: center; margin-top: 10px;">
+        <button [disabled]="loadingModal || !selectedSpecialty" (click)="handleConfirmExport()" pButton>
+            Confirmar
+            <i *ngIf="loadingModal" class="pi pi-spin pi-spinner"></i>
+        </button>
+    </div>
+</p-dialog>
+
 <p-toast></p-toast>
 
 <div class="screen">
@@ -95,12 +110,13 @@
 
         <ng-container *ngIf="userData && userData?.healthcare">
 
-            <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+            <div style="display: flex; justify-content: flex-end; margin-top: 15px; gap: 8px;">
+                <button (click)="visibleExport = true;" pButton>Exportar atenciones</button>
                 <button (click)="handleDownloadPatientHistory()" pButton>Exportar historia clinica</button>
             </div>
 
             <div style="margin-top: 20px;">
-                <patient-history-detail [userId]="userData?.id"/>
+                <patient-history-detail [userId]="userData?.id" />
             </div>
         </ng-container>
 

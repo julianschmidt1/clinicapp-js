@@ -20,6 +20,7 @@ import { PdfService } from '../../services/pdf.service';
 import { PatientHistory } from '../../models/patient-history.model';
 import { AppointmentModel } from '../../models/appointment.model';
 import { map } from 'rxjs';
+import { ExportService } from '../../services/export.service';
 
 @Component({
   selector: 'app-profile',
@@ -45,7 +46,10 @@ export class ProfileComponent implements OnInit {
   private firestore = inject(Firestore);
   private storageService = inject(StorageService);
   private toastService = inject(ToastService);
+
   private pdfService = inject(PdfService);
+  private exportService = inject(ExportService);
+
   private _patientHistoryService = inject(PatientHistoryService);
   private _firestore = inject(Firestore);
 
@@ -66,6 +70,12 @@ export class ProfileComponent implements OnInit {
   public patientHistoryToExport: PatientHistory[] = [];
   public relatedAppointments: AppointmentModel[] = [];
 
+  public allSpecialties = [];
+  public selectedSpecialty = null;
+
+  public loadingModal = false;
+  public visibleExport = false;
+
   public readonly todayDate = new Date().toISOString().split('T')[0];
   public readonly days = [
     'Lunes',
@@ -80,6 +90,13 @@ export class ProfileComponent implements OnInit {
 
     const storedUser = localStorage.getItem('user');
     const appointmentsCollection = collection(this._firestore, 'appointments');
+    const specialtiesCollection = collection(this._firestore, 'specialties');
+
+    collectionData(specialtiesCollection).subscribe({
+      next: (data) => {
+        this.allSpecialties = data;
+      }
+    })
 
     if (storedUser) {
       const parsedUserData = JSON.parse(storedUser);
@@ -115,7 +132,7 @@ export class ProfileComponent implements OnInit {
 
       this._patientHistoryService.getHistoryById(parsedUserData.uid)
         .then((d => {
-          const historyData = d.data() as any; 
+          const historyData = d.data() as any;
           this.patientHistoryToExport = historyData.history;
 
           collectionData(appointmentsCollection)
@@ -134,6 +151,30 @@ export class ProfileComponent implements OnInit {
         }));
     }
 
+  }
+
+  public handleConfirmExport(): void {
+    const selectedSpecialtyAppointments = this.relatedAppointments.filter(a => a.specialty === this.selectedSpecialty);
+
+    if(!selectedSpecialtyAppointments.length) {
+      this.toastService.errorMessage('No hay atenciones para la especialidad seleccionada.');
+      return;
+    }
+    const appointmentsToExport = selectedSpecialtyAppointments.map(a => {
+      const { specialistId, id, hasHistory, patientId, ...rest } = a
+
+      return rest;
+    })
+
+    const headers = {
+      day: 'Dia',
+      time: 'Hora',
+      status: 'Estado',
+      specialty: 'Especialidad',
+      reason: 'Observaciones',
+    };
+
+    this.exportService.exportToExcel(appointmentsToExport, 'turnos.xlsx', headers);
   }
 
   handleDownloadPatientHistory(): void {
