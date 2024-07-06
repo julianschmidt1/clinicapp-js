@@ -94,6 +94,11 @@
         </ng-container>
 
         <ng-container *ngIf="userData && userData?.healthcare">
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 15px;">
+                <button (click)="handleDownloadPatientHistory()" pButton>Exportar historia clinica</button>
+            </div>
+
             <div style="margin-top: 20px;">
                 <patient-history-detail [userId]="userData?.id"/>
             </div>

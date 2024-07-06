@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { Firestore, arrayUnion, doc, getDoc, onSnapshot, updateDoc } from '@angular/fire/firestore';
+import { Firestore, arrayUnion, collection, collectionData, doc, getDoc, onSnapshot, updateDoc } from '@angular/fire/firestore';
 import { StorageService } from '../../services/firebase-storage.service';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
@@ -16,6 +16,10 @@ import { ArrowBackComponent } from '../../components/arrow-back/arrow-back.compo
 import moment from 'moment';
 import { PatientHistoryService } from '../../services/patient-history.service';
 import { PatientHistoryDetailComponent } from '../../components/patient-history-detail/patient-history-detail.component';
+import { PdfService } from '../../services/pdf.service';
+import { PatientHistory } from '../../models/patient-history.model';
+import { AppointmentModel } from '../../models/appointment.model';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-profile',
@@ -41,7 +45,9 @@ export class ProfileComponent implements OnInit {
   private firestore = inject(Firestore);
   private storageService = inject(StorageService);
   private toastService = inject(ToastService);
+  private pdfService = inject(PdfService);
   private _patientHistoryService = inject(PatientHistoryService);
+  private _firestore = inject(Firestore);
 
   public loadingUser = true;
   public loadingImages = true;
@@ -57,8 +63,10 @@ export class ProfileComponent implements OnInit {
   public startTime: string;
   public endTime: string;
 
-  public readonly todayDate = new Date().toISOString().split('T')[0];
+  public patientHistoryToExport: PatientHistory[] = [];
+  public relatedAppointments: AppointmentModel[] = [];
 
+  public readonly todayDate = new Date().toISOString().split('T')[0];
   public readonly days = [
     'Lunes',
     'Martes',
@@ -71,6 +79,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit(): void {
 
     const storedUser = localStorage.getItem('user');
+    const appointmentsCollection = collection(this._firestore, 'appointments');
 
     if (storedUser) {
       const parsedUserData = JSON.parse(storedUser);
@@ -103,8 +112,32 @@ export class ProfileComponent implements OnInit {
           this.loadingImages = false;
         }
       });
+
+      this._patientHistoryService.getHistoryById(parsedUserData.uid)
+        .then((d => {
+          const historyData = d.data() as any; 
+          this.patientHistoryToExport = historyData.history;
+
+          collectionData(appointmentsCollection)
+            .pipe(map((appointments: AppointmentModel[]) => {
+              return appointments.filter(a => this.patientHistoryToExport.some(hd => hd.appointmentId === a.id))
+            }))
+            .subscribe({
+              next: (appointments) => {
+                this.relatedAppointments = appointments;
+              },
+              error: (e) => {
+                console.log('Error: ', e);
+              }
+            })
+
+        }));
     }
 
+  }
+
+  handleDownloadPatientHistory(): void {
+    this.pdfService.downloadPdf(this.patientHistoryToExport, this.relatedAppointments, this.userData);
   }
 
   handleCloseAndSetDefault() {
