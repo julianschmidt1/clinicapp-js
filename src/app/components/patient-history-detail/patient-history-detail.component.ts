@@ -47,7 +47,6 @@ export class PatientHistoryDetailComponent implements OnInit {
             }))
             .subscribe({
               next: (appointments) => {
-                console.log('appointments: ', appointments);
                 this.relatedAppointments = appointments;
               },
               error: (e) => {

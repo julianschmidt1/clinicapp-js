@@ -8,13 +8,40 @@
 <div class="screen">
     <div style="width: 100%; padding: 0 50px;">
 
+
         <div class="action-header">
             <div style="display: flex; align-items: center; gap: 8px;">
                 <arrow-back />
                 <h1>Mis pacientes</h1>
             </div>
         </div>
-        <div style="max-height: 520px; overflow-y: scroll;">
+
+
+        <div class="users-grid" *ngIf="allUsers.length">
+
+            <div class="user-card" *ngFor="let user of allUsers">
+
+                <div>
+                    <img [src]="user.attachedImage" alt="user-image">
+                </div>
+
+                <div class="detail">
+                    <div class="name">{{ user.firstName + ' ' + user.lastName }}</div>
+                    <div>{{ user.email }}</div>
+                    <div>{{ user.healthcare ?? '-' }}</div>
+                    <button class="action-button" pButton (click)="handlePatientHistoryModal(user)">
+                        Ver historia clinica
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="users-grid" *ngIf="!allUsers.length" style="color: #589bec;">
+            <h2>No hay usuarios disponibles</h2>
+        </div>
+
+        <!-- <div style="max-height: 520px; overflow-y: scroll;">
 
             <p-table [value]="allUsers" [tableStyle]="{ 'min-width': '50rem', 'max-height': '550px' }">
                 <ng-template pTemplate="header">
@@ -54,7 +81,7 @@
                 </ng-template>
             </p-table>
 
-        </div>
+        </div> -->
 
 
     </div>
