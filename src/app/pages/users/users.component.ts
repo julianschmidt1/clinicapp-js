@@ -10,6 +10,8 @@ import { DialogModule } from 'primeng/dialog';
 import { NewUserComponent } from './new-user/new-user.component';
 import { PatientHistoryDetailComponent } from '../../components/patient-history-detail/patient-history-detail.component';
 import { ExportService } from '../../services/export.service';
+import { TooltipModule } from 'primeng/tooltip';
+import { AppointmentModel } from '../../models/appointment.model';
 
 @Component({
   selector: 'app-users',
@@ -21,7 +23,8 @@ import { ExportService } from '../../services/export.service';
     ToastModule,
     DialogModule,
     NewUserComponent,
-    PatientHistoryDetailComponent
+    PatientHistoryDetailComponent,
+    TooltipModule
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss'
@@ -41,13 +44,23 @@ export class UsersComponent implements OnInit {
   public patientHistoryModal = false;
   public selectedUserId: string = null;
 
+  public allAppointments: AppointmentModel[] = []
+
   ngOnInit(): void {
     const usersCollection = collection(this._firestore, 'users');
+    const appointmentsCollection = collection(this._firestore, 'appointments');
     this.getUsersLoading = true;
+
+    collectionData(appointmentsCollection).subscribe({
+      next: (data) => {
+        this.allAppointments = data as AppointmentModel[];
+      }
+    })
 
     collectionData(usersCollection).subscribe({
       next: (data) => {
         this.allUsers = data;
+        console.log(data);
 
         this.getUsersLoading = false;
       },
@@ -91,6 +104,36 @@ export class UsersComponent implements OnInit {
     };
 
     this._exportService.exportToExcel(arrayToExport, 'listado-usuarios.xlsx', headers);
+  }
+
+  public handleExportAppointments(user): void {
+    const selectedUserAppointments = this.allAppointments.filter(a => a.specialistId === user.id);
+
+    const relatedPatientAppointments = selectedUserAppointments.map(appointment => {
+      const patient = this.allUsers.find(u => u.id === appointment.patientId);
+      const specialist = this.allUsers.find(u => u.id === appointment.specialistId);
+
+      const { id, specialistId, patientId, hasHistory, ...rest } = appointment;
+
+      return {
+        ...rest,
+        patient: patient.firstName + ' ' + patient.lastName,
+        specialist: specialist.firstName + ' ' + specialist.lastName,
+      }
+    })
+
+    const headers = {
+      day: 'Dia',
+      time: 'Hora',
+      patient: 'Paciente',
+      specialist: 'Especialista',
+      specialty: 'Especialidad',
+      reason: 'Observaciones',
+      status: 'Estado',
+    }
+
+    this._exportService.exportToExcel(relatedPatientAppointments, `turnos-${user.firstName}-${user.lastName}.xlsx`, headers);
+
   }
 
   public handleSetUserStatus(user: any): void {

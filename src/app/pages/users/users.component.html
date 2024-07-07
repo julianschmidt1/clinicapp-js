@@ -24,32 +24,36 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Nombre</th>
-                        <th>Apellido</th>
+                        <th>Imagen</th>
                         <th>Correo</th>
                         <th>Obra social</th>
                         <th>Especialidad</th>
-                        <th style="width: 5rem">Acciones</th>
+                        <th>Acciones</th>
                     </tr>
                 </ng-template>
 
                 <ng-template pTemplate="body" let-user>
                     <tr>
-                        <td>{{ user.firstName }}</td>
-                        <td>{{ user.lastName }}</td>
+                        <td>{{ user.firstName + ' '+ user.lastName }}</td>
+                        <td>
+                            <img height="85" width="85" style="border-radius: 8px;" [src]="user?.attachedImage" alt="">
+                        </td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.healthcare ?? '-' }}</td>
                         <td>{{ user.specialty ?? '-' }}</td>
-                        <td *ngIf="user.specialty">
+                        <td class="specialist" *ngIf="user.specialty">
+
                             <button class="action-button" (click)="handleSetUserStatus(user)"
                                 [disabled]="updateUserLoading" pButton>
                                 {{user.disabled ? 'Habilitar' : 'Deshabilitar'}}
                                 <i *ngIf="updateUserLoading" class="pi pi-spin pi-spinner"></i>
                             </button>
+                            <i (click)="handleExportAppointments(user)" class="pi pi-star"></i>
                         </td>
                         <td *ngIf="user.healthcare">
                             <button class="action-button" [disabled]="updateUserLoading" pButton
                                 (click)="handlePatientHistoryModal(user)">
-                                Ver historia clinica
+                                Historia Clinica
                             </button>
                         </td>
                     </tr>
