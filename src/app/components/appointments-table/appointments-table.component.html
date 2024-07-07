@@ -4,14 +4,14 @@
             <th>Especialista</th>
             <th>Especialidad</th>
             <th>Paciente</th>
-            <th>Dia</th>
+            <th pSortableColumn="day">Dia</th>
             <th>Hora</th>
             <th>Estado</th>
             <th>Acciones</th>
         </tr>
     </ng-template>
     <ng-template pTemplate="body" let-appointment>
-        <tr>
+        <tr [rowStatus]="appointment.status">
             <td>{{ appointment.specialistId | userIdToFullname | async }}</td>
             <td>{{ appointment.specialty }}</td>
             <td>{{ appointment.patientId | userIdToFullname | async }}</td>

@@ -14,6 +14,8 @@ import { AppointmentModel, AppointmentStatus } from '../../models/appointment.mo
 import { AppointmentService } from '../../services/appointment.service';
 import { AuthService } from '../../services/auth.service';
 import { ToastService } from '../../services/toast.service';
+import { FocusOnCommandDirective } from '../../directives/focus-on-command.directive';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-all-appointments',
@@ -26,7 +28,9 @@ import { ToastService } from '../../services/toast.service';
     CommonModule,
     FormsModule,
     AppointmentsTableComponent,
-    ArrowBackComponent
+    ArrowBackComponent,
+    FocusOnCommandDirective,
+    TooltipModule
   ],
   templateUrl: './all-appointments.component.html',
   styleUrl: './all-appointments.component.scss'

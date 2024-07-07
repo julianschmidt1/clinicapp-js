@@ -21,7 +21,8 @@
     [style]="{ width: '450px' }">
     <div style="width: 100%; display: flex; flex-direction: column; gap: 10px;">
         <label>Altura</label>
-        <input type="number" pInputText [(ngModel)]="patientHistory.height" placeholder="Ingrese la altura (centimetros)">
+        <input type="number" pInputText [(ngModel)]="patientHistory.height"
+            placeholder="Ingrese la altura (centimetros)">
 
         <label>Peso</label>
         <input type="number" pInputText [(ngModel)]="patientHistory.weight" placeholder="Ingrese el peso">
@@ -37,7 +38,8 @@
             <input type="text" pInputText [(ngModel)]="dynamicValues[field.prop]">
         </ng-container>
 
-        <button style="width: fit-content;" *ngIf="!addingValue && newFields.length < 3" (click)="addingValue = true" pButton>Agregar valor
+        <button style="width: fit-content;" *ngIf="!addingValue && newFields.length < 3" (click)="addingValue = true"
+            pButton>Agregar valor
             dinamico</button>
         <ng-container *ngIf="addingValue">
             <div style="display: flex; gap: 5px; margin-top: 5px;">
@@ -68,7 +70,8 @@
                 <h1>Mis turnos</h1>
             </div>
 
-            <input type="text" pInputText [(ngModel)]="filterCriteria" placeholder="Filtrar">
+            <input pTooltip="Presiona CTRL + F para filtrar" tooltipPosition="left" focusOnCommand="f" type="text" pInputText
+                [(ngModel)]="filterCriteria" placeholder="Filtrar">
         </div>
 
         <div>

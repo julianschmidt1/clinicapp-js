@@ -12,6 +12,8 @@ import { PatientHistoryDetailComponent } from '../../components/patient-history-
 import { ExportService } from '../../services/export.service';
 import { TooltipModule } from 'primeng/tooltip';
 import { AppointmentModel } from '../../models/appointment.model';
+import { ValueOrNull } from '../../pipes/value.pipe';
+import { ScaleElementDirective } from '../../directives/scale-element.directive';
 
 @Component({
   selector: 'app-users',
@@ -24,7 +26,9 @@ import { AppointmentModel } from '../../models/appointment.model';
     DialogModule,
     NewUserComponent,
     PatientHistoryDetailComponent,
-    TooltipModule
+    TooltipModule,
+    ValueOrNull,
+    ScaleElementDirective
   ],
   templateUrl: './users.component.html',
   styleUrl: './users.component.scss'

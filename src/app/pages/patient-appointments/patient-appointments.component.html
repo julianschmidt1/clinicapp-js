@@ -53,33 +53,37 @@
         <h4>¿Cuál de los siguientes atributos describe mejor la atención recibida por el especialista?</h4>
         <div style="display: flex; gap: 10px; align-items: center;">
             <div style="display: flex; gap: 3px; align-items: center;">
-                <p-radioButton name="pizza" value="Excelente" [(ngModel)]="surveyAnswers.attribute" inputId="excellency" />
+                <p-radioButton name="pizza" value="Excelente" [(ngModel)]="surveyAnswers.attribute"
+                    inputId="excellency" />
                 <label for="excellency" class="ml-2">
                     Excelente
                 </label>
             </div>
-            
+
             <div style="display: flex; gap: 5px; align-items: center;">
-                <p-radioButton name="pizza" value="Explicativo" [(ngModel)]="surveyAnswers.attribute" inputId="explanations" />
+                <p-radioButton name="pizza" value="Explicativo" [(ngModel)]="surveyAnswers.attribute"
+                    inputId="explanations" />
                 <label for="explanations" class="ml-2">
                     Explicativo
                 </label>
             </div>
-            
+
             <div style="display: flex; gap: 5px; align-items: center;">
-                <p-radioButton name="pizza" value="Cuidadoso" [(ngModel)]="surveyAnswers.attribute" inputId="carefulness" />
+                <p-radioButton name="pizza" value="Cuidadoso" [(ngModel)]="surveyAnswers.attribute"
+                    inputId="carefulness" />
                 <label for="carefulness" class="ml-2">
                     Cuidadoso
                 </label>
             </div>
-            
+
             <div style="display: flex; gap: 5px; align-items: center;">
-                <p-radioButton name="pizza" value="Eficiente" [(ngModel)]="surveyAnswers.attribute" inputId="efficiency" />
+                <p-radioButton name="pizza" value="Eficiente" [(ngModel)]="surveyAnswers.attribute"
+                    inputId="efficiency" />
                 <label for="efficiency" class="ml-2">
                     Eficiente
                 </label>
             </div>
-            
+
         </div>
 
 
@@ -104,7 +108,8 @@
                 <arrow-back></arrow-back>
                 <h1>Mis turnos</h1>
             </div>
-            <input type="text" pInputText [(ngModel)]="filterCriteria" placeholder="Filtrar">
+            <input pTooltip="Presiona CTRL + F para filtrar" tooltipPosition="left" focusOnCommand="f" type="text"
+                pInputText [(ngModel)]="filterCriteria" placeholder="Filtrar">
         </div>
 
         <div>

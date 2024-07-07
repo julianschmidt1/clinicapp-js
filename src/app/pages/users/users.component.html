@@ -33,22 +33,21 @@
                 </ng-template>
 
                 <ng-template pTemplate="body" let-user>
-                    <tr>
+                    <tr hoverScaleElement>
                         <td>{{ user.firstName + ' '+ user.lastName }}</td>
                         <td>
                             <img height="85" width="85" style="border-radius: 8px;" [src]="user?.attachedImage" alt="">
                         </td>
                         <td>{{ user.email }}</td>
-                        <td>{{ user.healthcare ?? '-' }}</td>
-                        <td>{{ user.specialty ?? '-' }}</td>
+                        <td>{{ user?.healthcare | valueOrNull }}</td>
+                        <td>{{ user?.specialty | valueOrNull }}</td>
                         <td class="specialist" *ngIf="user.specialty">
-
                             <button class="action-button" (click)="handleSetUserStatus(user)"
                                 [disabled]="updateUserLoading" pButton>
                                 {{user.disabled ? 'Habilitar' : 'Deshabilitar'}}
                                 <i *ngIf="updateUserLoading" class="pi pi-spin pi-spinner"></i>
                             </button>
-                            <i (click)="handleExportAppointments(user)" class="pi pi-star"></i>
+                            <i pTooltip="Exportar atenciones" tooltipPosition="bottom" (click)="handleExportAppointments(user)" class="pi pi-star"></i>
                         </td>
                         <td *ngIf="user.healthcare">
                             <button class="action-button" [disabled]="updateUserLoading" pButton

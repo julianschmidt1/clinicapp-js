@@ -4,6 +4,7 @@ import { TableModule } from 'primeng/table';
 import { UserIdToFullname } from '../../pipes/userIdToFullname.pipe';
 import { CommonModule } from '@angular/common';
 import { AppointmentModel, AppointmentStatus } from '../../models/appointment.model';
+import { RowStatusDirective } from '../../directives/row-status.directive';
 
 @Component({
   selector: 'appointments-table',
@@ -12,7 +13,8 @@ import { AppointmentModel, AppointmentStatus } from '../../models/appointment.mo
     TableModule,
     ButtonModule,
     UserIdToFullname,
-    CommonModule
+    CommonModule,
+    RowStatusDirective
   ],
   templateUrl: './appointments-table.component.html',
   styleUrl: './appointments-table.component.scss'

@@ -19,6 +19,8 @@ import { SliderModule } from 'primeng/slider';
 import { CheckboxModule } from 'primeng/checkbox';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { PatientHistory } from '../../models/patient-history.model';
+import { FocusOnCommandDirective } from '../../directives/focus-on-command.directive';
+import { TooltipModule } from 'primeng/tooltip';
 
 @Component({
   selector: 'app-patient-appointments',
@@ -35,7 +37,9 @@ import { PatientHistory } from '../../models/patient-history.model';
     ArrowBackComponent,
     SliderModule,
     CheckboxModule,
-    RadioButtonModule
+    RadioButtonModule,
+    FocusOnCommandDirective,
+    TooltipModule
   ],
   templateUrl: './patient-appointments.component.html',
   styleUrl: './patient-appointments.component.scss'

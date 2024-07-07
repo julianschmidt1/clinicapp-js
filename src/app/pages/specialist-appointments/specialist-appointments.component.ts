@@ -18,6 +18,7 @@ import { KeyValuePair, PatientHistory } from '../../models/patient-history.model
 import { TooltipModule } from 'primeng/tooltip';
 import moment from 'moment';
 import { PatientHistoryService } from '../../services/patient-history.service';
+import { FocusOnCommandDirective } from '../../directives/focus-on-command.directive';
 
 @Component({
   selector: 'app-specialist-appointments',
@@ -31,7 +32,8 @@ import { PatientHistoryService } from '../../services/patient-history.service';
     ButtonModule,
     CommonModule,
     ArrowBackComponent,
-    TooltipModule
+    TooltipModule,
+    FocusOnCommandDirective
   ],
   templateUrl: './specialist-appointments.component.html',
   styleUrl: './specialist-appointments.component.scss'
