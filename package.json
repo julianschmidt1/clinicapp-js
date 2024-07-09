@@ -19,6 +19,7 @@
     "@angular/platform-browser": "^17.2.0",
     "@angular/platform-browser-dynamic": "^17.2.0",
     "@angular/router": "^17.2.0",
+    "chart.js": "^4.4.3",
     "file-saver": "^2.0.5",
     "jspdf": "^2.5.1",
     "moment": "^2.30.1",

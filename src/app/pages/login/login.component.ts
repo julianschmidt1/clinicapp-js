@@ -18,6 +18,7 @@ import { ToastService } from '../../services/toast.service';
 import { ChipModule } from 'primeng/chip';
 import { first } from 'rxjs';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { LoggerService } from '../../services/logger.service';
 
 @Component({
   selector: 'app-login',
@@ -60,6 +61,7 @@ export class LoginComponent implements OnInit {
   private storageService = inject(StorageService);
   private router = inject(Router);
   private firestore = inject(Firestore);
+  private loggerService = inject(LoggerService);
 
   public loginLoading = false;
 
@@ -84,7 +86,7 @@ export class LoginComponent implements OnInit {
     collectionData(usersCollection)
       .subscribe({
         next: async (rawData) => {
-          
+
           const defaultUsers = rawData.filter((user) => this.userData.some(u => u.id === user['id']));
           const parsedUsers = await Promise.all(defaultUsers.map(async (u) => {
             const imagePromises = this.storageService.getUserFiles(u['attachedImage']);
@@ -101,7 +103,7 @@ export class LoginComponent implements OnInit {
 
           this.defaultUsersLoading = false;
           this.defaultUsers = parsedUsers;
-          
+
         },
         error: (error) => {
           console.log(error);
@@ -141,30 +143,31 @@ export class LoginComponent implements OnInit {
         const { email, uid, emailVerified } = loggedUser.user;
 
         this.authService.usersCollection()
-        .pipe(first())
-        .subscribe({
-          next: (allUsers) => {
+          .pipe(first())
+          .subscribe({
+            next: (allUsers) => {
 
-            const foundUser = allUsers.find(user => user['id'] === uid);
+              const foundUser = allUsers.find(user => user['id'] === uid);
 
-            if (!emailVerified) {
-              this.toastService.errorMessage('Debe verificar su email antes de iniciar sesión.');
-              return;
+              if (!emailVerified) {
+                this.toastService.errorMessage('Debe verificar su email antes de iniciar sesión.');
+                return;
+              }
+
+              if (foundUser?.disabled) {
+                this.toastService.errorMessage('Un administrador debe verificar su cuenta.');
+                return;
+              }
+
+
+              if (emailVerified && !foundUser.disabled) {
+                localStorage.setItem('user', JSON.stringify({ uid, email }));
+                this.router.navigateByUrl('auth/home');
+                this.loggerService.createLog(foundUser.firstName + ' ' + foundUser.lastName);
+              }
+
             }
-
-            if (foundUser?.disabled) {
-              this.toastService.errorMessage('Un administrador debe verificar su cuenta.');
-              return;
-            }
-
-
-            if (emailVerified && !foundUser.disabled) {
-              localStorage.setItem('user', JSON.stringify({ uid, email }));
-              this.router.navigateByUrl('auth/home');
-            }
-
-          }
-        })
+          })
       })
       .catch(e => {
         const error = authErrorMessage(e.code);

@@ -36,11 +36,12 @@ export class TopBarComponent implements OnInit {
         this.currentUser = foundUser;
 
         if (foundUser.admin && !this.routes.some(r => r.to === 'users')) {
-          this.routes.push({ to: 'users', displayName: 'Gestión de Usuarios' })
+          this.routes.push({ to: 'users', displayName: 'Gestión de Usuarios' });
+          this.routes.push({ to: 'stats', displayName: 'Estadísticas' });
         }
       }
     })
-    
+
 
   }
 

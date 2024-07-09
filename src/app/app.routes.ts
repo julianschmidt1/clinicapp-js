@@ -58,6 +58,12 @@ const authRoutes = [
                 data: { state: 'all-appointments' },
                 loadComponent: () => import('./pages/all-appointments/all-appointments.component').then(m => m.AllAppointmentsComponent)
             },
+            {
+                path: 'stats',
+                canActivate: [userGuard(['admin'])],
+                data: { state: 'stats' },
+                loadComponent: () => import('./pages/stats/stats.component').then(m => m.StatsComponent)
+            },
         ]
     },
 ];
