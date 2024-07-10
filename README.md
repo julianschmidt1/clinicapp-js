@@ -88,6 +88,8 @@ Permite la visualización de distintos gráficos de los turnos e inicios de sesi
 
 ![image](https://github.com/julianschmidt1/clinicapp-js/assets/47337611/134c78c6-d4bd-4af3-bf65-5142be127667)
 
+![image](https://github.com/julianschmidt1/clinicapp-js/assets/47337611/81f800c1-cb9b-44cf-aea8-a66ee33db099)
+
 También cuenta un grafico que, al ingresar un rango entre dos fechas, muestra los turnos solicitados y finalizados de los especialistas.
 
 ![image](https://github.com/julianschmidt1/clinicapp-js/assets/47337611/c7345e58-c341-46b0-b5d6-be2e3d162f03)
