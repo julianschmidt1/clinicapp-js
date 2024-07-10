@@ -81,9 +81,15 @@ Muestra la informacion general con la cual se registro al usuario, asi como sus 
 Si el usuario es de tipo `paciente`, este tendra la posibilidad de clickear en una de sus imagenes, alternando entre ellas.
 Ademas, los pacientes pueden visualizar su datos de historia clinica cargados.
 
-![profile-history](https://github.com/julianschmidt1/clinicapp-js/assets/47337611/bc2fefc8-1227-4303-9a5e-58c766dbd95e)
+### Estadisticas
 
-Si el usuario es de tipo `especialista`, este tendra una seccion debajo que le permitira ingresar sus horarios de atencion y disponibilidad.
+Unicamente accesible por usuarios con rol administrador.
+Permite la visualización de distintos gráficos de los turnos e inicios de sesión de los usuarios.
 
-![horario-especialista](https://github.com/julianschmidt1/clinicapp-js/assets/47337611/b8dcbed6-ba8d-48ae-a46c-cce80a04e412)
+![image](https://github.com/julianschmidt1/clinicapp-js/assets/47337611/134c78c6-d4bd-4af3-bf65-5142be127667)
+
+También cuenta un grafico que, al ingresar un rango entre dos fechas, muestra los turnos solicitados y finalizados de los especialistas.
+
+![image](https://github.com/julianschmidt1/clinicapp-js/assets/47337611/c7345e58-c341-46b0-b5d6-be2e3d162f03)
+
 
