@@ -111,9 +111,9 @@ export class SpecialistAppointmentsComponent implements OnInit {
               collectionData(patientHistoryCollection)
                 .subscribe({
                   next: (data: any) => {
-                    
+
                     const relatedAppointments = this.allAppointments.map((a) => {
-                      
+
                       const relatedParentHistory = data.find(d => d.history.some(ph => ph.patientId === a.patientId))
 
                       if (!relatedParentHistory) {
@@ -139,9 +139,7 @@ export class SpecialistAppointmentsComponent implements OnInit {
               this.patients = users;
             }
           });
-
       })
-
   }
 
   public handleActionClick(event): void {
@@ -185,28 +183,6 @@ export class SpecialistAppointmentsComponent implements OnInit {
       .catch(() => {
         this._toastService.errorMessage('Error al actualizar el turno');
       });
-
-    // this._authService.getUserById(specialistId)
-    //   .then(data => {
-    //     const specialist = data.data();
-    //     const { schedule } = specialist;
-
-    //     let appointmentToUpdate = schedule.find((ap: AppointmentModel) => ap.day === day && ap.time === time);
-
-    //     const updatedSchedule = [
-    //       ...schedule.filter((ap: AppointmentModel) => ap.day !== day && ap.time !== time),
-    //       {
-    //         ...appointmentToUpdate,
-    //         busy: true,
-    //       }
-    //     ];
-
-    //     this._authService.updateUser({
-    //       ...specialist,
-    //       schedule: updatedSchedule
-    //     }).then(() => {
-    //     });
-    //   })
   }
 
   public handleConfirmPatientHistory(): void {
@@ -247,7 +223,13 @@ export class SpecialistAppointmentsComponent implements OnInit {
         this.loadingPatientHistory = false;
       });
 
-    this._appointmentService.updateAppointment({ ...this.selectedAppointment, hasHistory: true })
+    let sanitizedObject = { ...this.selectedAppointment as any };
+    if (sanitizedObject?.relatedParentHistory) {
+      const { relatedParentHistory, ...rest } = sanitizedObject;
+      sanitizedObject = { ...rest, hasHistory: true };
+    }
+
+    this._appointmentService.updateAppointment(sanitizedObject)
       .then(() => { })
       .catch(() => {
         this._toastService.errorMessage('Error al actualizar el turno');
@@ -284,32 +266,6 @@ export class SpecialistAppointmentsComponent implements OnInit {
       reason: this.reason,
     }
 
-    // cuando cancelas el turno el estado del horario vuelve a libre
-    // if (this.actionData.action === AppointmentStatus.Cancelled) {
-    //   const { appointment } = this.actionData;
-    //   const { day, time, specialistId } = appointment;
-
-    //   this._authService.getUserById(specialistId)
-    //     .then(data => {
-    //       const specialist = data.data();
-    //       const { schedule } = specialist;
-
-    //       let appointmentToUpdate = schedule.find((ap: AppointmentModel) => ap.day === day && ap.time === time);
-
-    //       const updatedSchedule = [
-    //         ...schedule.filter((ap: AppointmentModel) => ap.day !== day && ap.time !== time),
-    //         {
-    //           ...appointmentToUpdate,
-    //           busy: false,
-    //         }
-    //       ];
-
-    //       this._authService.updateUser({
-    //         ...specialist,
-    //         schedule: updatedSchedule
-    //       });
-    //     })
-    // }
 
     this._appointmentService.updateAppointment(updatedAppointment)
       .then(() => {
