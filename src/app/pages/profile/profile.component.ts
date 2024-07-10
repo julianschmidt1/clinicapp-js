@@ -133,11 +133,11 @@ export class ProfileComponent implements OnInit {
       this._patientHistoryService.getHistoryById(parsedUserData.uid)
         .then((d => {
           const historyData = d.data() as any;
-          this.patientHistoryToExport = historyData.history;
+          this.patientHistoryToExport = historyData?.history;
 
           collectionData(appointmentsCollection)
             .pipe(map((appointments: AppointmentModel[]) => {
-              return appointments.filter(a => this.patientHistoryToExport.some(hd => hd.appointmentId === a.id))
+              return appointments.filter(a => this.patientHistoryToExport?.some(hd => hd.appointmentId === a.id))
             }))
             .subscribe({
               next: (appointments) => {
@@ -203,7 +203,7 @@ export class ProfileComponent implements OnInit {
     }
 
     let timeOverlap = false;
-    if (this.userData?.schedule.some(s => s.day === this.selectedDay)) {
+    if (this.userData?.schedule?.some(s => s.day === this.selectedDay)) {
       const appointments = this.userData?.schedule.filter(s => s.day === this.selectedDay);
 
       const currentStartDate = moment(this.startTime, 'HH:mm');

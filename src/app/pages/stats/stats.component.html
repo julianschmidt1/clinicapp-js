@@ -1,38 +1,49 @@
+<p-toast></p-toast>
 <div class="screen">
     <div style="width: 100%; padding: 0 50px; display: flex; flex-direction: column; gap: 50px;">
-        <h1>Estadisticas</h1>
 
-        <!-- <p-panel header="Turnos por especialidad" [toggleable]="true">
-            <div style="height: 400px; width: 400px; margin: 0 auto;">
-                <p-chart type="pie" [data]="appointmentsBySpecialtyChart" [options]="basicOptions" />
-            </div>
-        </p-panel>
-
-        <p-panel header="Turnos por dia" [toggleable]="true">
-            <div style="max-height: 400px; max-width: 900px; min-width: 400px; min-height: 400px; margin: 0 auto;">
-                <p-chart type="bar" [data]="appointmentsByDayChart" [options]="basicOptions" />
-            </div>
-        </p-panel> -->
-
-        <p-panel header="Turnos solicitados" [toggleable]="true">
-            <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end;">
-                <div class="input-container">
-                    <label for="">Desde</label>
-                    <input [(ngModel)]="appointmentDateFrom" type="date" pInputText>
+        <div id="page-content">
+            <div style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
+                <h1>Estadisticas</h1>
+                <div style="display: flex; gap: 8px;">
+                    <button pButton (click)="handleExportStats()">Descargar gráficos</button>
+                    <button pButton (click)="handleExportLogs()">Descargar logs</button>
                 </div>
-                <div class="input-container">
-                    <label for="">Hasta</label>
-                    <input [(ngModel)]="appointmentDateTo" type="date" pInputText>
+            </div>
+
+            <p-panel header="Turnos por especialidad" [toggleable]="true">
+                <div style="height: 400px; width: 400px; margin: 0 auto;">
+                    <p-chart type="pie" [data]="appointmentsBySpecialtyChart" [options]="basicOptions" />
                 </div>
-                <button (click)="handleSearchByAppointment()" pButton>Buscar</button>
+            </p-panel>
 
-            </div>
-            <div style="max-height: 400px; max-width: 900px; min-width: 400px; min-height: 400px; margin: 0 auto;">
-                <p-chart type="bar" [data]="appointmentsBySpecialistChart" [options]="basicOptions" />
-            </div>
-        </p-panel>
+            <p-panel header="Turnos por dia" [toggleable]="true">
+                <div style="max-height: 400px; max-width: 900px; min-width: 400px; min-height: 400px; margin: 0 auto;">
+                    <p-chart type="bar" [data]="appointmentsByDayChart" [options]="basicOptions" />
+                </div>
+            </p-panel>
 
-        <p-panel header="Turnos finalizados" [toggleable]="true">
+            <p-panel header="Turnos por especialista" [toggleable]="true">
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end;">
+                    <div class="input-container">
+                        <label for="">Desde</label>
+                        <input [(ngModel)]="appointmentDateFrom" type="date" pInputText>
+                    </div>
+                    <div class="input-container">
+                        <label for="">Hasta</label>
+                        <input [(ngModel)]="appointmentDateTo" type="date" pInputText>
+                    </div>
+                    <button (click)="handleSearchByAppointment()" pButton>Buscar</button>
+
+                </div>
+                <div *ngIf="appointmentsBySpecialistChart"
+                    style="max-height: 400px; max-width: 900px; min-width: 400px; min-height: 400px; margin: 0 auto;">
+                    <p-chart type="bar" [data]="appointmentsBySpecialistChart" [options]="basicOptions" />
+                </div>
+            </p-panel>
+
+        </div>
+        <!-- <p-panel header="Turnos finalizados" [toggleable]="true">
             <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: flex-end;">
                 <div class="input-container">
                     <label for="">Desde</label>
@@ -42,15 +53,15 @@
                     <label>Hasta</label>
                     <input [(ngModel)]="finalizedDateTo" type="date" pInputText>
                 </div>
-                <button pButton>Buscar</button>
+                <button (click)="handleSearchByFinalizedAppointment()" pButton>Buscar</button>
             </div>
             <div style="max-height: 400px; max-width: 900px; min-width: 400px; min-height: 400px; margin: 0 auto;">
-                <p-chart type="bar" [data]="appointmentsByDayChart" [options]="basicOptions" />
+                <p-chart type="bar" [data]="finalizedAppointmentsBySpecialistChart" [options]="basicOptions" />
             </div>
-        </p-panel>
+        </p-panel> -->
 
-        <p-panel header="Inicios de sesión" [toggleable]="true">
-            <div style="max-height: 300px; overflow-y: auto;">
+        <p-panel id="logs-content" header="Inicios de sesión" [toggleable]="true">
+            <div id="logs-container" style="max-height: 300px; overflow-y: auto;">
                 <p-table [value]="logData">
                     <ng-template pTemplate="header">
                         <tr>
